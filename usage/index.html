@@ -1,0 +1,970 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Using Laravel Debugbar is simple. After installing, just enable Debug mode and you should be good. Read further for more options.">
+      
+      
+        <meta name="author" content="Barry vd. Heuvel">
+      
+      
+        <link rel="canonical" href="https://laraveldebugbar.com/usage/">
+      
+      
+        <link rel="prev" href="../installation/">
+      
+      
+        <link rel="next" href="../features/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Usage - Laravel Debugbar</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/extra.css">
+    
+      <link rel="stylesheet" href="../assets/dist/debugbar.css?v=1769711751">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-KVHB3EWT91"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-KVHB3EWT91",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-KVHB3EWT91",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+
+
+
+<meta property="og:title" content="Usage - Laravel Debugbar" />
+
+
+
+<meta property="og:description" content="Using Laravel Debugbar is simple. After installing, just enable Debug mode and you should be good. Read further for more options." />
+
+
+<meta property="og:type" content="website" />
+
+<meta property="og:url" content="https://laraveldebugbar.com/usage/" />
+
+
+
+<meta property="og:image" content="https://laraveldebugbar.com/img/preview-usage.jpg" />
+
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Laravel Debugbar" class="md-header__button md-logo" aria-label="Laravel Debugbar" data-md-component="logo">
+      
+  <img src="../assets/logo_white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Laravel Debugbar
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/barryvdh/laravel-debugbar" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../installation/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Install
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../features/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Features
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../collectors/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Collectors
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Laravel Debugbar" class="md-nav__button md-logo" aria-label="Laravel Debugbar" data-md-component="logo">
+      
+  <img src="../assets/logo_white.png" alt="logo">
+
+    </a>
+    Laravel Debugbar
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/barryvdh/laravel-debugbar" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-debugbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using the Debugbar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debugbar-facade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugbar Facade
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helpers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collecting-queued-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collecting Queued Jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enablingdisabling-on-run-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enabling/Disabling on run time
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Console
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#twig-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Twig Integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../collectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Collectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/barryvdh/laravel-debugbar/edit/docs/docs/usage.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
+<h2 id="using-the-debugbar">Using the Debugbar<a class="headerlink" href="#using-the-debugbar" title="Permanent link">&para;</a></h2>
+<p>When the Debugbar is enabled, the Debugbar is shown on the bottom of the screen, similar to the documentation preview.</p>
+<p>Based on your configuration, it shows the <a href="../collectors/">Collectors</a> for the current request. You can open, close, restore or minimize the toolbar for your need. The state will be remembered.</p>
+<p><img alt="Usage" src="../img/debugbar.gif" /></p>
+<h2 id="debugbar-facade">Debugbar Facade<a class="headerlink" href="#debugbar-facade" title="Permanent link">&para;</a></h2>
+<p>You can now add messages using the Facade (when added), using the PSR-3 levels (debug, info, notice, warning, error, critical, alert, emergency):</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">info</span><span class="p">(</span><span class="nv">$object</span><span class="p">);</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">error</span><span class="p">(</span><span class="s1">&#39;Error!&#39;</span><span class="p">);</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">warning</span><span class="p">(</span><span class="s1">&#39;Watch out…&#39;</span><span class="p">);</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">addMessage</span><span class="p">(</span><span class="s1">&#39;Another message&#39;</span><span class="p">,</span> <span class="s1">&#39;mylabel&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>And start/stop timing:</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">startMeasure</span><span class="p">(</span><span class="s1">&#39;render&#39;</span><span class="p">,</span><span class="s1">&#39;Time for rendering&#39;</span><span class="p">);</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">stopMeasure</span><span class="p">(</span><span class="s1">&#39;render&#39;</span><span class="p">);</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">addMeasure</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="nx">LARAVEL_START</span><span class="p">,</span> <span class="nb">microtime</span><span class="p">(</span><span class="k">true</span><span class="p">));</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">measure</span><span class="p">(</span><span class="s1">&#39;My long operation&#39;</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="c1">// Do something…</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">});</span>
+</span></code></pre></div>
+<p>Or log exceptions:</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">try</span> <span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">throw</span> <span class="k">new</span> <span class="nx">Exception</span><span class="p">(</span><span class="s1">&#39;foobar&#39;</span><span class="p">);</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="nx">Debugbar</span><span class="o">::</span><span class="na">addThrowable</span><span class="p">(</span><span class="nv">$e</span><span class="p">);</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="helpers">Helpers<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h2>
+<p>There are also helper functions available for the most common calls:</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// All arguments will be dumped as a debug message</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nx">debug</span><span class="p">(</span><span class="nv">$var1</span><span class="p">,</span> <span class="nv">$someString</span><span class="p">,</span> <span class="nv">$intValue</span><span class="p">,</span> <span class="nv">$object</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// `$collection-&gt;debug()` will return the collection and dump it as a debug message. Like `$collection-&gt;dump()`</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nx">collect</span><span class="p">([</span><span class="nv">$var1</span><span class="p">,</span> <span class="nv">$someString</span><span class="p">])</span><span class="o">-&gt;</span><span class="na">debug</span><span class="p">();</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="nx">start_measure</span><span class="p">(</span><span class="s1">&#39;render&#39;</span><span class="p">,</span><span class="s1">&#39;Time for rendering&#39;</span><span class="p">);</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="nx">stop_measure</span><span class="p">(</span><span class="s1">&#39;render&#39;</span><span class="p">);</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="nx">add_measure</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="nx">LARAVEL_START</span><span class="p">,</span> <span class="nb">microtime</span><span class="p">(</span><span class="k">true</span><span class="p">));</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nx">measure</span><span class="p">(</span><span class="s1">&#39;My long operation&#39;</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="c1">// Do something…</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">});</span>
+</span></code></pre></div>
+<p>If you want you can add your own DataCollectors, through the Container or the Facade:</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nx">Debugbar</span><span class="o">::</span><span class="na">addCollector</span><span class="p">(</span><span class="k">new</span> <span class="nx">DebugBar\DataCollector\MessagesCollector</span><span class="p">(</span><span class="s1">&#39;my_messages&#39;</span><span class="p">));</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">//Or via the App container:</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">$debugbar</span> <span class="o">=</span> <span class="nx">App</span><span class="o">::</span><span class="na">make</span><span class="p">(</span><span class="s1">&#39;debugbar&#39;</span><span class="p">);</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nv">$debugbar</span><span class="o">-&gt;</span><span class="na">addCollector</span><span class="p">(</span><span class="k">new</span> <span class="nx">DebugBar\DataCollector\MessagesCollector</span><span class="p">(</span><span class="s1">&#39;my_messages&#39;</span><span class="p">));</span>
+</span></code></pre></div>
+<h2 id="collecting-queued-jobs">Collecting Queued Jobs<a class="headerlink" href="#collecting-queued-jobs" title="Permanent link">&para;</a></h2>
+<p>If you want to collect jobs, set <code>debugbar.collect_jobs</code> to <code>true</code> in the config (or <code>DEBUGBAR_COLLECT_JOBS</code> in your <code>.env</code>).</p>
+<p>Use the browse button to view the processed jobs.</p>
+<h2 id="enablingdisabling-on-run-time">Enabling/Disabling on run time<a class="headerlink" href="#enablingdisabling-on-run-time" title="Permanent link">&para;</a></h2>
+<p>You can enable or disable the debugbar during run time.</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nx">debugbar</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">enable</span><span class="p">();</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nx">debugbar</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">disable</span><span class="p">();</span>
+</span></code></pre></div>
+<p>NB. Once enabled, the collectors are added (and could produce extra overhead), so if you want to use the debugbar in production, disable in the config and only enable when needed.</p>
+<h2 id="console">Console<a class="headerlink" href="#console" title="Permanent link">&para;</a></h2>
+<p>When using Console Commands, you can log data to the Debugbar by manually enabling the debugbar. You can then view the data by browsing the Debugbar requests in the UI.</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nx">debugber</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">enable</span><span class="p">();</span>
+</span></code></pre></div>
+<h2 id="storage">Storage<a class="headerlink" href="#storage" title="Permanent link">&para;</a></h2>
+<p>Debugbar remembers previous requests, which you can view using the Browse button on the right. This will only work if you enable <code>debugbar.storage.open</code> in the config.
+Make sure you only do this on local development, because otherwise other people will be able to view previous requests.
+In general, Debugbar should only be used locally or at least restricted by IP.
+It's possible to pass a callback, which will receive the Request object, so you can determine access to the OpenHandler storage.</p>
+<h2 id="twig-integration">Twig Integration<a class="headerlink" href="#twig-integration" title="Permanent link">&para;</a></h2>
+<p>Laravel Debugbar comes with two Twig Extensions. These are tested with <a href="https://github.com/rcrowe/TwigBridge">rcrowe/TwigBridge</a> 0.6.x</p>
+<p>Add the following extensions to your TwigBridge config/extensions.php (or register the extensions manually)</p>
+<div class="language-php highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="s1">&#39;Fruitcake\LaravelDebugbar\Twig\Extension\Debug&#39;</span><span class="p">,</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="s1">&#39;Fruitcake\LaravelDebugbar\Twig\Extension\Dump&#39;</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="s1">&#39;Fruitcake\LaravelDebugbar\Twig\Extension\Stopwatch&#39;</span><span class="p">,</span>
+</span></code></pre></div>
+<p>The Dump extension will replace the <a href="http://twig.sensiolabs.org/doc/functions/dump.html">dump function</a> to output variables using the DataFormatter. The Debug extension adds a <code>debug()</code> function which passes variables to the Message Collector,
+instead of showing it directly in the template. It dumps the arguments, or when empty; all context variables.</p>
+<div class="language-twig highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">{{</span> <span class="nv">debug</span><span class="o">()</span> <span class="cp">}}</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="cp">{{</span> <span class="nv">debug</span><span class="o">(</span><span class="nv">user</span><span class="o">,</span> <span class="nv">categories</span><span class="o">)</span> <span class="cp">}}</span>
+</span></code></pre></div>
+<p>The Stopwatch extension adds a <a href="http://symfony.com/blog/new-in-symfony-2-4-a-stopwatch-tag-for-twig">stopwatch tag</a>  similar to the one in Symfony/Silex Twigbridge.</p>
+<div class="language-twig highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">{%</span> <span class="k">stopwatch</span> <span class="s2">&quot;foo&quot;</span> <span class="cp">%}</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="x">    …some things that gets timed</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="cp">{%</span> <span class="k">endstopwatch</span> <span class="cp">%}</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Install">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Install
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../features/" class="md-footer__link md-footer__link--next" aria-label="Next: Features">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Features
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; Barry vd. Heuvel
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/barryvdh/laravel-debugbar" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.tracking", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.sections", "navigation.expand", "content.tooltips", "content.code.copy", "content.action.edit", "toc.follow", "toc.integrate", "search.highlight", "meta"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+<!-- Add scripts that need to run before here -->
+
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/dist/debugbar.js?v=1769711751"></script>
+      
+    
+
+
+<!-- Start Debugbar -->
+
+<script> Sfdump = window.Sfdump || (function (doc) { doc.documentElement.classList.add('sf-js-enabled'); var rxEsc = /([.*+?^${}()|\[\]\/\\])/g, idRx = /\bsf-dump-\d+-ref[012]\w+\b/, keyHint = 0 <= navigator.platform.toUpperCase().indexOf('MAC') ? 'Cmd' : 'Ctrl', addEventListener = function (e, n, cb) { e.addEventListener(n, cb, false); }; if (!doc.addEventListener) { addEventListener = function (element, eventName, callback) { element.attachEvent('on' + eventName, function (e) { e.preventDefault = function () {e.returnValue = false;}; e.target = e.srcElement; callback(e); }); }; } function toggle(a, recursive) { var s = a.nextSibling || {}, oldClass = s.className, arrow, newClass; if (/\bsf-dump-compact\b/.test(oldClass)) { arrow = '▼'; newClass = 'sf-dump-expanded'; } else if (/\bsf-dump-expanded\b/.test(oldClass)) { arrow = '▶'; newClass = 'sf-dump-compact'; } else { return false; } if (doc.createEvent && s.dispatchEvent) { var event = doc.createEvent('Event'); event.initEvent('sf-dump-expanded' === newClass ? 'sfbeforedumpexpand' : 'sfbeforedumpcollapse', true, false); s.dispatchEvent(event); } a.lastChild.innerHTML = arrow; s.className = s.className.replace(/\bsf-dump-(compact|expanded)\b/, newClass); if (recursive) { try { a = s.querySelectorAll('.'+oldClass); for (s = 0; s < a.length; ++s) { if (-1 == a[s].className.indexOf(newClass)) { a[s].className = newClass; a[s].previousSibling.lastChild.innerHTML = arrow; } } } catch (e) { } } return true; }; function collapse(a, recursive) { var s = a.nextSibling || {}, oldClass = s.className; if (/\bsf-dump-expanded\b/.test(oldClass)) { toggle(a, recursive); return true; } return false; }; function expand(a, recursive) { var s = a.nextSibling || {}, oldClass = s.className; if (/\bsf-dump-compact\b/.test(oldClass)) { toggle(a, recursive); return true; } return false; }; function collapseAll(root) { var a = root.querySelector('a.sf-dump-toggle'); if (a) { collapse(a, true); expand(a); return true; } return false; } function reveal(node) { var previous, parents = []; while ((node = node.parentNode || {}) && (previous = node.previousSibling) && 'A' === previous.tagName) { parents.push(previous); } if (0 !== parents.length) { parents.forEach(function (parent) { expand(parent); }); return true; } return false; } function highlight(root, activeNode, nodes) { resetHighlightedNodes(root); Array.from(nodes||[]).forEach(function (node) { if (!/\bsf-dump-highlight\b/.test(node.className)) { node.className = node.className + ' sf-dump-highlight'; } }); if (!/\bsf-dump-highlight-active\b/.test(activeNode.className)) { activeNode.className = activeNode.className + ' sf-dump-highlight-active'; } } function resetHighlightedNodes(root) { Array.from(root.querySelectorAll('.sf-dump-str, .sf-dump-key, .sf-dump-public, .sf-dump-protected, .sf-dump-private')).forEach(function (strNode) { strNode.className = strNode.className.replace(/\bsf-dump-highlight\b/, ''); strNode.className = strNode.className.replace(/\bsf-dump-highlight-active\b/, ''); }); } return function (root, x) { root = doc.getElementById(root); var indentRx = new RegExp('^('+(root.getAttribute('data-indent-pad') || ' ').replace(rxEsc, '\\$1')+')+', 'm'), options = {"maxDepth":1,"maxStringLength":160,"fileLinkFormat":false}, elt = root.getElementsByTagName('A'), len = elt.length, i = 0, s, h, t = []; while (i < len) t.push(elt[i++]); for (i in x) { options[i] = x[i]; } function a(e, f) { addEventListener(root, e, function (e, n) { if ('A' == e.target.tagName) { f(e.target, e); } else if ('A' == e.target.parentNode.tagName) { f(e.target.parentNode, e); } else { n = /\bsf-dump-ellipsis\b/.test(e.target.className) ? e.target.parentNode : e.target; if ((n = n.nextElementSibling) && 'A' == n.tagName) { if (!/\bsf-dump-toggle\b/.test(n.className)) { n = n.nextElementSibling || n; } f(n, e, true); } } }); }; function isCtrlKey(e) { return e.ctrlKey || e.metaKey; } function xpathString(str) { var parts = str.match(/[^'"]+|['"]/g).map(function (part) { if ("'" == part) { return '"\'"'; } if ('"' == part) { return "'\"'"; } return "'" + part + "'"; }); return "concat(" + parts.join(",") + ", '')"; } function xpathHasClass(className) { return "contains(concat(' ', normalize-space(@class), ' '), ' " + className +" ')"; } a('mouseover', function (a, e, c) { if (c) { e.target.style.cursor = "pointer"; } }); a('click', function (a, e, c) { if (/\bsf-dump-toggle\b/.test(a.className)) { e.preventDefault(); if (!toggle(a, isCtrlKey(e))) { var r = doc.getElementById(a.getAttribute('href').slice(1)), s = r.previousSibling, f = r.parentNode, t = a.parentNode; t.replaceChild(r, a); f.replaceChild(a, s); t.insertBefore(s, r); f = f.firstChild.nodeValue.match(indentRx); t = t.firstChild.nodeValue.match(indentRx); if (f && t && f[0] !== t[0]) { r.innerHTML = r.innerHTML.replace(new RegExp('^'+f[0].replace(rxEsc, '\\$1'), 'mg'), t[0]); } if (/\bsf-dump-compact\b/.test(r.className)) { toggle(s, isCtrlKey(e)); } } if (c) { } else if (doc.getSelection) { try { doc.getSelection().removeAllRanges(); } catch (e) { doc.getSelection().empty(); } } else { doc.selection.empty(); } } else if (/\bsf-dump-str-toggle\b/.test(a.className)) { e.preventDefault(); e = a.parentNode.parentNode; e.className = e.className.replace(/\bsf-dump-str-(expand|collapse)\b/, a.parentNode.className); } }); elt = root.getElementsByTagName('SAMP'); len = elt.length; i = 0; while (i < len) t.push(elt[i++]); len = t.length; for (i = 0; i < len; ++i) { elt = t[i]; if ('SAMP' == elt.tagName) { a = elt.previousSibling || {}; if ('A' != a.tagName) { a = doc.createElement('A'); a.className = 'sf-dump-ref'; elt.parentNode.insertBefore(a, elt); } else { a.innerHTML += ' '; } a.title = (a.title ? a.title+'\n[' : '[')+keyHint+'+click] Expand all children'; a.innerHTML += elt.className == 'sf-dump-compact' ? '<span>▶</span>' : '<span>▼</span>'; a.className += ' sf-dump-toggle'; x = 1; if ('sf-dump' != elt.parentNode.className) { x += elt.parentNode.getAttribute('data-depth')/1; } } else if (/\bsf-dump-ref\b/.test(elt.className) && (a = elt.getAttribute('href'))) { a = a.slice(1); elt.className += ' sf-dump-hover'; elt.className += ' '+a; if (/[\[{]$/.test(elt.previousSibling.nodeValue)) { a = a != elt.nextSibling.id && doc.getElementById(a); try { s = a.nextSibling; elt.appendChild(a); s.parentNode.insertBefore(a, s); if (/^[@#]/.test(elt.innerHTML)) { elt.innerHTML += ' <span>▶</span>'; } else { elt.innerHTML = '<span>▶</span>'; elt.className = 'sf-dump-ref'; } elt.className += ' sf-dump-toggle'; } catch (e) { if ('&' == elt.innerHTML.charAt(0)) { elt.innerHTML = '…'; elt.className = 'sf-dump-ref'; } } } } } if (doc.evaluate && Array.from && root.children.length > 1) { root.setAttribute('tabindex', 0); SearchState = function () { this.nodes = []; this.idx = 0; }; SearchState.prototype = { next: function () { if (this.isEmpty()) { return this.current(); } this.idx = this.idx < (this.nodes.length - 1) ? this.idx + 1 : 0; return this.current(); }, previous: function () { if (this.isEmpty()) { return this.current(); } this.idx = this.idx > 0 ? this.idx - 1 : (this.nodes.length - 1); return this.current(); }, isEmpty: function () { return 0 === this.count(); }, current: function () { if (this.isEmpty()) { return null; } return this.nodes[this.idx]; }, reset: function () { this.nodes = []; this.idx = 0; }, count: function () { return this.nodes.length; }, }; function showCurrent(state) { var currentNode = state.current(), currentRect, searchRect; if (currentNode) { reveal(currentNode); highlight(root, currentNode, state.nodes); if ('scrollIntoView' in currentNode) { currentNode.scrollIntoView(true); currentRect = currentNode.getBoundingClientRect(); searchRect = search.getBoundingClientRect(); if (currentRect.top < (searchRect.top + searchRect.height)) { window.scrollBy(0, -(searchRect.top + searchRect.height + 5)); } } } counter.textContent = (state.isEmpty() ? 0 : state.idx + 1) + ' of ' + state.count(); } var search = doc.createElement('div'); search.className = 'sf-dump-search-wrapper sf-dump-search-hidden'; search.innerHTML = ' <input type="text" class="sf-dump-search-input"> <span class="sf-dump-search-count">0 of 0<\/span> <button type="button" class="sf-dump-search-input-previous" tabindex="-1"> <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1683 1331l-166 165q-19 19-45 19t-45-19L896 965l-531 531q-19 19-45 19t-45-19l-166-165q-19-19-19-45.5t19-45.5l742-741q19-19 45-19t45 19l742 741q19 19 19 45.5t-19 45.5z"\/><\/svg> <\/button> <button type="button" class="sf-dump-search-input-next" tabindex="-1"> <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1683 808l-742 741q-19 19-45 19t-45-19L109 808q-19-19-19-45.5t19-45.5l166-165q19-19 45-19t45 19l531 531 531-531q19-19 45-19t45 19l166 165q19 19 19 45.5t-19 45.5z"\/><\/svg> <\/button> '; root.insertBefore(search, root.firstChild); var state = new SearchState(); var searchInput = search.querySelector('.sf-dump-search-input'); var counter = search.querySelector('.sf-dump-search-count'); var searchInputTimer = 0; var previousSearchQuery = ''; addEventListener(searchInput, 'keyup', function (e) { var searchQuery = e.target.value; /* Don't perform anything if the pressed key didn't change the query */ if (searchQuery === previousSearchQuery) { return; } previousSearchQuery = searchQuery; clearTimeout(searchInputTimer); searchInputTimer = setTimeout(function () { state.reset(); collapseAll(root); resetHighlightedNodes(root); if ('' === searchQuery) { counter.textContent = '0 of 0'; return; } var classMatches = [ "sf-dump-str", "sf-dump-key", "sf-dump-public", "sf-dump-protected", "sf-dump-private", ].map(xpathHasClass).join(' or '); var xpathResult = doc.evaluate('.//span[' + classMatches + '][contains(translate(child::text(), ' + xpathString(searchQuery.toUpperCase()) + ', ' + xpathString(searchQuery.toLowerCase()) + '), ' + xpathString(searchQuery.toLowerCase()) + ')]', root, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null); while (node = xpathResult.iterateNext()) state.nodes.push(node); showCurrent(state); }, 400); }); Array.from(search.querySelectorAll('.sf-dump-search-input-next, .sf-dump-search-input-previous')).forEach(function (btn) { addEventListener(btn, 'click', function (e) { e.preventDefault(); -1 !== e.target.className.indexOf('next') ? state.next() : state.previous(); searchInput.focus(); collapseAll(root); showCurrent(state); }) }); addEventListener(root, 'keydown', function (e) { var isSearchActive = !/\bsf-dump-search-hidden\b/.test(search.className); if ((114 === e.keyCode && !isSearchActive) || (isCtrlKey(e) && 70 === e.keyCode)) { /* F3 or CMD/CTRL + F */ if (70 === e.keyCode && document.activeElement === searchInput) { /* * If CMD/CTRL + F is hit while having focus on search input, * the user probably meant to trigger browser search instead. * Let the browser execute its behavior: */ return; } e.preventDefault(); search.className = search.className.replace(/\bsf-dump-search-hidden\b/, ''); searchInput.focus(); } else if (isSearchActive) { if (27 === e.keyCode) { /* ESC key */ search.className += ' sf-dump-search-hidden'; e.preventDefault(); resetHighlightedNodes(root); searchInput.value = ''; } else if ( (isCtrlKey(e) && 71 === e.keyCode) /* CMD/CTRL + G */ || 13 === e.keyCode /* Enter */ || 114 === e.keyCode /* F3 */ ) { e.preventDefault(); e.shiftKey ? state.previous() : state.next(); collapseAll(root); showCurrent(state); } } }); } if (0 >= options.maxStringLength) { return; } try { elt = root.querySelectorAll('.sf-dump-str'); len = elt.length; i = 0; t = []; while (i < len) t.push(elt[i++]); len = t.length; for (i = 0; i < len; ++i) { elt = t[i]; s = elt.innerText || elt.textContent; x = s.length - options.maxStringLength; if (0 < x) { h = elt.innerHTML; elt[elt.innerText ? 'innerText' : 'textContent'] = s.substring(0, options.maxStringLength); elt.className += ' sf-dump-str-collapse'; elt.innerHTML = '<span class=sf-dump-str-collapse>'+h+'<a class="sf-dump-ref sf-dump-str-toggle" title="Collapse"> ◀</a></span>'+ '<span class=sf-dump-str-expand>'+elt.innerHTML+'<a class="sf-dump-ref sf-dump-str-toggle" title="'+x+' remaining characters"> ▶</a></span>'; } } } catch (e) { } }; })(document); </script><style> .sf-js-enabled .phpdebugbar pre.sf-dump .sf-dump-compact, .sf-js-enabled .sf-dump-str-collapse .sf-dump-str-collapse, .sf-js-enabled .sf-dump-str-expand .sf-dump-str-expand { display: none; } .sf-dump-hover:hover { background-color: #B729D9; color: #FFF !important; border-radius: 2px; } .phpdebugbar pre.sf-dump { display: block; white-space: pre; padding: 5px; overflow: initial !important; } .phpdebugbar pre.sf-dump:after { content: ""; visibility: hidden; display: block; height: 0; clear: both; } .phpdebugbar pre.sf-dump .sf-dump-ellipsization { display: inline-flex; } .phpdebugbar pre.sf-dump a { text-decoration: none; cursor: pointer; border: 0; outline: none; color: inherit; } .phpdebugbar pre.sf-dump img { max-width: 50em; max-height: 50em; margin: .5em 0 0 0; padding: 0; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAHUlEQVQY02O8zAABilCaiQEN0EeA8QuUcX9g3QEAAjcC5piyhyEAAAAASUVORK5CYII=) #D3D3D3; } .phpdebugbar pre.sf-dump .sf-dump-ellipsis { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; } .phpdebugbar pre.sf-dump .sf-dump-ellipsis-tail { flex-shrink: 0; } .phpdebugbar pre.sf-dump code { display:inline; padding:0; background:none; } .sf-dump-public.sf-dump-highlight, .sf-dump-protected.sf-dump-highlight, .sf-dump-private.sf-dump-highlight, .sf-dump-str.sf-dump-highlight, .sf-dump-key.sf-dump-highlight { background: rgba(111, 172, 204, 0.3); border: 1px solid #7DA0B1; border-radius: 3px; } .sf-dump-public.sf-dump-highlight-active, .sf-dump-protected.sf-dump-highlight-active, .sf-dump-private.sf-dump-highlight-active, .sf-dump-str.sf-dump-highlight-active, .sf-dump-key.sf-dump-highlight-active { background: rgba(253, 175, 0, 0.4); border: 1px solid #ffa500; border-radius: 3px; } .phpdebugbar pre.sf-dump .sf-dump-search-hidden { display: none !important; } .phpdebugbar pre.sf-dump .sf-dump-search-wrapper { font-size: 0; white-space: nowrap; margin-bottom: 5px; display: flex; position: -webkit-sticky; position: sticky; top: 5px; } .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > * { vertical-align: top; box-sizing: border-box; height: 21px; font-weight: normal; border-radius: 0; background: #FFF; color: #757575; border: 1px solid #BBB; } .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > input.sf-dump-search-input { padding: 3px; height: 21px; font-size: 12px; border-right: none; border-top-left-radius: 3px; border-bottom-left-radius: 3px; color: #000; min-width: 15px; width: 100%; } .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > .sf-dump-search-input-next, .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > .sf-dump-search-input-previous { background: #F2F2F2; outline: none; border-left: none; font-size: 0; line-height: 0; } .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > .sf-dump-search-input-next { border-top-right-radius: 3px; border-bottom-right-radius: 3px; } .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > .sf-dump-search-input-next > svg, .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > .sf-dump-search-input-previous > svg { pointer-events: none; width: 12px; height: 12px; } .phpdebugbar pre.sf-dump .sf-dump-search-wrapper > .sf-dump-search-count { display: inline-block; padding: 0 5px; margin: 0; border-left: none; line-height: 21px; font-size: 12px; }.phpdebugbar pre.sf-dump, .phpdebugbar pre.sf-dump .sf-dump-default{word-wrap: break-word; white-space: pre-wrap; word-break: normal}.phpdebugbar pre.sf-dump .sf-dump-num{font-weight:bold; color:#1299DA}.phpdebugbar pre.sf-dump .sf-dump-const{font-weight:bold}.phpdebugbar pre.sf-dump .sf-dump-str{font-weight:bold; color:#3A9B26}.phpdebugbar pre.sf-dump .sf-dump-note{color:#1299DA}.phpdebugbar pre.sf-dump .sf-dump-ref{color:#7B7B7B}.phpdebugbar pre.sf-dump .sf-dump-public{color:#000000}.phpdebugbar pre.sf-dump .sf-dump-protected{color:#000000}.phpdebugbar pre.sf-dump .sf-dump-private{color:#000000}.phpdebugbar pre.sf-dump .sf-dump-meta{color:#B729D9}.phpdebugbar pre.sf-dump .sf-dump-key{color:#3A9B26}.phpdebugbar pre.sf-dump .sf-dump-index{color:#1299DA}.phpdebugbar pre.sf-dump .sf-dump-ellipsis{color:#A0A000}.phpdebugbar pre.sf-dump .sf-dump-virtual{font-style:italic}.phpdebugbar pre.sf-dump .sf-dump-ns{user-select:none;}.phpdebugbar pre.sf-dump .sf-dump-ellipsis-note{color:#1299DA}.phpdebugbar[data-theme='dark'] pre.sf-dump, pre.sf-dump .sf-dump-default{background-color:#18171B; color:#FF8400; line-height:1.2em; font:12px Menlo, Monaco, Consolas, monospace; word-wrap: break-word; white-space: pre-wrap; position:relative; z-index:99999; word-break: break-all}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-num{font-weight:bold; color:#1299DA}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-const{font-weight:bold}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-virtual{font-style:italic}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-str{font-weight:bold; color:#56DB3A}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-note{color:#1299DA}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-ref{color:#A0A0A0}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-public{color:#FFFFFF}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-protected{color:#FFFFFF}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-private{color:#FFFFFF}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-meta{color:#B729D9}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-key{color:#56DB3A}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-index{color:#1299DA}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-ellipsis{color:#FF8400}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-ns{user-select:none;}.phpdebugbar[data-theme='dark'] pre.sf-dump .sf-dump-ellipsis-note{color:#1299DA}</style>
+<script type="text/javascript">
+(function () {
+    const renderDebugbar = function () {
+const phpdebugbar = new PhpDebugBar.DebugBar({"theme":"auto","hideEmptyTabs":true});
+phpdebugbar.addTab("request", new PhpDebugBar.DebugBar.Tab({"icon":"arrows-left-right","title":"Request", "widget": new PhpDebugBar.Widgets.HtmlVariableListWidget()}));
+phpdebugbar.addTab("exceptions", new PhpDebugBar.DebugBar.Tab({"icon":"bug","title":"Exceptions", "widget": new PhpDebugBar.Widgets.ExceptionsWidget()}));
+phpdebugbar.addTab("messages", new PhpDebugBar.DebugBar.Tab({"icon":"logs","title":"Messages", "widget": new PhpDebugBar.Widgets.MessagesWidget()}));
+phpdebugbar.addIndicator("time", new PhpDebugBar.DebugBar.Indicator({"icon":"clock","tooltip":"Request Duration","link":"timeline"}), "right");
+phpdebugbar.addTab("timeline", new PhpDebugBar.DebugBar.Tab({"icon":"chart-infographic","title":"Timeline", "widget": new PhpDebugBar.Widgets.TimelineWidget()}));
+phpdebugbar.addIndicator("memory", new PhpDebugBar.DebugBar.Indicator({"icon":"server-cog","tooltip":"Memory Usage"}), "right");
+phpdebugbar.addIndicator("version", new PhpDebugBar.DebugBar.Indicator({"icon":"brand-laravel"}), "right");
+phpdebugbar.addTab("views", new PhpDebugBar.DebugBar.Tab({"icon":"file-code","title":"Views", "widget": new PhpDebugBar.Widgets.TemplatesWidget()}));
+phpdebugbar.addTab("queries", new PhpDebugBar.DebugBar.Tab({"icon":"database","title":"Queries", "widget": new PhpDebugBar.Widgets.LaravelQueriesWidget()}));
+phpdebugbar.addTab("models", new PhpDebugBar.DebugBar.Tab({"icon":"box","title":"Models", "widget": new PhpDebugBar.Widgets.TableVariableListWidget()}));
+phpdebugbar.addTab("emails", new PhpDebugBar.DebugBar.Tab({"icon":"inbox","title":"Mails", "widget": new PhpDebugBar.Widgets.MailsWidget()}));
+phpdebugbar.addTab("gate", new PhpDebugBar.DebugBar.Tab({"icon":"logs","title":"Gate", "widget": new PhpDebugBar.Widgets.MessagesWidget()}));
+phpdebugbar.addTab("cache", new PhpDebugBar.DebugBar.Tab({"icon":"clipboard-text","title":"Cache", "widget": new PhpDebugBar.Widgets.LaravelCacheWidget()}));
+phpdebugbar.addTab("jobs", new PhpDebugBar.DebugBar.Tab({"icon":"briefcase","title":"Jobs", "widget": new PhpDebugBar.Widgets.TableVariableListWidget()}));
+phpdebugbar.addTab("http_client", new PhpDebugBar.DebugBar.Tab({"icon":"mobiledata","title":"Http client", "widget": new PhpDebugBar.Widgets.HttpWidget()}));
+phpdebugbar.setDataMap({
+"request": ["request.data", {}],
+"request:badge": ["request.badge", null],
+"exceptions": ["exceptions.exceptions", []],
+"exceptions:badge": ["exceptions.count", null],
+"messages": ["messages.messages", []],
+"messages:badge": ["messages.count", null],
+"time": ["time.duration_str", '0ms'],
+"timeline": ["time", {}],
+"memory": ["memory.peak_usage_str", '0B'],
+"version": ["laravel.version", ],
+"version:tooltip": ["laravel.tooltip", {}],
+"views": ["views", []],
+"views:badge": ["views.nb_templates", 0],
+"queries": ["queries", []],
+"queries:badge": ["queries.nb_statements", 0],
+"models": ["models", {}],
+"models:badge": ["models.count", 0],
+"emails": ["symfonymailer_mails.mails", []],
+"emails:badge": ["symfonymailer_mails.count", null],
+"gate": ["gate.messages", []],
+"gate:badge": ["gate.count", null],
+"cache": ["cache", {}],
+"cache:badge": ["cache.nb_measures", null],
+"jobs": ["jobs", {}],
+"jobs:badge": ["jobs.count", 0],
+"http_client": ["http_client.requests", []],
+"http_client:badge": ["http_client.nb_requests", 0]
+});
+phpdebugbar.restoreState();
+phpdebugbar.enableAjaxHandlerTab();
+phpdebugbar.ajaxHandler = new PhpDebugBar.AjaxHandler(phpdebugbar, undefined, true);
+phpdebugbar.ajaxHandler.bindToFetch();
+phpdebugbar.ajaxHandler.bindToXHR();
+phpdebugbar.setOpenHandler(new PhpDebugBar.OpenHandler({"url":"http:\/\/localhost\/_debugbar\/open"}));
+phpdebugbar.addDataSet({"__meta":{"id":"01KG5GMM5657M96SK84XM5JKR3","datetime":"2026-01-29 18:35:51","utime":1769711751.334897,"method":"CLI","uri":"--filter=testItInjectsOnDocs","ip":"127.0.0.1"},"request":{"data":{"method":"CLI","command":"\u003Cpre class=sf-dump id=sf-dump-1110384879 data-indent-pad=\u0022  \u0022\u003E\u003Cspan class=sf-dump-const\u003Enull\u003C\/span\u003E\n\u003C\/pre\u003E","command_class":"\u003Cpre class=sf-dump id=sf-dump-246370164 data-indent-pad=\u0022  \u0022\u003E\u003Cspan class=sf-dump-const\u003Enull\u003C\/span\u003E\n\u003C\/pre\u003E","args":"\u003Cpre class=sf-dump id=sf-dump-1801677481 data-indent-pad=\u0022  \u0022\u003E\u003Cspan class=sf-dump-note\u003Earray:1\u003C\/span\u003E [\u003Csamp data-depth=1 class=sf-dump-expanded\u003E\n  \u003Cspan class=sf-dump-index\u003E0\u003C\/span\u003E =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002228 characters\u0022\u003E--filter=testItInjectsOnDocs\u003C\/span\u003E\u0022\n\u003C\/samp\u003E]\n\u003C\/pre\u003E","request_server":"\u003Cpre class=sf-dump id=sf-dump-1118765082 data-indent-pad=\u0022  \u0022\u003E\u003Cspan class=sf-dump-note\u003Earray:135\u003C\/span\u003E [\u003Csamp data-depth=1 class=sf-dump-expanded\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003ESERVER_NAME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00229 characters\u0022\u003Elocalhost\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESERVER_PORT\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-num\u003E80\u003C\/span\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003EHTTP_HOST\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00229 characters\u0022\u003Elocalhost\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EHTTP_USER_AGENT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00227 characters\u0022\u003ESymfony\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EHTTP_ACCEPT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002263 characters\u0022\u003Etext\/html,application\/xhtml+xml,application\/xml;q=0.9,*\/*;q=0.8\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EHTTP_ACCEPT_LANGUAGE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002214 characters\u0022\u003Een-us,en;q=0.5\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EHTTP_ACCEPT_CHARSET\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002230 characters\u0022\u003EISO-8859-1,utf-8;q=0.7,*;q=0.7\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EREMOTE_ADDR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00229 characters\u0022\u003E127.0.0.1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESCRIPT_NAME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002218 characters\u0022\u003Evendor\/bin\/phpunit\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESCRIPT_FILENAME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002218 characters\u0022\u003Evendor\/bin\/phpunit\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESERVER_PROTOCOL\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00228 characters\u0022\u003EHTTP\/1.1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EREQUEST_TIME\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-num\u003E1769711751\u003C\/span\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003EREQUEST_TIME_FLOAT\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-num\u003E1769711751.049\u003C\/span\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003ESHELL\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00229 characters\u0022\u003E\/bin\/bash\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESELENIUM_JAR_PATH\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002235 characters\u0022\u003E\/usr\/share\/java\/selenium-server.jar\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ECONDA\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002220 characters\u0022\u003E\/usr\/share\/miniconda\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_WORKSPACE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002251 characters\u0022\u003E\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EJAVA_HOME_11_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002233 characters\u0022\u003E\/usr\/lib\/jvm\/temurin-11-jdk-amd64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ECOMPOSER_NO_INTERACTION\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EJAVA_HOME_25_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002233 characters\u0022\u003E\/usr\/lib\/jvm\/temurin-25-jdk-amd64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_PATH\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002291 characters\u0022\u003E\/home\/runner\/work\/_temp\/_runner_file_commands\/add_path_99967030-b60e-41da-a79f-38a6e92334a3\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_ACTION\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00227 characters\u0022\u003E__run_3\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EJAVA_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002233 characters\u0022\u003E\/usr\/lib\/jvm\/temurin-17-jdk-amd64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_RUN_NUMBER\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00222 characters\u0022\u003E58\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_NAME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002225 characters\u0022\u003EGitHub Actions 1000018557\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGRADLE_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002223 characters\u0022\u003E\/usr\/share\/gradle-9.3.0\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REPOSITORY_OWNER_ID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00227 characters\u0022\u003E6661222\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EACTIONS_RUNNER_ACTION_ARCHIVE_CACHE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002223 characters\u0022\u003E\/opt\/actionarchivecache\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EXDG_CONFIG_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002220 characters\u0022\u003E\/home\/runner\/.config\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EMEMORY_PRESSURE_WRITE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002228 characters\u0022\u003Ec29tZSAyMDAwMDAgMjAwMDAwMAA=\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EDOTNET_SKIP_FIRST_TIME_EXPERIENCE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EANT_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002214 characters\u0022\u003E\/usr\/share\/ant\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EJAVA_HOME_8_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002232 characters\u0022\u003E\/usr\/lib\/jvm\/temurin-8-jdk-amd64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_TRIGGERING_ACTOR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00228 characters\u0022\u003Ebarryvdh\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REF_TYPE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00226 characters\u0022\u003Ebranch\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EHOMEBREW_CLEANUP_PERIODIC_FULL_DAYS\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00224 characters\u0022\u003E3650\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EANDROID_NDK\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002244 characters\u0022\u003E\/usr\/local\/lib\/android\/sdk\/ndk\/27.3.13750724\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EBOOTSTRAP_HASKELL_NONINTERACTIVE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPWD\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002251 characters\u0022\u003E\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPIPX_BIN_DIR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002213 characters\u0022\u003E\/opt\/pipx_bin\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ELOGNAME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00226 characters\u0022\u003Erunner\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REPOSITORY_ID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00228 characters\u0022\u003E12615154\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_ACTIONS\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00224 characters\u0022\u003Etrue\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EANDROID_NDK_LATEST_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002244 characters\u0022\u003E\/usr\/local\/lib\/android\/sdk\/ndk\/29.0.14206865\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESYSTEMD_EXEC_PID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00224 characters\u0022\u003E2002\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_SHA\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002240 characters\u0022\u003E4ddef6810e2b9778650b278c645e23b148cdb144\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_WORKFLOW_REF\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002277 characters\u0022\u003Efruitcake\/laravel-debugbar\/.github\/workflows\/build-docs.yml@refs\/heads\/master\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPOWERSHELL_DISTRIBUTION_CHANNEL\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002223 characters\u0022\u003EGitHub-Actions-ubuntu24\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_ENVIRONMENT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002213 characters\u0022\u003Egithub-hosted\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EDOTNET_MULTILEVEL_LOOKUP\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E0\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REF\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002217 characters\u0022\u003Erefs\/heads\/master\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_OS\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00225 characters\u0022\u003ELinux\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REF_PROTECTED\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00224 characters\u0022\u003Etrue\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EHOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002212 characters\u0022\u003E\/home\/runner\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_API_URL\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002222 characters\u0022\u003Ehttps:\/\/api.github.com\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ELANG\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00227 characters\u0022\u003EC.UTF-8\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGOROOT_1_25_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002234 characters\u0022\u003E\/opt\/hostedtoolcache\/go\/1.25.6\/x64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_TRACKING_ID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002243 characters\u0022\u003Egithub_fe099572-0720-46a6-8aaf-decbe3a759dc\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_ARCH\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00223 characters\u0022\u003EX64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EMEMORY_PRESSURE_WATCH\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002272 characters\u0022\u003E\/sys\/fs\/cgroup\/system.slice\/hosted-compute-agent.service\/memory.pressure\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_TEMP\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002223 characters\u0022\u003E\/home\/runner\/work\/_temp\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_STATE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002293 characters\u0022\u003E\/home\/runner\/work\/_temp\/_runner_file_commands\/save_state_99967030-b60e-41da-a79f-38a6e92334a3\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EEDGEWEBDRIVER\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002228 characters\u0022\u003E\/usr\/local\/share\/edge_driver\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EJAVA_HOME_21_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002233 characters\u0022\u003E\/usr\/lib\/jvm\/temurin-21-jdk-amd64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_ENV\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002290 characters\u0022\u003E\/home\/runner\/work\/_temp\/_runner_file_commands\/set_env_99967030-b60e-41da-a79f-38a6e92334a3\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_EVENT_PATH\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002251 characters\u0022\u003E\/home\/runner\/work\/_temp\/_github_workflow\/event.json\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EINVOCATION_ID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002232 characters\u0022\u003Ec8a1a66366374043a98e3e9c67b27221\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_EVENT_NAME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00224 characters\u0022\u003Epush\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_RUN_ID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002211 characters\u0022\u003E21490259009\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EJAVA_HOME_17_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002233 characters\u0022\u003E\/usr\/lib\/jvm\/temurin-17-jdk-amd64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EANDROID_NDK_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002244 characters\u0022\u003E\/usr\/local\/lib\/android\/sdk\/ndk\/27.3.13750724\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ECOMPOSER_PROCESS_TIMEOUT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E0\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_STEP_SUMMARY\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002295 characters\u0022\u003E\/home\/runner\/work\/_temp\/_runner_file_commands\/step_summary_99967030-b60e-41da-a79f-38a6e92334a3\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EHOMEBREW_NO_AUTO_UPDATE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_ACTOR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00228 characters\u0022\u003Ebarryvdh\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ENVM_DIR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002217 characters\u0022\u003E\/home\/runner\/.nvm\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESGX_AESM_ADDR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_RUN_ATTEMPT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EANDROID_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002226 characters\u0022\u003E\/usr\/local\/lib\/android\/sdk\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_GRAPHQL_URL\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002230 characters\u0022\u003Ehttps:\/\/api.github.com\/graphql\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EACCEPT_EULA\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003EY\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EUSER\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00226 characters\u0022\u003Erunner\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPSModulePath\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u0022130 characters\u0022\u003E\/root\/.local\/share\/powershell\/Modules:\/usr\/local\/share\/powershell\/Modules:\/opt\/microsoft\/powershell\/7\/Modules:\/usr\/share\/az_14.6.0\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_SERVER_URL\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002218 characters\u0022\u003Ehttps:\/\/github.com\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPIPX_HOME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00229 characters\u0022\u003E\/opt\/pipx\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGECKOWEBDRIVER\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002229 characters\u0022\u003E\/usr\/local\/share\/gecko_driver\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ECHROMEWEBDRIVER\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002237 characters\u0022\u003E\/usr\/local\/share\/chromedriver-linux64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESHLVL\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EANDROID_SDK_ROOT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002226 characters\u0022\u003E\/usr\/local\/lib\/android\/sdk\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EVCPKG_INSTALLATION_ROOT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002222 characters\u0022\u003E\/usr\/local\/share\/vcpkg\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_ACTOR_ID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00226 characters\u0022\u003E973269\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EACTIONS_ORCHESTRATION_ID\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002253 characters\u0022\u003Ecef9d3a5-94f3-4017-ab1a-7fe5b9e96a99.deploy.__default\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_TOOL_CACHE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002220 characters\u0022\u003E\/opt\/hostedtoolcache\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EImageVersion\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002213 characters\u0022\u003E20260126.10.1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EDOTNET_NOLOGO\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGOROOT_1_23_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002235 characters\u0022\u003E\/opt\/hostedtoolcache\/go\/1.23.12\/x64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_WORKFLOW_SHA\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002240 characters\u0022\u003E4ddef6810e2b9778650b278c645e23b148cdb144\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGOROOT_1_24_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002235 characters\u0022\u003E\/opt\/hostedtoolcache\/go\/1.24.12\/x64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REF_NAME\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00226 characters\u0022\u003Emaster\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_JOB\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00226 characters\u0022\u003Edeploy\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EXDG_RUNTIME_DIR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002214 characters\u0022\u003E\/run\/user\/1001\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EAZURE_EXTENSION_DIR\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002223 characters\u0022\u003E\/opt\/az\/azcliextensions\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REPOSITORY\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002226 characters\u0022\u003Efruitcake\/laravel-debugbar\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGOROOT_1_22_X64\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002235 characters\u0022\u003E\/opt\/hostedtoolcache\/go\/1.22.12\/x64\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ECHROME_BIN\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002222 characters\u0022\u003E\/usr\/bin\/google-chrome\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EANDROID_NDK_ROOT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002244 characters\u0022\u003E\/usr\/local\/lib\/android\/sdk\/ndk\/27.3.13750724\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_RETENTION_DAYS\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00222 characters\u0022\u003E90\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EJOURNAL_STREAM\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00227 characters\u0022\u003E9:14788\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ERUNNER_WORKSPACE\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002234 characters\u0022\u003E\/home\/runner\/work\/laravel-debugbar\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_ACTION_REPOSITORY\u003C\/span\u003E\u0022 =\u003E \u0022\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ECOMPOSER_NO_AUDIT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E1\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPATH\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u0022294 characters\u0022\u003E\/home\/runner\/.composer\/vendor\/bin:\/snap\/bin:\/home\/runner\/.local\/bin:\/opt\/pipx_bin:\/home\/runner\/.cargo\/bin:\/home\/runner\/.config\/composer\/vendor\/bin:\/usr\/local\/.ghcup\/bin:\/home\/runner\/.dotnet\/tools:\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin:\/usr\/games:\/usr\/local\/games:\/snap\/bin\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_BASE_REF\u003C\/span\u003E\u0022 =\u003E \u0022\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGHCUP_INSTALL_BASE_PREFIX\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002210 characters\u0022\u003E\/usr\/local\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ECI\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00224 characters\u0022\u003Etrue\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003ESWIFT_PATH\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002224 characters\u0022\u003E\/usr\/share\/swift\/usr\/bin\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EImageOS\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00228 characters\u0022\u003Eubuntu24\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_REPOSITORY_OWNER\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00229 characters\u0022\u003Efruitcake\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_HEAD_REF\u003C\/span\u003E\u0022 =\u003E \u0022\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_ACTION_REF\u003C\/span\u003E\u0022 =\u003E \u0022\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EENABLE_RUNNER_TRACING\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00224 characters\u0022\u003Etrue\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_WORKFLOW\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002210 characters\u0022\u003EBuild docs\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EDEBIAN_FRONTEND\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002214 characters\u0022\u003Enoninteractive\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EGITHUB_OUTPUT\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002293 characters\u0022\u003E\/home\/runner\/work\/_temp\/_runner_file_commands\/set_output_99967030-b60e-41da-a79f-38a6e92334a3\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EAGENT_TOOLSDIRECTORY\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002220 characters\u0022\u003E\/opt\/hostedtoolcache\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003E_\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002212 characters\u0022\u003E\/usr\/bin\/php\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPHP_SELF\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002218 characters\u0022\u003Evendor\/bin\/phpunit\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EPATH_TRANSLATED\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002218 characters\u0022\u003Evendor\/bin\/phpunit\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EDOCUMENT_ROOT\u003C\/span\u003E\u0022 =\u003E \u0022\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003Eargv\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-note\u003Earray:2\u003C\/span\u003E [\u003Csamp data-depth=2 class=sf-dump-compact\u003E\n    \u003Cspan class=sf-dump-index\u003E0\u003C\/span\u003E =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002218 characters\u0022\u003Evendor\/bin\/phpunit\u003C\/span\u003E\u0022\n    \u003Cspan class=sf-dump-index\u003E1\u003C\/span\u003E =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002228 characters\u0022\u003E--filter=testItInjectsOnDocs\u003C\/span\u003E\u0022\n  \u003C\/samp\u003E]\n  \u0022\u003Cspan class=sf-dump-key\u003Eargc\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-num\u003E2\u003C\/span\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003EPATH_INFO\u003C\/span\u003E\u0022 =\u003E \u0022\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EREQUEST_METHOD\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str title=\u00223 characters\u0022\u003EGET\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EREQUEST_URI\u003C\/span\u003E\u0022 =\u003E \u0022\u003Cspan class=sf-dump-str\u003E\/\u003C\/span\u003E\u0022\n  \u0022\u003Cspan class=sf-dump-key\u003EQUERY_STRING\u003C\/span\u003E\u0022 =\u003E \u0022\u0022\n\u003C\/samp\u003E]\n\u003C\/pre\u003E"}},"exceptions":{"count":1,"exceptions":[{"type":"RuntimeException","message":"Whoops! This is just a demo","code":0,"file":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","line":68,"stack_trace":"#0 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php(39): Fruitcake\\LaravelDebugbar\\Tests\\DebugbarDocsTest-\u003EFruitcake\\LaravelDebugbar\\Tests\\{closure}()\n#1 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php(243): Illuminate\\Routing\\CallableDispatcher-\u003Edispatch()\n#2 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php(214): Illuminate\\Routing\\Route-\u003ErunCallable()\n#3 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php(822): Illuminate\\Routing\\Route-\u003Erun()\n#4 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(180): Illuminate\\Routing\\Router-\u003EIlluminate\\Routing\\{closure}()\n#5 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(137): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#6 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php(821): Illuminate\\Pipeline\\Pipeline-\u003Ethen()\n#7 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php(800): Illuminate\\Routing\\Router-\u003ErunRouteWithinStack()\n#8 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php(764): Illuminate\\Routing\\Router-\u003ErunRoute()\n#9 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php(753): Illuminate\\Routing\\Router-\u003EdispatchToRoute()\n#10 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php(200): Illuminate\\Routing\\Router-\u003Edispatch()\n#11 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(180): Illuminate\\Foundation\\Http\\Kernel-\u003EIlluminate\\Foundation\\Http\\{closure}()\n#12 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#13 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest-\u003Ehandle()\n#14 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull-\u003Ehandle()\n#15 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#16 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest-\u003Ehandle()\n#17 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings-\u003Ehandle()\n#18 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#19 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Http\\Middleware\\ValidatePostSize-\u003Ehandle()\n#20 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/PreventRequestsDuringMaintenance.php(109): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#21 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance-\u003Ehandle()\n#22 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/HandleCors.php(61): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#23 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Http\\Middleware\\HandleCors-\u003Ehandle()\n#24 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#25 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Http\\Middleware\\TrustProxies-\u003Ehandle()\n#26 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#27 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks-\u003Ehandle()\n#28 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/ValidatePathEncoding.php(26): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#29 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(219): Illuminate\\Http\\Middleware\\ValidatePathEncoding-\u003Ehandle()\n#30 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php(137): Illuminate\\Pipeline\\Pipeline-\u003EIlluminate\\Pipeline\\{closure}()\n#31 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php(175): Illuminate\\Pipeline\\Pipeline-\u003Ethen()\n#32 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel-\u003EsendRequestThroughRouter()\n#33 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Testing\/Concerns\/MakesHttpRequests.php(607): Illuminate\\Foundation\\Http\\Kernel-\u003Ehandle()\n#34 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php(73): Orchestra\\Testbench\\TestCase-\u003Ecall()\n#35 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/Framework\/TestCase.php(1667): Fruitcake\\LaravelDebugbar\\Tests\\DebugbarDocsTest-\u003EtestItInjectsOnDocs()\n#36 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/Framework\/TestCase.php(519): PHPUnit\\Framework\\TestCase-\u003ErunTest()\n#37 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/Framework\/TestRunner\/TestRunner.php(87): PHPUnit\\Framework\\TestCase-\u003ErunBare()\n#38 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/Framework\/TestCase.php(365): PHPUnit\\Framework\\TestRunner-\u003Erun()\n#39 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/Framework\/TestSuite.php(369): PHPUnit\\Framework\\TestCase-\u003Erun()\n#40 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/Framework\/TestSuite.php(369): PHPUnit\\Framework\\TestSuite-\u003Erun()\n#41 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/Framework\/TestSuite.php(369): PHPUnit\\Framework\\TestSuite-\u003Erun()\n#42 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/TextUI\/TestRunner.php(64): PHPUnit\\Framework\\TestSuite-\u003Erun()\n#43 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/src\/TextUI\/Application.php(211): PHPUnit\\TextUI\\TestRunner-\u003Erun()\n#44 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/phpunit\/phpunit\/phpunit(104): PHPUnit\\TextUI\\Application-\u003Erun()\n#45 home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/bin\/phpunit(122): include(\u0027...\u0027)\n#46 {main}","stack_trace_html":null,"surrounding_lines":["\n","            Http::get(\u0027https:\/\/packagist.org\/packages\/barryvdh\/laravel-debugbar\/stats.json\u0027)-\u003Ejson();\n","\n","            debugbar()-\u003EaddException(new \\RuntimeException(\u0027Whoops! This is just a demo\u0027));\n","\n","            return \u0027\u0027;\n","        });\n"],"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Ftests%2FDebugbarDocsTest.php\u0026line=68","ajax":false,"filename":"DebugbarDocsTest.php","line":"68"}}]},"messages":{"count":3,"messages":[{"message":"Hello Artisans!","message_html":null,"is_string":true,"context":null,"label":"info","time":1769711751.26043,"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FLaravelDebugbar.php\u0026line=771","ajax":false,"filename":"LaravelDebugbar.php","line":"771"}},{"message":"Watch out for ..","message_html":null,"is_string":true,"context":null,"label":"warning","time":1769711751.260465,"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FLaravelDebugbar.php\u0026line=771","ajax":false,"filename":"LaravelDebugbar.php","line":"771"}},{"message":"Bugs!","message_html":null,"is_string":true,"context":null,"label":"error","time":1769711751.260475,"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FLaravelDebugbar.php\u0026line=771","ajax":false,"filename":"LaravelDebugbar.php","line":"771"}}]},"time":{"count":9,"start":1769711751.176705,"end":1769711751.342085,"duration":0.16538000106811523,"duration_str":"165ms","measures":[{"label":"Application","start":1769711751.18332,"relative_start":0.006615161895751953,"end":1769711751.342087,"relative_end":2.1457672119140625e-6,"duration":0.1587669849395752,"duration_str":"159ms","memory":0,"memory_str":"0B","params":[],"collector":"time","group":null},{"label":"Routing","start":1769711751.258945,"relative_start":0.08224010467529297,"end":1769711751.260174,"relative_end":1769711751.260174,"duration":0.0012290477752685547,"duration_str":"1.23ms","memory":0,"memory_str":"0B","params":[],"collector":null,"group":null},{"label":"[info]: Hello Artisans!","start":1769711751.260453,"relative_start":0.08374810218811035,"end":1769711751.260449,"relative_end":1769711751.260449,"duration":-4.0531158447265625e-6,"duration_str":"-4\u03bcs","memory":0,"memory_str":"0B","params":[],"collector":"messages","group":"messages"},{"label":"[warning]: Watch out for ..","start":1769711751.26047,"relative_start":0.08376502990722656,"end":1769711751.260469,"relative_end":1769711751.260469,"duration":-9.5367431640625e-7,"duration_str":"-1\u03bcs","memory":0,"memory_str":"0B","params":[],"collector":"messages","group":"messages"},{"label":"[error]: Bugs!","start":1769711751.260478,"relative_start":0.08377313613891602,"end":1769711751.260477,"relative_end":1769711751.260477,"duration":-9.5367431640625e-7,"duration_str":"-1\u03bcs","memory":0,"memory_str":"0B","params":[],"collector":"messages","group":"messages"},{"label":"dashboard","start":1769711751.324676,"relative_start":0.14797115325927734,"end":1769711751.324676,"relative_end":1769711751.324676,"duration":0,"duration_str":"0\u03bcs","memory":0,"memory_str":"0B","params":[],"collector":"views","group":"views"},{"label":"GET https:\/\/packagist.org\/packages\/barryvdh\/laravel-debugbar\/stats.json","start":1769711751.332686,"relative_start":0.15598106384277344,"end":1769711751.332686,"relative_end":1769711751.332686,"duration":0,"duration_str":"0\u03bcs","memory":0,"memory_str":"0B","params":[],"collector":"http_client","group":"http_client"},{"label":"Preparing Response","start":1769711751.332784,"relative_start":0.15607905387878418,"end":1769711751.333875,"relative_end":1769711751.333875,"duration":0.00109100341796875,"duration_str":"1.09ms","memory":0,"memory_str":"0B","params":[],"collector":null,"group":null},{"label":"Preparing Response","start":1769711751.333888,"relative_start":0.15718317031860352,"end":1769711751.333899,"relative_end":1769711751.333899,"duration":1.0967254638671875e-5,"duration_str":"11\u03bcs","memory":0,"memory_str":"0B","params":[],"collector":null,"group":null}]},"memory":{"peak_usage":40914472,"peak_usage_str":"39MB"},"laravel":{"version":"12.x","tooltip":{"Laravel Version":"12.49.0","PHP Version":"8.2.30","Environment":"testing","Debug Mode":"Disabled","URL":"localhost","Timezone":"UTC","Locale":"en"}},"views":{"count":1,"nb_templates":1,"templates":[{"name":"dashboard","param_count":null,"params":[],"start":1769711751.324676,"type":"blade","hash":"blade\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/resources\/views\/dashboard.blade.phpdashboard","xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Ftests%2Fresources%2Fviews%2Fdashboard.blade.php\u0026line=1","ajax":false,"filename":"dashboard.blade.php","line":"?"}}]},"queries":{"count":30,"nb_statements":29,"nb_visible_statements":30,"nb_excluded_statements":0,"nb_failed_statements":0,"accumulated_duration":0.001860000000000001,"accumulated_duration_str":"1.86ms","memory_usage":0,"memory_usage_str":null,"statements":[{"sql":"Connection Established","type":"transaction","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":346},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":110},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":19,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.222153,"duration":0,"duration_str":"","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:346","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":346},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=346","ajax":false,"filename":"QueryCollector.php","line":"346"},"connection":":memory:","explain":null,"start_percent":0,"width_percent":0},{"sql":"select exists (select 1 from \u0022main\u0022.sqlite_master where name = \u0027migrations\u0027 and type = \u0027table\u0027) as \u0022exists\u0022","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":22,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":23,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":24,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.223561,"duration":0.00047999999999999996,"duration_str":"480\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":0,"width_percent":25.806},{"sql":"select exists (select 1 from \u0022main\u0022.sqlite_master where name = \u0027migrations\u0027 and type = \u0027table\u0027) as \u0022exists\u0022","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":14,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":15,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":16,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.2299829,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":25.806,"width_percent":2.151},{"sql":"create table \u0022migrations\u0022 (\u0022id\u0022 integer primary key autoincrement not null, \u0022migration\u0022 varchar not null, \u0022batch\u0022 integer not null)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":14,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":15,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":16,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.231064,"duration":0.00011999999999999999,"duration_str":"120\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":27.957,"width_percent":6.452},{"sql":"select exists (select 1 from \u0022main\u0022.sqlite_master where name = \u0027migrations\u0027 and type = \u0027table\u0027) as \u0022exists\u0022","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":21,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":22,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.232686,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":34.409,"width_percent":2.151},{"sql":"select \u0022migration\u0022 from \u0022migrations\u0022 order by \u0022batch\u0022 asc, \u0022migration\u0022 asc","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":21,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":22,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.235719,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":36.559,"width_percent":2.151},{"sql":"select \u0022migration\u0022 from \u0022migrations\u0022 order by \u0022batch\u0022 asc, \u0022migration\u0022 asc","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":19,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":21,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.236023,"duration":2.9999999999999997e-5,"duration_str":"30\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":38.71,"width_percent":1.613},{"sql":"select max(\u0022batch\u0022) as aggregate from \u0022migrations\u0022","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":23,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":24,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":25,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.236396,"duration":2.9999999999999997e-5,"duration_str":"30\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":40.323,"width_percent":1.613},{"sql":"create table \u0022users\u0022 (\u0022id\u0022 integer primary key autoincrement not null, \u0022name\u0022 varchar not null, \u0022email\u0022 varchar not null, \u0022email_verified_at\u0022 datetime, \u0022password\u0022 varchar not null, \u0022remember_token\u0022 varchar, \u0022created_at\u0022 datetime, \u0022updated_at\u0022 datetime)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000000_testbench_create_users_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000000_testbench_create_users_table.php","line":14},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.237951,"duration":8.999999999999999e-5,"duration_str":"90\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":41.935,"width_percent":4.839},{"sql":"create unique index \u0022users_email_unique\u0022 on \u0022users\u0022 (\u0022email\u0022)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000000_testbench_create_users_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000000_testbench_create_users_table.php","line":14},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.238178,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":46.774,"width_percent":2.151},{"sql":"create table \u0022password_reset_tokens\u0022 (\u0022email\u0022 varchar not null, \u0022token\u0022 varchar not null, \u0022created_at\u0022 datetime, primary key (\u0022email\u0022))","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000000_testbench_create_users_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000000_testbench_create_users_table.php","line":24},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.2384229,"duration":7.000000000000001e-5,"duration_str":"70\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":48.925,"width_percent":3.763},{"sql":"create table \u0022sessions\u0022 (\u0022id\u0022 varchar not null, \u0022user_id\u0022 integer, \u0022ip_address\u0022 varchar, \u0022user_agent\u0022 text, \u0022payload\u0022 text not null, \u0022last_activity\u0022 integer not null, primary key (\u0022id\u0022))","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000000_testbench_create_users_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000000_testbench_create_users_table.php","line":30},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.2388408,"duration":8.0e-5,"duration_str":"80\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":52.688,"width_percent":4.301},{"sql":"create index \u0022sessions_user_id_index\u0022 on \u0022sessions\u0022 (\u0022user_id\u0022)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000000_testbench_create_users_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000000_testbench_create_users_table.php","line":30},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.239038,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":56.989,"width_percent":2.151},{"sql":"create index \u0022sessions_last_activity_index\u0022 on \u0022sessions\u0022 (\u0022last_activity\u0022)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000000_testbench_create_users_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000000_testbench_create_users_table.php","line":30},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.239186,"duration":2.9999999999999997e-5,"duration_str":"30\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":59.14,"width_percent":1.613},{"sql":"insert into \u0022migrations\u0022 (\u0022migration\u0022, \u0022batch\u0022) values (\u00270001_01_01_000000_testbench_create_users_table\u0027, 1)","type":"query","params":["0001_01_01_000000_testbench_create_users_table",1],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":19,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":21,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.239822,"duration":2.9999999999999997e-5,"duration_str":"30\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":60.753,"width_percent":1.613},{"sql":"create table \u0022cache\u0022 (\u0022key\u0022 varchar not null, \u0022value\u0022 text not null, \u0022expiration\u0022 integer not null, primary key (\u0022key\u0022))","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000001_testbench_create_cache_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000001_testbench_create_cache_table.php","line":14},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.2402158,"duration":8.0e-5,"duration_str":"80\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":62.366,"width_percent":4.301},{"sql":"create table \u0022cache_locks\u0022 (\u0022key\u0022 varchar not null, \u0022owner\u0022 varchar not null, \u0022expiration\u0022 integer not null, primary key (\u0022key\u0022))","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000001_testbench_create_cache_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000001_testbench_create_cache_table.php","line":20},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.2405028,"duration":8.0e-5,"duration_str":"80\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":66.667,"width_percent":4.301},{"sql":"insert into \u0022migrations\u0022 (\u0022migration\u0022, \u0022batch\u0022) values (\u00270001_01_01_000001_testbench_create_cache_table\u0027, 1)","type":"query","params":["0001_01_01_000001_testbench_create_cache_table",1],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":19,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":21,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.241118,"duration":2.0e-5,"duration_str":"20\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":70.968,"width_percent":1.075},{"sql":"create table \u0022jobs\u0022 (\u0022id\u0022 integer primary key autoincrement not null, \u0022queue\u0022 varchar not null, \u0022payload\u0022 text not null, \u0022attempts\u0022 integer not null, \u0022reserved_at\u0022 integer, \u0022available_at\u0022 integer not null, \u0022created_at\u0022 integer not null)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000002_testbench_create_jobs_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000002_testbench_create_jobs_table.php","line":14},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.2415318,"duration":8.0e-5,"duration_str":"80\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":72.043,"width_percent":4.301},{"sql":"create index \u0022jobs_queue_index\u0022 on \u0022jobs\u0022 (\u0022queue\u0022)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000002_testbench_create_jobs_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000002_testbench_create_jobs_table.php","line":14},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.241731,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":76.344,"width_percent":2.151},{"sql":"create table \u0022job_batches\u0022 (\u0022id\u0022 varchar not null, \u0022name\u0022 varchar not null, \u0022total_jobs\u0022 integer not null, \u0022pending_jobs\u0022 integer not null, \u0022failed_jobs\u0022 integer not null, \u0022failed_job_ids\u0022 text not null, \u0022options\u0022 text, \u0022cancelled_at\u0022 integer, \u0022created_at\u0022 integer not null, \u0022finished_at\u0022 integer, primary key (\u0022id\u0022))","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000002_testbench_create_jobs_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000002_testbench_create_jobs_table.php","line":24},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.242014,"duration":8.0e-5,"duration_str":"80\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":78.495,"width_percent":4.301},{"sql":"create table \u0022failed_jobs\u0022 (\u0022id\u0022 integer primary key autoincrement not null, \u0022uuid\u0022 varchar not null, \u0022connection\u0022 text not null, \u0022queue\u0022 text not null, \u0022payload\u0022 text not null, \u0022exception\u0022 text not null, \u0022failed_at\u0022 datetime not null default CURRENT_TIMESTAMP)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000002_testbench_create_jobs_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000002_testbench_create_jobs_table.php","line":37},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.242405,"duration":7.000000000000001e-5,"duration_str":"70\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":82.796,"width_percent":3.763},{"sql":"create unique index \u0022failed_jobs_uuid_unique\u0022 on \u0022failed_jobs\u0022 (\u0022uuid\u0022)","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":13,"namespace":null,"name":"migrations\/0001_01_01_000002_testbench_create_jobs_table.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/orchestra\/testbench-core\/laravel\/migrations\/0001_01_01_000002_testbench_create_jobs_table.php","line":37},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/View\/Components\/Task.php","line":41},{"index":27,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36}],"start":1769711751.24261,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":86.559,"width_percent":2.151},{"sql":"insert into \u0022migrations\u0022 (\u0022migration\u0022, \u0022batch\u0022) values (\u00270001_01_01_000002_testbench_create_jobs_table\u0027, 1)","type":"query","params":["0001_01_01_000002_testbench_create_jobs_table",1],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":19,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":36},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php","line":43},{"index":21,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php","line":96}],"start":1769711751.243196,"duration":2.0e-5,"duration_str":"20\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":88.71,"width_percent":1.075},{"sql":"insert into \u0022users\u0022 (\u0022email\u0022, \u0022name\u0022, \u0022password\u0022, \u0022updated_at\u0022, \u0022created_at\u0022) values (\u0027demo@example.com\u0027, \u0027Barry\u0027, \u0027$2y$10$TeowK5TL.JofWHhVfaxUTuixku\/6SlDYUHExVWLEAFNHvzVsfsWLu\u0027, \u00272026-01-29 18:35:51\u0027, \u00272026-01-29 18:35:51\u0027)","type":"query","params":["demo@example.com","Barry","$2y$10$TeowK5TL.JofWHhVfaxUTuixku\/6SlDYUHExVWLEAFNHvzVsfsWLu","2026-01-29 18:35:51","2026-01-29 18:35:51"],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":22,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","line":57},{"index":23,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","line":39},{"index":24,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","line":243}],"start":1769711751.318099,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":89.785,"width_percent":2.151},{"sql":"select count(*) as aggregate from \u0022users\u0022","type":"query","params":[],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":19,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","line":58},{"index":20,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","line":39},{"index":21,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","line":243}],"start":1769711751.3198109,"duration":2.9999999999999997e-5,"duration_str":"30\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":91.935,"width_percent":1.613},{"sql":"select * from \u0022users\u0022 where \u0022name\u0022 = \u0027Barry\u0027 limit 1","type":"query","params":["Barry"],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":16,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","line":59},{"index":17,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","line":39},{"index":18,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","line":243}],"start":1769711751.320076,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":93.548,"width_percent":2.151},{"sql":"select * from \u0022users\u0022 where \u0022id\u0022 = 1","type":"query","params":[1],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":15,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","line":60},{"index":16,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","line":39},{"index":17,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","line":243}],"start":1769711751.32093,"duration":4.0e-5,"duration_str":"40\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":95.699,"width_percent":2.151},{"sql":"select * from \u0022users\u0022 where \u0022id\u0022 = 1","type":"query","params":[1],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":15,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","line":61},{"index":16,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","line":39},{"index":17,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","line":243}],"start":1769711751.32121,"duration":2.0e-5,"duration_str":"20\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":97.849,"width_percent":1.075},{"sql":"select * from \u0022users\u0022 where \u0022id\u0022 = 1","type":"query","params":[1],"backtrace":[{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},{"index":1,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/CollectorProviders\/DatabaseCollectorProvider.php","line":69},{"index":15,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/tests\/DebugbarDocsTest.php","line":62},{"index":16,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/CallableDispatcher.php","line":39},{"index":17,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php","line":243}],"start":1769711751.321426,"duration":2.0e-5,"duration_str":"20\u03bcs","slow":false,"memory":0,"memory_str":null,"filename":"QueryCollector.php:156","source":{"index":0,"namespace":null,"name":"home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","file":"\/home\/runner\/work\/laravel-debugbar\/laravel-debugbar\/src\/DataCollector\/QueryCollector.php","line":156},"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Fsrc%2FDataCollector%2FQueryCollector.php\u0026line=156","ajax":false,"filename":"QueryCollector.php","line":"156"},"connection":":memory:","explain":null,"start_percent":98.925,"width_percent":1.075}]},"models":{"data":{"Fruitcake\\LaravelDebugbar\\Tests\\Models\\User":{"created":1,"retrieved":4,"xdebug_link":{"url":"phpstorm:\/\/open?file=%2Fhome%2Frunner%2Fwork%2Flaravel-debugbar%2Flaravel-debugbar%2Ftests%2FModels%2FUser.php\u0026line=1","ajax":false,"filename":"User.php","line":"?"}}},"count":5,"key_map":{"retrieved":"Retrieved","created":"Created","updated":"Updated","deleted":"Deleted"},"is_counter":true,"badges":{"created":1,"retrieved":4}},"symfonymailer_mails":{"count":0,"mails":[]},"gate":{"count":0,"messages":[]},"cache":{"count":0,"start":1769711751.049007,"end":1769711751.342949,"duration":0.2939419746398926,"duration_str":"294ms","measures":[],"nb_measures":0},"jobs":{"data":[],"count":0,"key_map":{"value":"Count"},"is_counter":true},"http_client":{"nb_requests":1,"requests":[{"method":"GET","url":"https:\/\/packagist.org\/packages\/barryvdh\/laravel-debugbar\/stats.json","status":200,"duration":null,"details":{"request_data":"\u003Cpre class=sf-dump id=sf-dump-2084667337 data-indent-pad=\u0022  \u0022\u003E[]\n\u003C\/pre\u003E","request_headers":"\u003Cpre class=sf-dump id=sf-dump-1888128872 data-indent-pad=\u0022  \u0022\u003E\u003Cspan class=sf-dump-note\u003Earray:2\u003C\/span\u003E [\u003Csamp data-depth=1 class=sf-dump-expanded\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003EUser-Agent\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-note\u003Earray:1\u003C\/span\u003E [\u003Csamp data-depth=2 class=sf-dump-compact\u003E\n    \u003Cspan class=sf-dump-index\u003E0\u003C\/span\u003E =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002212 characters\u0022\u003EGuzzleHttp\/7\u003C\/span\u003E\u0022\n  \u003C\/samp\u003E]\n  \u0022\u003Cspan class=sf-dump-key\u003EHost\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-note\u003Earray:1\u003C\/span\u003E [\u003Csamp data-depth=2 class=sf-dump-compact\u003E\n    \u003Cspan class=sf-dump-index\u003E0\u003C\/span\u003E =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002213 characters\u0022\u003Epackagist.org\u003C\/span\u003E\u0022\n  \u003C\/samp\u003E]\n\u003C\/samp\u003E]\n\u003C\/pre\u003E","response":"\u003Cpre class=sf-dump id=sf-dump-198744216 data-indent-pad=\u0022  \u0022\u003E\u003Cspan class=sf-dump-note\u003Earray:1\u003C\/span\u003E [\u003Csamp data-depth=1 class=sf-dump-expanded\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003Edownloads\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-note\u003Earray:3\u003C\/span\u003E [\u003Csamp data-depth=2 class=sf-dump-compact\u003E\n    \u0022\u003Cspan class=sf-dump-key\u003Etotal\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-num\u003E117241469\u003C\/span\u003E\n    \u0022\u003Cspan class=sf-dump-key\u003Emonthly\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-num\u003E2006302\u003C\/span\u003E\n    \u0022\u003Cspan class=sf-dump-key\u003Edaily\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-num\u003E109736\u003C\/span\u003E\n  \u003C\/samp\u003E]\n\u003C\/samp\u003E]\n\u003C\/pre\u003E","response_headers":"\u003Cpre class=sf-dump id=sf-dump-2028716596 data-indent-pad=\u0022  \u0022\u003E\u003Cspan class=sf-dump-note\u003Earray:1\u003C\/span\u003E [\u003Csamp data-depth=1 class=sf-dump-expanded\u003E\n  \u0022\u003Cspan class=sf-dump-key\u003EContent-Type\u003C\/span\u003E\u0022 =\u003E \u003Cspan class=sf-dump-note\u003Earray:1\u003C\/span\u003E [\u003Csamp data-depth=2 class=sf-dump-compact\u003E\n    \u003Cspan class=sf-dump-index\u003E0\u003C\/span\u003E =\u003E \u0022\u003Cspan class=sf-dump-str title=\u002216 characters\u0022\u003Eapplication\/json\u003C\/span\u003E\u0022\n  \u003C\/samp\u003E]\n\u003C\/samp\u003E]\n\u003C\/pre\u003E"}}]}}, "01KG5GMM5657M96SK84XM5JKR3", "", true);
+
+    window.PhpDebugBar.instance = phpdebugbar;
+    window.phpdebugbar = phpdebugbar;
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderDebugbar, { once: true });
+    } else {
+        renderDebugbar();
+    }
+})();
+</script>
+<!-- End Debugbar -->
+
+    
+  </body>
+</html>
