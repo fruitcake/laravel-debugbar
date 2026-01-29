@@ -47,7 +47,7 @@ class RouteCollector extends DataCollector implements Renderable
 
         if (request()->hasHeader('X-Livewire') && class_exists(HandleComponents::class)) {
             try {
-                $componentData = $this->request->request->all()['components'][0] ?? null;
+                $componentData = request('components')[0] ?? null;
                 if (isset($componentData['snapshot'], $componentData['updates'])) {
                     $snapshot = json_decode($componentData['snapshot'], true);
                     if (count($componentData['updates']) > 0) {
