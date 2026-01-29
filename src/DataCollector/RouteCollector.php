@@ -49,7 +49,7 @@ class RouteCollector extends DataCollector implements Renderable
             try {
                 $componentData = request('components')[0];
                 $snapshot = json_decode($componentData['snapshot'], true);
-                if (isset($componentData['updates'])) {
+                if (isset($componentData['updates']) && count($componentData['updates']) > 0) {
                     $method = $componentData['updates'][array_key_first($componentData['updates'])] ?? null;
                 } else {
                     $method = null;
