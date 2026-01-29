@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\CollectorProviders;
 
 use Fruitcake\LaravelDebugbar\DataCollector\GateCollector;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\Events\GateEvaluated;
+use Illuminate\Events\Dispatcher;
 
 class GateCollectorProvider extends AbstractCollectorProvider
 {
-    public function __invoke(array $options): void
+    public function __invoke(Dispatcher $events, array $options): void
     {
         $gateCollector = new GateCollector('gate');
         $this->addCollector($gateCollector);
@@ -23,6 +24,6 @@ class GateCollectorProvider extends AbstractCollectorProvider
             $gateCollector->setTimeDataCollector($this->debugbar->getTimeCollector());
         }
 
-        Gate::after(fn($user, $ability, $result, $arguments = []) => $gateCollector->addCheck($user, $ability, $result, $arguments)) ;
+        $events->listen(GateEvaluated::class, fn(GateEvaluated $event) => $gateCollector->addCheck($event->user, $event->ability, $event->result, $event->arguments));
     }
 }
