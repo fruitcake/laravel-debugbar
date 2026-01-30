@@ -14,6 +14,15 @@ use Livewire\LivewireServiceProvider;
 
 class LivewireCollectorTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        if (! class_exists(LivewireServiceProvider::class)) {
+            static::markTestSkipped('Livewire is not installed.');
+        }
+    }
+
     /**
      * Get package providers.
      *

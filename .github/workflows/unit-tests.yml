@@ -21,8 +21,11 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.5, 8.4, 8.3, 8.2]
-        laravel: [^12, ^11]
+        laravel: ["^13@dev", ^12, ^11]
         dependency-version: [prefer-stable]
+        exclude:
+            - laravel: ^13@dev
+              php: 8.2
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
@@ -37,6 +40,11 @@ jobs:
         coverage: none
         tools: composer:v2
         extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif
+
+    - name: Install dependencies
+      if: matrix.laravel == '^13@dev'
+      run: |
+          composer remove --dev --no-update livewire/livewire laravel/octane laravel/pennant
 
     - name: Install dependencies
       run: |

@@ -16,6 +16,15 @@ class PennantCollectorTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        if (! class_exists(PennantServiceProvider::class)) {
+            static::markTestSkipped('Pennant is not installed.');
+        }
+    }
+
     /**
      * Get package providers.
      *
