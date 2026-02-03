@@ -17,7 +17,7 @@ $routeConfig = [
 
 app('router')->group($routeConfig, function ($router): void {
     $router->get('open', [OpenHandlerController::class, 'handle'])->name('debugbar.openhandler');
-    $router->delete('cache/{key}', [CacheController::class, 'delete'])->name('debugbar.cache.delete');
+    $router->delete('cache/{key}', [CacheController::class, 'delete'])->where('key', '.*')->name('debugbar.cache.delete');
     $router->post('queries/explain', [QueriesController::class, 'explain'])->name('debugbar.queries.explain');
     $router->get('clockwork/{id}', [OpenHandlerController::class, 'clockwork'])->name('debugbar.clockwork');
     $router->get('assets', [AssetController::class, 'getAssets'])->name('debugbar.assets');

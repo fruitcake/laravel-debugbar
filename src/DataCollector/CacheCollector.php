@@ -83,7 +83,7 @@ class CacheCollector extends TimeDataCollector implements AssetProvider, Resetta
         if (isset($event->key) && in_array($label, ['hit', 'written'], true) && Route::has('debugbar.cache.delete')) {
             $measureIndex = array_key_last($this->measures);
             $this->measures[$measureIndex]['delete_url'] = url()->signedRoute('debugbar.cache.delete', [
-                'key' => $event->key,
+                'key' => urlencode((string) $event->key),
                 'tags' => $params['tags'] ?? [],
             ]);
         }
