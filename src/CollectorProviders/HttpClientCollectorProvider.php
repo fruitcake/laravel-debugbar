@@ -6,7 +6,7 @@ namespace Fruitcake\LaravelDebugbar\CollectorProviders;
 
 use Fruitcake\LaravelDebugbar\DataCollector\HttpClientCollector;
 use DebugBar\DataCollector\TimeDataCollector;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Client\Events\ConnectionFailed;
 use Illuminate\Http\Client\Events\ResponseReceived;
 

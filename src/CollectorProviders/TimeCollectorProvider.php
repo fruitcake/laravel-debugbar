@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\CollectorProviders;
 
 use DebugBar\DataCollector\TimeDataCollector;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Events\PreparingResponse;

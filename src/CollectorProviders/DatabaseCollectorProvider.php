@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\CollectorProviders;
 
 use Fruitcake\LaravelDebugbar\DataCollector\QueryCollector;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Events\ConnectionEstablished;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Database\Events\TransactionBeginning;

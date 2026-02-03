@@ -6,7 +6,7 @@ namespace Fruitcake\LaravelDebugbar\CollectorProviders;
 
 use Fruitcake\LaravelDebugbar\DataCollector\GateCollector;
 use Illuminate\Auth\Access\Events\GateEvaluated;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class GateCollectorProvider extends AbstractCollectorProvider
 {

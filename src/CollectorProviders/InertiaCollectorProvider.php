@@ -6,7 +6,7 @@ namespace Fruitcake\LaravelDebugbar\CollectorProviders;
 
 use Fruitcake\LaravelDebugbar\DataCollector\InertiaCollector;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Routing\Events\ResponsePrepared;
 
 class InertiaCollectorProvider extends AbstractCollectorProvider
