@@ -17,7 +17,7 @@ class CacheControllerTest extends TestCase
         parent::getEnvironmentSetUp($app);
 
         $app->resolving(LaravelDebugbar::class, function ($debugbar): void {
-            new ReflectionObject($debugbar)
+            (new ReflectionObject($debugbar))
                 ->getProperty('enabled')
                 ->setValue($debugbar, true);
         });
