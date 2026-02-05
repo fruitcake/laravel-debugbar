@@ -20,7 +20,7 @@ class CacheController extends BaseController
         }
 
         if ($request->has('tags')) {
-            $cache = $cache->tags($request->get('tags'));
+            $cache = $cache->tags($request->input('tags'));
         }
 
         $success = $cache->forget($key);

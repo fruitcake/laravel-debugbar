@@ -16,7 +16,7 @@ class AssetController extends BaseController
     {
         $assetHandler = new AssetHandler($this->debugbar);
 
-        $type = (string) $request->get('type');
+        $type = (string) $request->input('type');
 
         $response = new Response();
         $driver = $this->debugbar->getHttpDriver();
