@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "php-debugbar/php-debugbar": "^3.1",
+        "php-debugbar/php-debugbar": "^3.3.1",
         "php-debugbar/symfony-bridge": "^1.1",
         "illuminate/routing": "^11|^12",
         "illuminate/session": "^11|^12",

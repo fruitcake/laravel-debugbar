@@ -635,48 +635,28 @@ class LaravelDebugbar extends DebugBar
     }
 
     /**
-     * Collects the data from the collectors
-     *
+     * Collects meta data about the current request
      */
-    public function collect(): array
+    public function collectMetaData(): array
     {
-        $this->data = [
-            '__meta' => [
-                'id' => $this->getCurrentRequestId(),
-                'datetime' => date('Y-m-d H:i:s'),
-                'utime' => microtime(true),
-                'method' => $this->request->getMethod(),
-                'uri' => $this->request->getRequestUri(),
-                'ip' => $this->request->getClientIp(),
-            ],
+        $meta = [
+            'id' => $this->getCurrentRequestId(),
+            'datetime' => date('Y-m-d H:i:s'),
+            'utime' => microtime(true),
+            'method' => $this->request->getMethod(),
+            'uri' => $this->request->getRequestUri(),
+            'ip' => $this->request->getClientIp(),
         ];
 
         if ($this->processingJob) {
-            $this->data['__meta']['method'] = 'JOB';
-            $this->data['__meta']['uri'] =  $this->processingJob->resolveName() . '@' . $this->processingJob->getConnectionName();
+            $meta['method'] = 'JOB';
+            $meta['uri'] =  $this->processingJob->resolveName() . '@' . $this->processingJob->getConnectionName();
         } elseif ($this->app->runningInConsole()) {
-            $this->data['__meta']['method'] = 'CLI';
-            $this->data['__meta']['uri'] = implode(' ', (new ArgvInput())->getRawTokens());
+            $meta['method'] = 'CLI';
+            $meta['uri'] = implode(' ', (new ArgvInput())->getRawTokens());
         }
 
-        foreach ($this->collectors as $name => $collector) {
-            $this->data[$name] = $collector->collect();
-        }
-
-        // Remove all invalid (non UTF-8) characters
-        array_walk_recursive($this->data, function (&$item): void {
-            if (is_float($item) && !is_finite($item)) {
-                $item = '[NON-FINITE FLOAT]';
-            } elseif (is_string($item) && !mb_check_encoding($item, 'UTF-8')) {
-                $item = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
-            }
-        });
-
-        if ($this->storage !== null) {
-            $this->storage->save($this->getCurrentRequestId(), $this->data);
-        }
-
-        return $this->data;
+        return $meta;
     }
 
     public function terminate(): void
