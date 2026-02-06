@@ -667,7 +667,7 @@ class LaravelDebugbar extends DebugBar
         array_walk_recursive($this->data, function (&$item): void {
             if (is_float($item) && !is_finite($item)) {
                 $item = '[NON-FINITE FLOAT]';
-            } else if (is_string($item) && !mb_check_encoding($item, 'UTF-8')) {
+            } elseif (is_string($item) && !mb_check_encoding($item, 'UTF-8')) {
                 $item = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
             }
         });
