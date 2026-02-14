@@ -27,8 +27,8 @@ class MailCollectorProvider extends AbstractCollectorProvider
         if ($options['timeline'] ?? true) {
             $timeCollector = $this->debugbar->getTimeCollector();
 
-            $events->listen(MessageSending::class, fn(MessageSending $e) => $timeCollector->startMeasure('Mail: ' . $e->message->getSubject()));
-            $events->listen(MessageSent::class, fn(MessageSent $e) => $timeCollector->stopMeasure('Mail: ' . $e->message->getSubject()));
+            $events->listen(MessageSending::class, fn(MessageSending $e) => $timeCollector->startMeasure('mail' . spl_object_id($e->message), 'Mail: ' . $e->message->getSubject()));
+            $events->listen(MessageSent::class, fn(MessageSent $e) => $timeCollector->stopMeasure('mail' . spl_object_id($e->message)));
         }
     }
 }
