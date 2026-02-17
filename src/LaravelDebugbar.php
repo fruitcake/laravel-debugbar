@@ -215,7 +215,7 @@ class LaravelDebugbar extends DebugBar
 
     public function booted(): void
     {
-        $startTime = defined('LARAVEL_START') ? LARAVEL_START : null;
+        $startTime = defined('LARAVEL_START') ? (float) LARAVEL_START : null;
         if ($startTime) {
             $this->addMeasure('Booting', $startTime, microtime(true));
         }
