@@ -97,7 +97,7 @@ class LaravelDebugbar extends DebugBar
 
     public function __construct(Application $app, Request $request)
     {
-        $startTime = defined('LARAVEL_START') ? LARAVEL_START : microtime(true);
+        $startTime = defined('LARAVEL_START') ? (float) LARAVEL_START : microtime(true);
 
         $this->app = $app;
         $this->request = $request;
