@@ -28,7 +28,7 @@ class MailCollectorProvider extends AbstractCollectorProvider
             $timeCollector = $this->debugbar->getTimeCollector();
 
             $events->listen(MessageSending::class, fn(MessageSending $e) => $timeCollector->startMeasure('Mail: ' . $e->message->getSubject()));
-            $events->listen(MessageSent::class, function (MessageSent $e) use ($timeCollector) {
+            $events->listen(MessageSent::class, function (MessageSent $e) use ($timeCollector): void {
                 $name = 'Mail: ' . $e->message->getSubject();
                 if ($timeCollector->hasStartedMeasure($name)) {
                     $timeCollector->stopMeasure($name);
