@@ -25,9 +25,9 @@
         "php": "^8.2",
         "php-debugbar/php-debugbar": "^3.1",
         "php-debugbar/symfony-bridge": "^1.1",
-        "illuminate/routing": "^11|^12",
-        "illuminate/session": "^11|^12",
-        "illuminate/support": "^11|^12"
+        "illuminate/routing": "^11|^12|^13.0",
+        "illuminate/session": "^11|^12|^13.0",
+        "illuminate/support": "^11|^12|^13.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.3.3",
