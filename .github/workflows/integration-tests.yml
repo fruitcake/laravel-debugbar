@@ -1,54 +1,65 @@
 name: Integration Tests
 
 on:
-    push:
-        branches:
-            - master
-    pull_request:
-        branches:
-            - "*"
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - *
 
 jobs:
-    php-laravel-integration-tests:
-        runs-on: ubuntu-24.04
-        timeout-minutes: 15
-        env:
-            COMPOSER_NO_INTERACTION: 1
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [8.5, 8.4, 8.3, 8.2]
-                laravel: [12.*, 11.*]
-        name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v6
-              with:
-                  path: src
+  php-laravel-integration-tests:
+    runs-on: ubuntu-24.04
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php }}
-                  coverage: none
-                  tools: composer:v2
+    timeout-minutes: 15
 
-            - name: Install dependencies
-              run: |
-                  composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample
-                  cd sample
-                  composer config minimum-stability dev
-                  composer update --prefer-stable --prefer-dist --no-progress
-            - name: Add package from source
-              run: |
-                  cd sample
-                  sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
-                  composer require --dev "barryvdh/laravel-debugbar:*"
-            - name: Execute generate run
-              run: |
-                  cd sample
-                  mkdir -p "storage/debugbar/" && touch "storage/debugbar/foo.json"
-                  php artisan debugbar:clear
-            - name: Check file count in logs
-              run: |
-                if [ `ls -1q "sample/storage/debugbar/" | wc -l` -gt 0 ];then exit 1;fi
+    env:
+      COMPOSER_NO_INTERACTION: 1
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.5, 8.4, 8.3, 8.2]
+        laravel: ['11.*', '12.*', '13.*']
+        exclude:
+          - laravel: 13.*
+            php: 8.2
+
+    name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          path: src
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample
+          cd sample
+          composer config minimum-stability dev
+          composer update --prefer-stable --prefer-dist --no-progress
+
+      - name: Add package from source
+        run: |
+          cd sample
+          sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
+          composer require --dev "barryvdh/laravel-debugbar:*"
+
+      - name: Execute generate run
+        run: |
+          cd sample
+          mkdir -p "storage/debugbar/" && touch "storage/debugbar/foo.json"
+          php artisan debugbar:clear
+
+      - name: Check file count in logs
+        run: |
+          if [ `ls -1q "sample/storage/debugbar/" | wc -l` -gt 0 ];then exit 1;fi

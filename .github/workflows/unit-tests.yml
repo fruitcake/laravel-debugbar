@@ -6,14 +6,16 @@ on:
       - master
   pull_request:
     branches:
-      - "*"
+      - *
   schedule:
-  - cron: '0 0 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   unit-tests:
     runs-on: ubuntu-24.04
+
     timeout-minutes: 15
+
     env:
       COMPOSER_NO_INTERACTION: 1
 
@@ -21,38 +23,41 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.5, 8.4, 8.3, 8.2]
-        laravel: [^12, ^11]
+        laravel: [^11, ^12, ^13]
         dependency-version: [prefer-stable]
+        exclude:
+          - laravel: ^13
+            php: 8.2
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        coverage: none
-        tools: composer:v2
-        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif
 
-    - name: Install dependencies
-      run: |
-        composer remove --dev --no-update larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules
-        composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-        composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
+      - name: Install dependencies
+        run: |
+          composer remove --dev --no-update larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
 
-    - name: Update Dusk Chromedriver
-      run: vendor/bin/dusk-updater detect --auto-update
+      - name: Update Dusk Chromedriver
+        run: vendor/bin/dusk-updater detect --auto-update
 
-    - name: Execute Unit Tests
-      run: composer test
+      - name: Execute Unit Tests
+        run: composer test
 
-    - name: Upload Failed Screenshots
-      uses: actions/upload-artifact@v6
-      if: failure()
-      with:
-        name: screenshots
-        path: tests/Browser/screenshots/*
+      - name: Upload Failed Screenshots
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: screenshots
+          path: tests/Browser/screenshots/*
