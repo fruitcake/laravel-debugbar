@@ -334,6 +334,20 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
     }
 
     /**
+     * Adds a custom message to statements.
+     */
+    public function addMessage(string $message): void
+    {
+        $this->infoStatements++;
+
+        $this->queries[] = [
+            'sql' => $message,
+            'type' => 'message',
+            'start' => microtime(true),
+        ];
+    }
+
+    /**
      * Collect a database transaction event.
      */
     public function collectTransactionEvent(string $event, mixed $connection): void
@@ -384,6 +398,11 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
 
         $statements = [];
         foreach ($queries as $query) {
+            if ($query['type'] === 'message') {
+                $statements[] = $query;
+                continue;
+            }
+
             $source = reset($query['source']);
             $normalizedPath = is_object($source) ? $this->normalizeFilePath($source->file ?: '') : '';
             if ($query['type'] !== 'transaction' && Str::startsWith($normalizedPath, $this->excludePaths)) {
