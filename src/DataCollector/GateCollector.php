@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 class GateCollector extends MessagesCollector implements Resettable
 {
     protected array $reflection = [];
+    protected int $backtraceLimit = 20;
 
     public function addCheck(mixed $user, string|int $ability, mixed $result, array $arguments = []): void
     {
