@@ -296,7 +296,7 @@ div.phpdebugbar-widgets-sqlqueries table.phpdebugbar-widgets-explain {
 }
 
 div.phpdebugbar-widgets-sqlqueries table.phpdebugbar-widgets-explain th {
-    border-botton: 1px solid var(--debugbar-border);
+    border-bottom: 1px solid var(--debugbar-border);
     padding: 0 5px
 }
 
