@@ -10,36 +10,9 @@
      */
     class LaravelQueriesWidget extends PhpDebugBar.Widgets.SQLQueriesWidget {
 
-        runSelect(element, statement, rows) {
-            const headings = [];
-            for (const key in rows[0]) {
-                const th = document.createElement('th');
-                th.textContent = key;
-                headings.push(th);
-            }
-
-            const values = [];
-            for (const row of rows) {
-                const tr = document.createElement('tr');
-                for (const key in row) {
-                    const td = document.createElement('td');
-                    td.textContent = row[key];
-                    tr.append(td);
-                }
-                values.push(tr);
-            }
-
-            const table = document.createElement('table');
-            table.classList.add(csscls('result'));
-            const thead = document.createElement('thead');
-            const tbody = document.createElement('tbody');
-            const headerRow = document.createElement('tr');
-            headerRow.append(...headings);
-            thead.append(headerRow);
-            tbody.append(...values);
-            table.append(thead, tbody);
-
-            element.append(table);
+        runSelect(element, statement, data, visual) {
+            element.innerHTML = PhpDebugBar.Widgets.renderValue(data.result);
+            PhpDebugBar.utils.sfDump(element);
         }
 
         explainMysql(element, statement, rows, visual) {

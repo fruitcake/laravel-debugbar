@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Support;
 
+use DebugBar\DataCollector\DataCollector;
 use Exception;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\QueryException;
@@ -68,7 +69,7 @@ class Explain
 
         $connection = DB::connection($connection);
 
-        return $connection->select($sql, $bindings);
+        return ['result' => DataCollector::getDefaultDataFormatter()->formatVar($connection->select($sql, $bindings))];
     }
 
     public function generateRawExplain(string $connection, string $sql, array $bindings, string $hash): array
