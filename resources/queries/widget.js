@@ -10,6 +10,38 @@
      */
     class LaravelQueriesWidget extends PhpDebugBar.Widgets.SQLQueriesWidget {
 
+        runSelect(element, statement, rows) {
+            const headings = [];
+            for (const key in rows[0]) {
+                const th = document.createElement('th');
+                th.textContent = key;
+                headings.push(th);
+            }
+
+            const values = [];
+            for (const row of rows) {
+                const tr = document.createElement('tr');
+                for (const key in row) {
+                    const td = document.createElement('td');
+                    td.textContent = row[key];
+                    tr.append(td);
+                }
+                values.push(tr);
+            }
+
+            const table = document.createElement('table');
+            table.classList.add(csscls('result'));
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+            const headerRow = document.createElement('tr');
+            headerRow.append(...headings);
+            thead.append(headerRow);
+            tbody.append(...values);
+            table.append(thead, tbody);
+
+            element.append(table);
+        }
+
         explainMysql(element, statement, rows, visual) {
             const headings = [];
             for (const key in rows[0]) {
@@ -118,16 +150,16 @@
                 let table = li.querySelector(`.${csscls('params')}`);
                 table.style.display = '';
 
+                this.renderDetailExplain(table, 'Result', stmt, this.runSelect.bind(this), 'RUN', 'result');
                 if (table && ['mariadb', 'mysql'].includes(stmt.explain.driver)) {
-                    this.renderDetailExplain(table, 'Performance', stmt, this.explainMysql.bind(this));
+                    this.renderDetailExplain(table, 'Performance', stmt, this.explainMysql.bind(this), 'EXPLAIN');
                 } else if (table && stmt.explain.driver === 'pgsql') {
-                    this.renderDetailExplain(table, 'Performance', stmt, this.explainPgsql.bind(this));
+                    this.renderDetailExplain(table, 'Performance', stmt, this.explainPgsql.bind(this), 'EXPLAIN');
                 }
-
             }
         }
 
-        renderDetailExplain(table, caption, statement, explainFn) {
+        renderDetailExplain(table, caption, statement, explainFn, btnTitle, mode = 'explain') {
             const thead = document.createElement('thead');
             const tr = document.createElement('tr');
             const th = document.createElement('th');
@@ -144,7 +176,7 @@
             td.colSpan = 2;
 
             const btn = document.createElement('button');
-            btn.textContent = 'Run EXPLAIN';
+            btn.textContent = 'Run ' + btnTitle;
             btn.classList.add(csscls('explain-btn'));
             td.append(btn);
 
@@ -161,7 +193,8 @@
                         connection: statement.explain.connection,
                         query: statement.explain.query,
                         bindings: statement.params,
-                        hash: statement.explain.hash
+                        hash: statement.explain.hash,
+                        mode: mode
                     })
                 }).then((response) => {
                     response.json()

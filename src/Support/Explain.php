@@ -62,6 +62,15 @@ class Explain
         }
     }
 
+    public function generateSelectResult(string $connection, string $sql, array $bindings, string $hash): array
+    {
+        $this->verify($connection, $sql, $bindings, $hash);
+
+        $connection = DB::connection($connection);
+
+        return $connection->select($sql, $bindings);
+    }
+
     public function generateRawExplain(string $connection, string $sql, array $bindings, string $hash): array
     {
         $this->verify($connection, $sql, $bindings, $hash);
