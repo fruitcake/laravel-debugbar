@@ -312,8 +312,100 @@ ul.phpdebugbar-widgets-list li.phpdebugbar-widgets-list-item:nth-child(odd) tabl
     background-color: var(--debugbar-background-alt);
 }
 
-div.phpdebugbar-widgets-sqlqueries a.phpdebugbar-widgets-visual-explain:after {
-    background-color: currentColor;
-    -webkit-mask-image: var(--debugbar-icon-external-link);
-    mask-image: var(--debugbar-icon-external-link);
+div.phpdebugbar-widgets-explain-btnbar {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+div.phpdebugbar-widgets-explain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100000010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.phpdebugbar-widgets-explain-popup {
+    background: #fff;
+    border: 1px solid var(--debugbar-border);
+    border-radius: 4px;
+    max-width: 90vw;
+    max-height: 80vh;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+div.phpdebugbar[data-theme='dark'] .phpdebugbar-widgets-explain-popup {
+    background: #1e1e1e;
+}
+
+div.phpdebugbar[data-theme='dark'] .phpdebugbar-widgets-explain-popup-close {
+    color: #999;
+}
+
+div.phpdebugbar[data-theme='dark'] .phpdebugbar-widgets-explain-popup-close:hover {
+    color: #fff;
+}
+
+div.phpdebugbar-widgets-explain-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--debugbar-border);
+}
+
+span.phpdebugbar-widgets-explain-popup-title {
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--debugbar-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    margin-right: 10px;
+}
+
+button.phpdebugbar-widgets-explain-popup-close {
+    background: none;
+    border: none;
+    color: var(--debugbar-text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+button.phpdebugbar-widgets-explain-popup-close:hover {
+    color: var(--debugbar-text-color);
+}
+
+div.phpdebugbar-widgets-explain-popup-body {
+    padding: 12px;
+    overflow: auto;
+    flex: 1;
+}
+
+div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain {
+    width: auto;
+    min-width: 100%;
+}
+
+div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain td,
+div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain th {
+    white-space: nowrap;
+    padding: 2px 8px;
+}
+
+span.phpdebugbar-widgets-visual-link a {
+    color: var(--debugbar-text-muted);
+    margin-left: 5px;
+    font-size: 11px;
 }

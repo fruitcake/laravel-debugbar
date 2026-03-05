@@ -10,12 +10,7 @@
      */
     class LaravelQueriesWidget extends PhpDebugBar.Widgets.SQLQueriesWidget {
 
-        runSelect(element, statement, data, visual) {
-            element.innerHTML = PhpDebugBar.Widgets.renderValue(data.result);
-            PhpDebugBar.utils.sfDump(element);
-        }
-
-        explainMysql(element, statement, rows, visual) {
+        buildTable(rows) {
             const headings = [];
             for (const key in rows[0]) {
                 const th = document.createElement('th');
@@ -43,14 +38,10 @@
             thead.append(headerRow);
             tbody.append(...values);
             table.append(thead, tbody);
-
-            element.append(table);
-            if (visual) {
-                element.append(this.explainVisual(statement, visual.confirm));
-            }
+            return table;
         }
 
-        explainPgsql(element, statement, rows, visual) {
+        buildPgsqlTable(rows) {
             const values = [];
             for (const row of rows) {
                 const tr = document.createElement('tr');
@@ -65,53 +56,119 @@
             const tbody = document.createElement('tbody');
             tbody.append(...values);
             table.append(tbody);
+            return table;
+        }
 
-            element.append(table);
-            if (visual) {
-                element.append(this.explainVisual(statement, visual.confirm));
+        actionButton(label, onClick) {
+            const btn = document.createElement('button');
+            btn.textContent = label;
+            btn.classList.add(csscls('explain-btn'));
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClick(e);
+            });
+            return btn;
+        }
+
+        fetchQuery(statement, mode, format) {
+            const body = {
+                connection: statement.explain.connection,
+                query: statement.explain.query,
+                bindings: statement.params,
+                hash: statement.explain.hash,
+                mode: mode,
+            };
+            if (format) {
+                body.format = format;
+            }
+            return fetch(statement.explain.url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+            }).then((response) =>
+                response.json().then((json) => {
+                    if (!response.ok)
+                        throw new Error(json.message || 'Request failed');
+                    return json;
+                })
+            );
+        }
+
+        renderResult(container, statement, data) {
+            container.innerHTML = '';
+
+            const result = data.result;
+            if (Array.isArray(result) && result.length > 0 && typeof result[0] === 'object') {
+                container.append(this.buildTable(result));
+                container.append(this.actionButton('Expand', () => {
+                    this.showPopup(statement.explain.query, this.buildTable(result));
+                }));
+            } else {
+                const empty = document.createElement('em');
+                empty.textContent = 'No results';
+                container.append(empty);
             }
         }
 
-        explainVisual(statement, confirmMessage) {
-            const explainLink = document.createElement('a');
-            explainLink.href = '#';
-            explainLink.target = '_blank';
-            explainLink.rel = 'noopener';
-            explainLink.classList.add(csscls('visual-link'));
+        renderDump(container, statement, data) {
+            container.innerHTML = PhpDebugBar.Widgets.renderValue(data.result);
+            PhpDebugBar.utils.sfDump(container);
+        }
 
-            const explainButton = document.createElement('a');
-            explainButton.textContent = 'Visual Explain';
-            explainButton.classList.add(csscls('visual-explain'));
-            explainButton.addEventListener('click', () => {
-                if (!confirm(confirmMessage)) // eslint-disable-line no-alert
-                    return;
-                fetch(statement.explain.url, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        connection: statement.explain.connection,
-                        query: statement.explain.query,
-                        bindings: statement.params,
-                        hash: statement.explain.hash,
-                        mode: 'visual'
-                    })
-                }).then((response) => {
-                    response.json()
-                        .then((json) => {
-                            if (!response.ok)
-                                return alert(json.message); // eslint-disable-line no-alert
-                            explainLink.href = json.data;
-                            explainLink.textContent = json.data;
-                            window.open(json.data, '_blank', 'noopener');
-                        })
-                        .catch(err => alert(`Response body could not be parsed. (${err})`)); // eslint-disable-line no-alert
-                }).catch((e) => {
-                    alert(e.message); // eslint-disable-line no-alert
-                });
+        renderExplain(container, statement, data, driver) {
+            container.innerHTML = '';
+
+            const rows = data;
+            const table = driver === 'pgsql' ? this.buildPgsqlTable(rows) : this.buildTable(rows);
+            container.append(table);
+            container.append(this.actionButton('Expand', () => {
+                this.showPopup(
+                    statement.explain.query,
+                    driver === 'pgsql' ? this.buildPgsqlTable(rows) : this.buildTable(rows)
+                );
+            }));
+        }
+
+        showPopup(query, contentEl) {
+            const overlay = document.createElement('div');
+            overlay.classList.add(csscls('explain-overlay'));
+
+            const popup = document.createElement('div');
+            popup.classList.add(csscls('explain-popup'));
+
+            const header = document.createElement('div');
+            header.classList.add(csscls('explain-popup-header'));
+
+            const title = document.createElement('span');
+            title.textContent = query.length > 120 ? query.substring(0, 120) + '...' : query;
+            title.classList.add(csscls('explain-popup-title'));
+
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '\u2715';
+            closeBtn.classList.add(csscls('explain-popup-close'));
+            closeBtn.addEventListener('click', () => overlay.remove());
+
+            header.append(title, closeBtn);
+
+            const body = document.createElement('div');
+            body.classList.add(csscls('explain-popup-body'));
+            body.append(contentEl);
+
+            popup.append(header, body);
+            overlay.append(popup);
+
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.remove();
             });
 
-            const div = document.createElement('div');
-            div.append(explainButton, explainLink);
-            return div;
+            document.addEventListener('keydown', function onEsc(e) {
+                if (e.key === 'Escape') {
+                    overlay.remove();
+                    document.removeEventListener('keydown', onEsc);
+                }
+            });
+
+            document.querySelector('div.phpdebugbar').append(overlay);
         }
 
         itemRenderer(li, stmt, filters) {
@@ -123,16 +180,12 @@
                 let table = li.querySelector(`.${csscls('params')}`);
                 table.style.display = '';
 
-                this.renderDetailExplain(table, 'Result', stmt, this.runSelect.bind(this), 'RUN', 'result');
-                if (table && ['mariadb', 'mysql'].includes(stmt.explain.driver)) {
-                    this.renderDetailExplain(table, 'Performance', stmt, this.explainMysql.bind(this), 'EXPLAIN');
-                } else if (table && stmt.explain.driver === 'pgsql') {
-                    this.renderDetailExplain(table, 'Performance', stmt, this.explainPgsql.bind(this), 'EXPLAIN');
-                }
+                this.renderDetailSection(table, 'Result', stmt, 'result');
+                this.renderDetailSection(table, 'Performance', stmt, 'explain');
             }
         }
 
-        renderDetailExplain(table, caption, statement, explainFn, btnTitle, mode = 'explain') {
+        renderDetailSection(table, caption, statement, mode) {
             const thead = document.createElement('thead');
             const tr = document.createElement('tr');
             const th = document.createElement('th');
@@ -148,40 +201,73 @@
             const td = document.createElement('td');
             td.colSpan = 2;
 
-            const btn = document.createElement('button');
-            btn.textContent = 'Run ' + btnTitle;
-            btn.classList.add(csscls('explain-btn'));
-            td.append(btn);
+            const driver = statement.explain.driver;
+
+            if (mode === 'result') {
+                const btnRun = this.actionButton('Run SELECT', () => {
+                    this.fetchQuery(statement, 'result').then((json) => {
+                        this.renderResult(td, statement, json.data);
+                        td.prepend(btnBar);
+                    }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
+                });
+                const btnDump = this.actionButton('Run SELECT (dump)', () => {
+                    this.fetchQuery(statement, 'result', 'dump').then((json) => {
+                        this.renderDump(td, statement, json.data);
+                        td.prepend(btnBar);
+                    }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
+                });
+                const btnBar = document.createElement('div');
+                btnBar.classList.add(csscls('explain-btnbar'));
+                btnBar.append(btnRun, btnDump);
+                td.append(btnBar);
+            } else {
+                const run = () => {
+                    this.fetchQuery(statement, 'explain').then((json) => {
+                        td.innerHTML = '';
+                        const btnBar = document.createElement('div');
+                        btnBar.classList.add(csscls('explain-btnbar'));
+                        btnBar.append(this.actionButton('Re-run EXPLAIN', run));
+
+                        this.renderExplain(td, statement, json.data, driver);
+
+                        if (json.visual) {
+                            td.append(this.buildVisualExplainButton(statement, json.visual.confirm));
+                        }
+
+                        td.prepend(btnBar);
+                    }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
+                };
+
+                td.append(this.actionButton('Run EXPLAIN', run));
+            }
 
             bodyTr.append(td);
             tbody.append(bodyTr);
             table.append(tbody);
+        }
 
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                fetch(statement.explain.url, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        connection: statement.explain.connection,
-                        query: statement.explain.query,
-                        bindings: statement.params,
-                        hash: statement.explain.hash,
-                        mode: mode
-                    })
-                }).then((response) => {
-                    response.json()
-                        .then((json) => {
-                            if (!response.ok)
-                                return alert(json.message); // eslint-disable-line no-alert
-                            td.innerHTML = '';
-                            explainFn(td, statement, json.data, json.visual);
-                        })
-                        .catch(err => alert(`Response body could not be parsed. (${err})`)); // eslint-disable-line no-alert
-                }).catch((e) => {
-                    alert(e.message); // eslint-disable-line no-alert
-                });
+        buildVisualExplainButton(statement, confirmMessage) {
+            const wrapper = document.createElement('span');
+            const linkContainer = document.createElement('span');
+            linkContainer.classList.add(csscls('visual-link'));
+
+            const btn = this.actionButton('Visual Explain', () => {
+                if (!confirm(confirmMessage)) // eslint-disable-line no-alert
+                    return;
+                this.fetchQuery(statement, 'visual').then((json) => {
+                    linkContainer.innerHTML = '';
+                    const link = document.createElement('a');
+                    link.href = json.data;
+                    link.textContent = json.data;
+                    link.target = '_blank';
+                    link.rel = 'noopener';
+                    linkContainer.append(link);
+                    window.open(json.data, '_blank', 'noopener');
+                }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
             });
+
+            wrapper.append(btn, linkContainer);
+            return wrapper;
         }
     }
 

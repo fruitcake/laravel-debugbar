@@ -63,13 +63,17 @@ class Explain
         }
     }
 
-    public function generateSelectResult(string $connection, string $sql, array $bindings, string $hash): array
+    public function generateSelectResult(string $connection, string $sql, array $bindings, string $hash, ?string $format): array
     {
         $this->verify($connection, $sql, $bindings, $hash);
 
-        $connection = DB::connection($connection);
+        $result = DB::connection($connection)->select($sql, $bindings);
 
-        return ['result' => DataCollector::getDefaultDataFormatter()->formatVar($connection->select($sql, $bindings))];
+        if ($format === 'dump') {
+            $result = DataCollector::getDefaultDataFormatter()->formatVar($result);
+        }
+
+        return ['result' => $result];
     }
 
     public function generateRawExplain(string $connection, string $sql, array $bindings, string $hash): array

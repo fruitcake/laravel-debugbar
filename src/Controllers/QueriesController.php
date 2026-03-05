@@ -35,7 +35,7 @@ class QueriesController extends BaseController
             if ($request->json('mode') === 'result') {
                 return response()->json([
                     'success' => true,
-                    'data' => $explain->generateSelectResult($request->json('connection'), $request->json('query'), $request->json('bindings'), $request->json('hash')),
+                    'data' => $explain->generateSelectResult($request->json('connection'), $request->json('query'), $request->json('bindings'), $request->json('hash'), $request->json('format')),
                 ]);
             }
 
