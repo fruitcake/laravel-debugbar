@@ -10,7 +10,7 @@
      */
     class LaravelQueriesWidget extends PhpDebugBar.Widgets.SQLQueriesWidget {
 
-        buildTable(rows) {
+        buildTable(rows, opts = {}) {
             const headings = [];
             for (const key in rows[0]) {
                 const th = document.createElement('th');
@@ -23,7 +23,12 @@
                 const tr = document.createElement('tr');
                 for (const key in row) {
                     const td = document.createElement('td');
-                    td.textContent = row[key];
+                    const text = row[key] == null ? '' : String(row[key]);
+                    td.textContent = text;
+                    if (!opts.expanded) {
+                        td.title = text;
+                        td.addEventListener('click', () => td.classList.toggle(csscls('cell-expanded')));
+                    }
                     tr.append(td);
                 }
                 values.push(tr);
@@ -31,6 +36,9 @@
 
             const table = document.createElement('table');
             table.classList.add(csscls('explain'));
+            if (opts.expanded) {
+                table.classList.add(csscls('explain-full'));
+            }
             const thead = document.createElement('thead');
             const tbody = document.createElement('tbody');
             const headerRow = document.createElement('tr');
@@ -41,7 +49,7 @@
             return table;
         }
 
-        buildPgsqlTable(rows) {
+        buildPgsqlTable(rows, opts = {}) {
             const values = [];
             for (const row of rows) {
                 const tr = document.createElement('tr');
@@ -53,6 +61,9 @@
 
             const table = document.createElement('table');
             table.classList.add(csscls('explain'));
+            if (opts.expanded) {
+                table.classList.add(csscls('explain-full'));
+            }
             const tbody = document.createElement('tbody');
             tbody.append(...values);
             table.append(tbody);
@@ -94,39 +105,49 @@
             );
         }
 
-        renderResult(container, statement, data) {
+        renderResult(container, statement, data, btnBar) {
             container.innerHTML = '';
 
             const result = data.result;
             if (Array.isArray(result) && result.length > 0 && typeof result[0] === 'object') {
-                container.append(this.buildTable(result));
-                container.append(this.actionButton('Expand', () => {
-                    this.showPopup(statement.explain.query, this.buildTable(result));
+                const wrapper = document.createElement('div');
+                wrapper.classList.add(csscls('explain-scroll'));
+                wrapper.append(this.buildTable(result));
+                container.append(wrapper);
+                btnBar.append(this.actionButton('Expand', () => {
+                    this.showPopup(statement.explain.query, this.buildTable(result, { expanded: true }));
                 }));
             } else {
                 const empty = document.createElement('em');
                 empty.textContent = 'No results';
                 container.append(empty);
             }
+
+            container.prepend(btnBar);
         }
 
-        renderDump(container, statement, data) {
+        renderDump(container, statement, data, btnBar) {
             container.innerHTML = PhpDebugBar.Widgets.renderValue(data.result);
             PhpDebugBar.utils.sfDump(container);
+            container.prepend(btnBar);
         }
 
-        renderExplain(container, statement, data, driver) {
+        renderExplain(container, statement, data, driver, btnBar) {
             container.innerHTML = '';
 
             const rows = data;
-            const table = driver === 'pgsql' ? this.buildPgsqlTable(rows) : this.buildTable(rows);
-            container.append(table);
-            container.append(this.actionButton('Expand', () => {
-                this.showPopup(
-                    statement.explain.query,
-                    driver === 'pgsql' ? this.buildPgsqlTable(rows) : this.buildTable(rows)
-                );
+            const buildFn = driver === 'pgsql' ? 'buildPgsqlTable' : 'buildTable';
+
+            const wrapper = document.createElement('div');
+            wrapper.classList.add(csscls('explain-scroll'));
+            wrapper.append(this[buildFn](rows));
+            container.append(wrapper);
+
+            btnBar.append(this.actionButton('Expand', () => {
+                this.showPopup(statement.explain.query, this[buildFn](rows, { expanded: true }));
             }));
+
+            container.prepend(btnBar);
         }
 
         showPopup(query, contentEl) {
@@ -204,37 +225,38 @@
             const driver = statement.explain.driver;
 
             if (mode === 'result') {
-                const btnRun = this.actionButton('Run SELECT', () => {
-                    this.fetchQuery(statement, 'result').then((json) => {
-                        this.renderResult(td, statement, json.data);
-                        td.prepend(btnBar);
-                    }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
-                });
-                const btnDump = this.actionButton('Run SELECT (dump)', () => {
-                    this.fetchQuery(statement, 'result', 'dump').then((json) => {
-                        this.renderDump(td, statement, json.data);
-                        td.prepend(btnBar);
-                    }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
-                });
-                const btnBar = document.createElement('div');
-                btnBar.classList.add(csscls('explain-btnbar'));
-                btnBar.append(btnRun, btnDump);
-                td.append(btnBar);
+                const makeBtnBar = () => {
+                    const bar = document.createElement('div');
+                    bar.classList.add(csscls('explain-btnbar'));
+                    bar.append(
+                        this.actionButton('Run SELECT', () => {
+                            const btnBar = makeBtnBar();
+                            this.fetchQuery(statement, 'result').then((json) => {
+                                this.renderResult(td, statement, json.data, btnBar);
+                            }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
+                        }),
+                        this.actionButton('Run SELECT (dump)', () => {
+                            const btnBar = makeBtnBar();
+                            this.fetchQuery(statement, 'result', 'dump').then((json) => {
+                                this.renderDump(td, statement, json.data, btnBar);
+                            }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
+                        })
+                    );
+                    return bar;
+                };
+                td.append(makeBtnBar());
             } else {
                 const run = () => {
                     this.fetchQuery(statement, 'explain').then((json) => {
-                        td.innerHTML = '';
                         const btnBar = document.createElement('div');
                         btnBar.classList.add(csscls('explain-btnbar'));
                         btnBar.append(this.actionButton('Re-run EXPLAIN', run));
 
-                        this.renderExplain(td, statement, json.data, driver);
-
                         if (json.visual) {
-                            td.append(this.buildVisualExplainButton(statement, json.visual.confirm));
+                            btnBar.append(this.buildVisualExplainButton(statement, json.visual.confirm));
                         }
 
-                        td.prepend(btnBar);
+                        this.renderExplain(td, statement, json.data, driver, btnBar);
                     }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
                 };
 
@@ -247,7 +269,6 @@
         }
 
         buildVisualExplainButton(statement, confirmMessage) {
-            const wrapper = document.createElement('span');
             const linkContainer = document.createElement('span');
             linkContainer.classList.add(csscls('visual-link'));
 
@@ -266,6 +287,7 @@
                 }).catch((e) => alert(e.message)); // eslint-disable-line no-alert
             });
 
+            const wrapper = document.createDocumentFragment();
             wrapper.append(btn, linkContainer);
             return wrapper;
         }

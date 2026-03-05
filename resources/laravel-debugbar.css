@@ -291,25 +291,54 @@ div.phpdebugbar-widgets-sqlqueries button.phpdebugbar-widgets-explain-btn {
     color: #fff;
 }
 
+div.phpdebugbar-widgets-explain-scroll {
+    overflow: auto;
+    max-height: 300px;
+}
+
 div.phpdebugbar-widgets-sqlqueries table.phpdebugbar-widgets-explain {
     width: 100%;
+    border-collapse: collapse;
 }
 
 div.phpdebugbar-widgets-sqlqueries table.phpdebugbar-widgets-explain th {
-    border-botton: 1px solid var(--debugbar-border);
-    padding: 0 5px
+    border-bottom: 1px solid var(--debugbar-border);
+    padding: 2px 5px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 div.phpdebugbar-widgets-sqlqueries table.phpdebugbar-widgets-explain td {
     color: var(--debugbar-text-muted);
+    padding: 2px 5px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+div.phpdebugbar-widgets-sqlqueries table.phpdebugbar-widgets-explain td.phpdebugbar-widgets-cell-expanded {
+    white-space: normal;
+    word-break: break-all;
+    max-width: none;
 }
 
 ul.phpdebugbar-widgets-list li.phpdebugbar-widgets-list-item:nth-child(even) table.phpdebugbar-widgets-explain th {
-    background-color: var(--debugbar-background);
+    background-color: #fff;
 }
 
 ul.phpdebugbar-widgets-list li.phpdebugbar-widgets-list-item:nth-child(odd) table.phpdebugbar-widgets-explain th {
-    background-color: var(--debugbar-background-alt);
+    background-color: #f5f5f5;
+}
+
+div.phpdebugbar[data-theme='dark'] ul.phpdebugbar-widgets-list li.phpdebugbar-widgets-list-item:nth-child(even) table.phpdebugbar-widgets-explain th {
+    background-color: #1e1e1e;
+}
+
+div.phpdebugbar[data-theme='dark'] ul.phpdebugbar-widgets-list li.phpdebugbar-widgets-list-item:nth-child(odd) table.phpdebugbar-widgets-explain th {
+    background-color: #2a2a2a;
 }
 
 div.phpdebugbar-widgets-explain-btnbar {
@@ -388,20 +417,36 @@ button.phpdebugbar-widgets-explain-popup-close:hover {
 }
 
 div.phpdebugbar-widgets-explain-popup-body {
-    padding: 12px;
     overflow: auto;
     flex: 1;
 }
 
-div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain {
-    width: auto;
-    min-width: 100%;
+table.phpdebugbar-widgets-explain.phpdebugbar-widgets-explain-full td {
+    max-width: none;
+    white-space: normal;
+    word-break: break-word;
+    cursor: default;
 }
 
-div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain td,
+div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain {
+    width: 100%;
+}
+
 div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain th {
-    white-space: nowrap;
-    padding: 2px 8px;
+    padding: 6px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #fff;
+    border-bottom: 2px solid var(--debugbar-border);
+}
+
+div.phpdebugbar[data-theme='dark'] .phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain th {
+    background: #1e1e1e;
+}
+
+div.phpdebugbar-widgets-explain-popup-body table.phpdebugbar-widgets-explain td {
+    padding: 6px 10px;
 }
 
 span.phpdebugbar-widgets-visual-link a {
