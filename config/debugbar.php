@@ -146,7 +146,7 @@ return [
         ],
         'cache' => [
             'values' => env('DEBUGBAR_OPTIONS_CACHE_VALUES', true), // Collect cache values
-            'timeline' => env('DEBUGBAR_OPTIONS_CACHE_TIMELINE', false),  // Add mails to the timeline
+            'timeline' => env('DEBUGBAR_OPTIONS_CACHE_TIMELINE', false),  // Add cache events to the timeline
         ],
         'http_client' => [
             'masked' => [],

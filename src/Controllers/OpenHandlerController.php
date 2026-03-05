@@ -11,6 +11,7 @@ use DebugBar\OpenHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 class OpenHandlerController extends BaseController
 {
@@ -35,7 +36,7 @@ class OpenHandlerController extends BaseController
         }
 
         // Allow localhost request when not explicitly allowed/disallowed
-        if (in_array($request->ip(), ['127.0.0.1', '::1'], true)) {
+        if (IpUtils::isPrivateIp($request->getClientIp())) {
             return true;
         }
 

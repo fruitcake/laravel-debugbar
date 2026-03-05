@@ -1,5 +1,22 @@
 # Changelog
 
+## v4.0.10 - 2026-02-26
+
+### What's Changed
+
+* Cast LARAVEL_START const to float by @daniser in https://github.com/fruitcake/laravel-debugbar/pull/1968
+* Laravel 13.x Compatibility by @laravel-shift in https://github.com/fruitcake/laravel-debugbar/pull/1969
+* GateCollector backtrace need more steps by @angeljqv in https://github.com/fruitcake/laravel-debugbar/pull/1972
+* Support custom messages on QueryCollector by @angeljqv in https://github.com/fruitcake/laravel-debugbar/pull/1970
+* Use upstream collect by @barryvdh in https://github.com/fruitcake/laravel-debugbar/pull/1960
+
+### New Contributors
+
+* @daniser made their first contribution in https://github.com/fruitcake/laravel-debugbar/pull/1968
+* @laravel-shift made their first contribution in https://github.com/fruitcake/laravel-debugbar/pull/1969
+
+**Full Changelog**: https://github.com/fruitcake/laravel-debugbar/compare/v4.0.9...v4.0.10
+
 ## v4.0.9 - 2026-02-17
 
 ### What's Changed
