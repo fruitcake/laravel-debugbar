@@ -27,7 +27,17 @@
                     td.textContent = text;
                     if (!opts.expanded) {
                         td.title = text;
-                        td.addEventListener('click', () => td.classList.toggle(csscls('cell-expanded')));
+                        td.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            td.classList.toggle(csscls('cell-expanded'));
+                            if (td.classList.contains(csscls('cell-expanded'))) {
+                                const selection = window.getSelection();
+                                const range = document.createRange();
+                                range.selectNodeContents(td);
+                                selection.removeAllRanges();
+                                selection.addRange(range);
+                            }
+                        });
                     }
                     tr.append(td);
                 }
