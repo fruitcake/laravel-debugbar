@@ -6,6 +6,7 @@ namespace Fruitcake\LaravelDebugbar;
 
 use DebugBar\Bridge\Symfony\SymfonyHttpDriver;
 use DebugBar\DataCollector\TimeDataCollector;
+use DebugBar\DataFormatter\JsonDataFormatter;
 use DebugBar\JavascriptRenderer;
 use DebugBar\RequestIdGeneratorInterface;
 use DebugBar\Storage\FileStorage;
@@ -40,7 +41,6 @@ use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\DataCollectorInterface;
 use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\MessagesCollector;
-use DebugBar\DataFormatter\HtmlDataFormatter;
 use DebugBar\DebugBar;
 use DebugBar\HttpDriverInterface;
 use DebugBar\Storage\PdoStorage;
@@ -305,7 +305,7 @@ class LaravelDebugbar extends DebugBar
      */
     protected function registerDataFormatter(): void
     {
-        $formatter = new HtmlDataFormatter();
+        $formatter = new JsonDataFormatter();
 
         $formatter->mergeClonerOptions([
             'casters' => [
