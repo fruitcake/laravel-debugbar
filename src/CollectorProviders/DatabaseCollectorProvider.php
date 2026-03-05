@@ -11,11 +11,13 @@ use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Database\Events\TransactionBeginning;
 use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Database\Events\TransactionRolledBack;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 class DatabaseCollectorProvider extends AbstractCollectorProvider
 {
-    public function __invoke(Dispatcher $events, Router $router, array $options): void
+    public function __invoke(Dispatcher $events, Router $router, Request $request, array $options): void
     {
         $queryCollector = new QueryCollector();
         if ($options['timeline'] ?? false) {
@@ -47,7 +49,7 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
             $queryCollector->mergeBacktraceExcludePaths($excludeBacktracePaths);
         }
 
-        if ($options['explain']['enabled'] ?? false) {
+        if (($options['explain']['enabled'] ?? false) && IpUtils::isPrivateIp($request->getClientIp())) {
             $queryCollector->setExplainSource(true);
         }
 
