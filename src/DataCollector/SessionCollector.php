@@ -37,10 +37,16 @@ class SessionCollector extends DataCollector implements DataCollectorInterface, 
      */
     public function getWidgets(): array
     {
+        $widget = match (true) {
+            $this->isJsonVarDumperUsed() => "PhpDebugBar.Widgets.JsonVariableListWidget",
+            $this->isHtmlVarDumperUsed() => "PhpDebugBar.Widgets.HtmlVariableListWidget",
+            default => "PhpDebugBar.Widgets.VariableListWidget",
+        };
+
         return [
             "session" => [
                 "icon" => "archive",
-                "widget" => "PhpDebugBar.Widgets.HtmlVariableListWidget",
+                "widget" => $widget,
                 "map" => "session",
                 "default" => "{}",
             ],

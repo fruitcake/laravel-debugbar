@@ -130,14 +130,19 @@ class RouteCollector extends DataCollector implements Renderable
      */
     public function getWidgets(): array
     {
-        $widgets = [
+        $widget = match (true) {
+            $this->isJsonVarDumperUsed() => "PhpDebugBar.Widgets.JsonVariableListWidget",
+            $this->isHtmlVarDumperUsed() => "PhpDebugBar.Widgets.HtmlVariableListWidget",
+            default => "PhpDebugBar.Widgets.VariableListWidget",
+        };
+
+        return [
             "route" => [
                 "icon" => "share-3",
-                "widget" => "PhpDebugBar.Widgets.HtmlVariableListWidget",
+                "widget" => $widget,
                 "map" => "route",
                 "default" => "{}",
             ],
         ];
-        return $widgets;
     }
 }

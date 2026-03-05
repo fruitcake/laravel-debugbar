@@ -137,7 +137,8 @@
         }
 
         renderDump(container, statement, data, btnBar) {
-            container.innerHTML = PhpDebugBar.Widgets.renderValue(data.result);
+            container.innerHTML = '';
+            PhpDebugBar.Widgets.renderValueInto(container, data.result);
             PhpDebugBar.utils.sfDump(container);
             container.prepend(btnBar);
         }
