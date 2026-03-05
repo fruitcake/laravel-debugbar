@@ -412,8 +412,8 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
             $totalTime += $query['time'];
             $totalMemory += $query['memory'];
 
-            $connectionName = (string) $query['connection']->getDatabaseName();
-            if (str_ends_with($connectionName, '.sqlite')) {
+            $connectionName = $query['connection']->getDatabaseName();
+            if ($connectionName && str_ends_with($connectionName, '.sqlite')) {
                 $connectionName = $this->normalizeFilePath($connectionName);
             }
 
