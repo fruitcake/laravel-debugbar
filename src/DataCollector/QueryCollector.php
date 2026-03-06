@@ -339,11 +339,20 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
     public function addMessage(string $message): void
     {
         $this->infoStatements++;
+        $source = [];
+
+        if ($this->findSource) {
+            try {
+                $source = $this->findSource();
+            } catch (\Exception $e) {
+            }
+        }
 
         $this->queries[] = [
             'sql' => $message,
             'type' => 'message',
             'start' => microtime(true),
+            ...(count($source) ? ['xdebug_link'=>$source[0]] : []),
         ];
     }
 
@@ -399,6 +408,10 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
         $statements = [];
         foreach ($queries as $query) {
             if ($query['type'] === 'message') {
+                if ($query['xdebug_link']) {
+                    $source = $query['xdebug_link'];
+                    $query['xdebug_link'] = $this->getXdebugLink($source->file ?: '', $source->line);
+                }
                 $statements[] = $query;
                 continue;
             }
@@ -413,7 +426,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
             $totalMemory += $query['memory'];
 
             $connectionName = $query['connection']->getDatabaseName();
-            if ($connectionName && str_ends_with($connectionName, '.sqlite')) {
+            if (str_ends_with($connectionName, '.sqlite')) {
                 $connectionName = $this->normalizeFilePath($connectionName);
             }
 
