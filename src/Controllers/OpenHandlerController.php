@@ -11,7 +11,6 @@ use DebugBar\OpenHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\IpUtils;
 
 class OpenHandlerController extends BaseController
 {

@@ -13,7 +13,6 @@ use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
-use Symfony\Component\HttpFoundation\IpUtils;
 
 class DatabaseCollectorProvider extends AbstractCollectorProvider
 {
