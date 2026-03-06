@@ -7,9 +7,14 @@ if (!function_exists('debugbar')) {
      * Get the Debugbar instance
      *
      */
-    function debugbar(): \Fruitcake\LaravelDebugbar\LaravelDebugbar
+    function debugbar(?string $collector = null): \Fruitcake\LaravelDebugbar\LaravelDebugbar
     {
-        return app(\Fruitcake\LaravelDebugbar\LaravelDebugbar::class);
+        $debugbar = app(\Fruitcake\LaravelDebugbar\LaravelDebugbar::class);
+        if ($collector) {
+            return $debugbar->hasCollector($collector) ? $debugbar->getCollector($collector) : null;
+        }
+
+        return $debugbar;
     }
 }
 
