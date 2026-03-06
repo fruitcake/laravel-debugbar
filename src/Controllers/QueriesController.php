@@ -15,7 +15,7 @@ class QueriesController extends BaseController
      */
     public function explain(Request $request): \Illuminate\Http\JsonResponse
     {
-        if (!config('debugbar.options.db.explain.enabled', false)) {
+        if (!config('debugbar.options.db.explain.enabled', false) || !$this->debugbar->isStorageOpen($request)) {
             return response()->json([
                 'success' => false,
                 'message' => 'EXPLAIN is currently disabled in the Debugbar.',

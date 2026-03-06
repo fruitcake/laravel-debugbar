@@ -54,6 +54,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\VarDumper\Cloner\Stub;
@@ -81,6 +82,8 @@ class LaravelDebugbar extends DebugBar
     protected bool $booted = false;
 
     protected ?bool $enabled = null;
+
+    protected ?bool $storageOpen = null;
 
     /**
      * Laravel default error handler
@@ -562,6 +565,38 @@ class LaravelDebugbar extends DebugBar
         }
 
         return $this->enabled;
+    }
+
+    public function isStorageOpen(Request $request): bool
+    {
+        // Additional safeguards that may never have storage open
+        if (!$this->isenabled() || !config('app.debug') || app()->isProduction()) {
+            return false;
+        }
+
+        if ($this->storageOpen === null) {
+            $open = config('debugbar.storage.open');
+
+            if (is_callable($open)) {
+                $this->storageOpen = call_user_func($open, [$request]);
+                return $this->storageOpen;
+            }
+
+            if (is_string($open) && class_exists($open)) {
+                $this->storageOpen =  method_exists($open, 'resolve') ? $open::resolve($request) : false;
+                return $this->storageOpen;
+            }
+
+            if (is_bool($open)) {
+                $this->storageOpen = $open;
+                return $this->storageOpen;
+            }
+
+            // Allow localhost request when not explicitly allowed/disallowed
+            $this->storageOpen = IpUtils::isPrivateIp($request->getClientIp());
+        }
+
+        return $this->storageOpen;
     }
 
     public function requestIsExcluded(Request $request): bool

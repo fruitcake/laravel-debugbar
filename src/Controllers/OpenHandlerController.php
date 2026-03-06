@@ -15,37 +15,9 @@ use Symfony\Component\HttpFoundation\IpUtils;
 
 class OpenHandlerController extends BaseController
 {
-    /**
-     * Check if the storage is open for inspecting.
-     *
-     */
-    protected function isStorageOpen(Request $request): bool
-    {
-        $open = config('debugbar.storage.open');
-
-        if (is_callable($open)) {
-            return call_user_func($open, [$request]);
-        }
-
-        if (is_string($open) && class_exists($open)) {
-            return method_exists($open, 'resolve') ? $open::resolve($request) : false;
-        }
-
-        if (is_bool($open)) {
-            return $open;
-        }
-
-        // Allow localhost request when not explicitly allowed/disallowed
-        if (IpUtils::isPrivateIp($request->getClientIp())) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function handle(Request $request): Response|JsonResponse
     {
-        if ($request->input('op') !== 'get' && !$this->isStorageOpen($request)) {
+        if ($request->input('op') !== 'get' && !$this->debugbar->isStorageOpen($request)) {
             return new JsonResponse([
                 [
                     'datetime' => date("Y-m-d H:i:s"),

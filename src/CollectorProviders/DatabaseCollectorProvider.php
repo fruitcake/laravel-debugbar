@@ -49,7 +49,7 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
             $queryCollector->mergeBacktraceExcludePaths($excludeBacktracePaths);
         }
 
-        if (($options['explain']['enabled'] ?? false) && IpUtils::isPrivateIp($request->getClientIp())) {
+        if (($options['explain']['enabled'] ?? false) && $this->debugbar->isStorageOpen($request)) {
             $queryCollector->setExplainSource(true);
         }
 
