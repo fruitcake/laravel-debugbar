@@ -408,7 +408,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
         $statements = [];
         foreach ($queries as $query) {
             if ($query['type'] === 'message') {
-                if ($query['xdebug_link']) {
+                if (isset($query['xdebug_link'])) {
                     $source = $query['xdebug_link'];
                     $query['xdebug_link'] = $this->getXdebugLink($source->file ?: '', $source->line);
                 }
@@ -426,7 +426,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
             $totalMemory += $query['memory'];
 
             $connectionName = $query['connection']->getDatabaseName();
-            if (str_ends_with($connectionName, '.sqlite')) {
+            if ($connectionName && str_ends_with($connectionName, '.sqlite')) {
                 $connectionName = $this->normalizeFilePath($connectionName);
             }
 
