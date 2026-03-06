@@ -172,7 +172,7 @@
             header.classList.add(csscls('explain-popup-header'));
 
             const title = document.createElement('span');
-            title.textContent = query.length > 120 ? query.substring(0, 120) + '...' : query;
+            title.innerHTML = PhpDebugBar.Widgets.highlight(query.length > 120 ? query.substring(0, 120) + '...' : query);
             title.classList.add(csscls('explain-popup-title'));
 
             const closeBtn = document.createElement('button');
