@@ -8,11 +8,15 @@ use Fruitcake\LaravelDebugbar\Controllers\OpenHandlerController;
 use Fruitcake\LaravelDebugbar\Controllers\QueriesController;
 use Fruitcake\LaravelDebugbar\Controllers\TelescopeController;
 use Fruitcake\LaravelDebugbar\Middleware\DebugbarEnabled;
+use Fruitcake\LaravelDebugbar\Middleware\StopRecordingTelescope;
 
 $routeConfig = [
     'prefix' => app('config')->get('debugbar.route_prefix'),
     'domain' => app('config')->get('debugbar.route_domain'),
-    'middleware' => array_merge(app('config')->get('debugbar.route_middleware', []), [DebugbarEnabled::class]),
+    'middleware' => array_merge(
+        app('config')->get('debugbar.route_middleware', []),
+        [DebugbarEnabled::class, StopRecordingTelescope::class]
+    ),
 ];
 
 app('router')->group($routeConfig, function ($router): void {

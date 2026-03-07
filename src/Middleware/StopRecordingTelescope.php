@@ -6,18 +6,10 @@ namespace Fruitcake\LaravelDebugbar\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Fruitcake\LaravelDebugbar\LaravelDebugbar;
+use Laravel\Telescope\Telescope;
 
-readonly class DebugbarEnabled
+readonly class StopRecordingTelescope
 {
-    /**
-     * Create a new middleware instance.
-     *
-     */
-    public function __construct(protected LaravelDebugbar $debugbar)
-    {
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -25,8 +17,8 @@ readonly class DebugbarEnabled
      */
     public function handle($request, Closure $next): mixed
     {
-        if (!$this->debugbar->isEnabled()) {
-            abort(404);
+        if (class_exists(Telescope::class)) {
+            Telescope::stopRecording();
         }
 
         return $next($request);

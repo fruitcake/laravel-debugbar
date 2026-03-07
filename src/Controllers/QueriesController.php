@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Controllers;
 
+use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\Support\Explain;
 use Exception;
 use Illuminate\Http\Request;
 
-class QueriesController extends BaseController
+class QueriesController
 {
     /**
      * Generate explain data for query.
      */
-    public function explain(Request $request): \Illuminate\Http\JsonResponse
+    public function explain(Request $request, LaravelDebugbar $debugbar, Explain $explain): \Illuminate\Http\JsonResponse
     {
-        if (!config('debugbar.options.db.explain.enabled', false) || !$this->debugbar->isStorageOpen($request)) {
+        if (!config('debugbar.options.db.explain.enabled', false) || !$debugbar->isStorageOpen($request)) {
             return response()->json([
                 'success' => false,
                 'message' => 'EXPLAIN is currently disabled in the Debugbar.',
@@ -23,8 +24,6 @@ class QueriesController extends BaseController
         }
 
         try {
-            $explain = new Explain();
-
             if ($request->json('mode') === 'visual') {
                 return response()->json([
                     'success' => true,

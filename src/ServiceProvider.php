@@ -6,6 +6,7 @@ namespace Fruitcake\LaravelDebugbar;
 
 use DebugBar\DataFormatter\DataFormatter;
 use DebugBar\DataFormatter\DataFormatterInterface;
+use DebugBar\DebugBar;
 use Fruitcake\LaravelDebugbar\Console\ClearCommand;
 use Fruitcake\LaravelDebugbar\Support\Octane\ResetDebugbar;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -35,6 +36,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->singleton(LaravelDebugbar::class);
         $this->app->alias(LaravelDebugbar::class, 'debugbar');
+        $this->app->alias(LaravelDebugbar::class, DebugBar::class);
 
         Collection::macro('debug', function (): \Illuminate\Support\Collection {
             debug($this);

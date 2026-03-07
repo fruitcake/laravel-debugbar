@@ -7,7 +7,7 @@ namespace Fruitcake\LaravelDebugbar\Controllers;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Http\Request;
 
-class CacheController extends BaseController
+class CacheController
 {
     /**
      * Forget a cache key
@@ -15,7 +15,7 @@ class CacheController extends BaseController
      */
     public function delete(CacheManager $cache, Request $request, string $key): \Illuminate\Http\JsonResponse
     {
-        if (! $request->hasValidSignature() || ! $this->debugbar->isStorageOpen($request)) {
+        if (! $request->hasValidSignature() || ! debugbar()->isStorageOpen($request)) {
             abort(401);
         }
 

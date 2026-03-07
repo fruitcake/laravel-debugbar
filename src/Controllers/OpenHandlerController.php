@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\Controllers;
 
 use DebugBar\Bridge\Symfony\SymfonyHttpDriver;
+use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\LaravelHttpDriver;
 use Fruitcake\LaravelDebugbar\Support\Clockwork\Converter;
 use DebugBar\OpenHandler;
@@ -12,11 +13,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class OpenHandlerController extends BaseController
+class OpenHandlerController
 {
-    public function handle(Request $request): Response|JsonResponse
+    public function handle(Request $request, LaravelDebugbar $debugbar, OpenHandler $openHandler): Response|JsonResponse
     {
-        if ($request->input('op') !== 'get' && !$this->debugbar->isStorageOpen($request)) {
+        if ($request->input('op') !== 'get' && !$debugbar->isStorageOpen($request)) {
             return new JsonResponse([
                 [
                     'datetime' => date("Y-m-d H:i:s"),
@@ -30,9 +31,7 @@ class OpenHandlerController extends BaseController
         }
 
         $response = new Response();
-
-        $openHandler = new OpenHandler($this->debugbar);
-        $driver = $this->debugbar->getHttpDriver();
+        $driver = $debugbar->getHttpDriver();
         if ($driver instanceof LaravelHttpDriver || $driver instanceof SymfonyHttpDriver) {
             $driver->setResponse($response);
         }
@@ -47,14 +46,13 @@ class OpenHandlerController extends BaseController
      *
      * @throws \DebugBar\DebugBarException
      */
-    public function clockwork(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function clockwork(OpenHandler $openHandler, $id): \Illuminate\Http\JsonResponse
     {
         $request = [
             'op' => 'get',
             'id' => $id,
         ];
 
-        $openHandler = new OpenHandler($this->debugbar);
         $data = $openHandler->handle($request, false, false);
 
         // Convert to Clockwork

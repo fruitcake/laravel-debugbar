@@ -6,20 +6,19 @@ namespace Fruitcake\LaravelDebugbar\Controllers;
 
 use DebugBar\AssetHandler;
 use DebugBar\Bridge\Symfony\SymfonyHttpDriver;
+use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\LaravelHttpDriver;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class AssetController extends BaseController
+class AssetController
 {
-    public function getAssets(Request $request): Response
+    public function getAssets(Request $request, AssetHandler $assetHandler, LaravelDebugbar $debugbar): Response
     {
-        $assetHandler = new AssetHandler($this->debugbar);
-
         $type = (string) $request->input('type');
 
         $response = new Response();
-        $driver = $this->debugbar->getHttpDriver();
+        $driver = $debugbar->getHttpDriver();
         if ($driver instanceof LaravelHttpDriver || $driver instanceof SymfonyHttpDriver) {
             $driver->setResponse($response);
         }

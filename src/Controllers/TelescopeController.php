@@ -7,11 +7,10 @@ namespace Fruitcake\LaravelDebugbar\Controllers;
 use Laravel\Telescope\Contracts\EntriesRepository;
 use Laravel\Telescope\Storage\EntryQueryOptions;
 
-class TelescopeController extends BaseController
+class TelescopeController
 {
     public function show(EntriesRepository $storage, $uuid)
     {
-
         $entry = $storage->find($uuid);
         $result = $storage->get('request', (new EntryQueryOptions())->batchId($entry->batchId))->first();
 
