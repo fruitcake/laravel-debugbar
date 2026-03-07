@@ -223,7 +223,7 @@
             const th = document.createElement('th');
             th.colSpan = 2;
             th.classList.add(csscls('name'));
-            th.innerHTML = caption;
+            th.textContent = caption;
             tr.append(th);
             thead.append(tr);
             table.append(thead);
