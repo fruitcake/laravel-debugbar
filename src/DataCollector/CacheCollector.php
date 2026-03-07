@@ -23,6 +23,7 @@ use Illuminate\Cache\Events\{CacheEvent,
     RetrievingKey,
     WritingKey};
 use Illuminate\Support\Facades\Route;
+use Throwable;
 
 class CacheCollector extends TimeDataCollector implements AssetProvider, Resettable
 {
@@ -63,7 +64,10 @@ class CacheCollector extends TimeDataCollector implements AssetProvider, Resetta
         $label = $this->classMap[$class][0];
 
         if (isset($params['value'])) {
-            $params['memoryUsage'] = strlen(serialize($params['value'])) * 8;
+            try {
+                $params['memoryUsage'] = strlen(serialize($params['value'])) * 8;
+            } catch (Throwable) {
+            }
 
             if (!$this->collectValues) {
                 unset($params['value']);
