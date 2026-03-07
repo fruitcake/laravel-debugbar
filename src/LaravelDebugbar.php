@@ -578,7 +578,7 @@ class LaravelDebugbar extends DebugBar
             $open = config('debugbar.storage.open');
 
             if (is_callable($open)) {
-                $this->storageOpen = call_user_func($open, [$request]);
+                $this->storageOpen = ($open)($request);
                 return $this->storageOpen;
             }
 
@@ -752,6 +752,7 @@ class LaravelDebugbar extends DebugBar
         $this->exceptionsCollector->reset();
         $this->messagesCollector->reset();
         $this->enabled = null;
+        $this->storageOpen = null;
         $this->responseIsModified = false;
         $this->httpDriver = null;
     }
