@@ -75,26 +75,29 @@ class LogsCollector extends MessagesCollector
         $pos = -2;
         $beginning = false;
         $text = [];
-        while ($linecounter > 0) {
-            $t = " ";
-            while ($t !== "\n") {
-                if (fseek($handle, $pos, SEEK_END) === -1) {
-                    $beginning = true;
+        try {
+            while ($linecounter > 0) {
+                $t = " ";
+                while ($t !== "\n") {
+                    if (fseek($handle, $pos, SEEK_END) === -1) {
+                        $beginning = true;
+                        break;
+                    }
+                    $t = fgetc($handle);
+                    $pos--;
+                }
+                $linecounter--;
+                if ($beginning) {
+                    rewind($handle);
+                }
+                $text[$lines - $linecounter - 1] = fgets($handle);
+                if ($beginning) {
                     break;
                 }
-                $t = fgetc($handle);
-                $pos--;
             }
-            $linecounter--;
-            if ($beginning) {
-                rewind($handle);
-            }
-            $text[$lines - $linecounter - 1] = fgets($handle);
-            if ($beginning) {
-                break;
-            }
+        } finally {
+            fclose($handle);
         }
-        fclose($handle);
         return array_reverse($text);
     }
 
@@ -116,7 +119,7 @@ class LogsCollector extends MessagesCollector
         foreach ($headings as $h) {
             for ($i = 0, $j = count($h); $i < $j; $i++) {
                 foreach ($log_levels as $ll) {
-                    if (strpos(strtolower($h[$i]), strtolower('.' . $ll))) {
+                    if (str_contains(strtolower($h[$i]), strtolower('.' . $ll))) {
                         $log[] = ['level' => $ll, 'header' => $h[$i], 'stack' => $log_data[$i] ?? ''];
                     }
                 }
