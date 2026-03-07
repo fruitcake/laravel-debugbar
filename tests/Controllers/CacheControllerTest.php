@@ -16,6 +16,9 @@ class CacheControllerTest extends TestCase
     {
         parent::getEnvironmentSetUp($app);
 
+        $app['config']->set('app.debug', true);
+        $app['config']->set('debugbar.storage.open', true);
+
         $app->resolving(LaravelDebugbar::class, function ($debugbar): void {
             (new ReflectionObject($debugbar))
                 ->getProperty('enabled')
