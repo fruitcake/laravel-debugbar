@@ -55,6 +55,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $this->commands([ClearCommand::class]);
         }
 
+        // Eearly return if debugbar can not enabled
+        if (!LaravelDebugbar::canBeEnabled()) {
+            return;
+        }
+
         $this->loadRoutesFrom(__DIR__ . '/debugbar-routes.php');
 
         // Resolve the LaravelDebugbar instance during boot to force it to be loaded in the Octane sandbox

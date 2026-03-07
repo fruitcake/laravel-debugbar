@@ -549,19 +549,28 @@ class LaravelDebugbar extends DebugBar
         return $response;
     }
 
+    public static function canBeEnabled(): bool
+    {
+        return app()->hasDebugModeEnabled()
+            && !app()->runningInConsole()
+            && !app()->environment('testing')
+            && app()->isProduction();
+    }
+
     /**
      * Check if the Debugbar is enabled
      */
     public function isEnabled(): bool
     {
         if ($this->enabled === null) {
+
             $configEnabled = value(config('debugbar.enabled'));
 
             if ($configEnabled === null) {
                 $configEnabled = config('app.debug');
             }
 
-            $this->enabled = $configEnabled && !$this->app->runningInConsole() && !$this->app->environment('testing');
+            $this->enabled = $configEnabled && $this->canBeEnabled();
         }
 
         return $this->enabled;
