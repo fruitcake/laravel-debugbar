@@ -15,8 +15,8 @@ class CacheController
      */
     public function delete(CacheManager $cache, CacheDeleteRequest $request, string $key): \Illuminate\Http\JsonResponse
     {
-        if ($request->has('tags')) {
-            $cache = $cache->tags($request->input('tags'));
+        if ($tags = $request->validated('tags')) {
+            $cache = $cache->tags($tags);
         }
 
         $success = $cache->forget($key);

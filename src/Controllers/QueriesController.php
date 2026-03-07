@@ -23,26 +23,28 @@ class QueriesController
             ], 400);
         }
 
+        $validated = $request->validated();
+
         try {
-            if ($request->json('mode') === 'visual') {
+            if (($validated['mode'] ?? null) === 'visual') {
                 return response()->json([
                     'success' => true,
-                    'data' => $explain->generateVisualExplain($request->json('connection'), $request->json('query'), $request->json('bindings'), $request->json('hash')),
+                    'data' => $explain->generateVisualExplain($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash']),
                 ]);
             }
 
-            if ($request->json('mode') === 'result') {
+            if (($validated['mode'] ?? null) === 'result') {
                 return response()->json([
                     'success' => true,
-                    'data' => $explain->generateSelectResult($request->json('connection'), $request->json('query'), $request->json('bindings'), $request->json('hash'), $request->json('format')),
+                    'data' => $explain->generateSelectResult($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash'], $validated['format'] ?? null),
                 ]);
             }
 
             return response()->json([
                 'success' => true,
-                'data' => $explain->generateRawExplain($request->json('connection'), $request->json('query'), $request->json('bindings'), $request->json('hash')),
-                'visual' => $explain->isVisualExplainSupported($request->json('connection')) ? [
-                    'confirm' => $explain->confirmVisualExplain($request->json('connection')),
+                'data' => $explain->generateRawExplain($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash']),
+                'visual' => $explain->isVisualExplainSupported($validated['connection']) ? [
+                    'confirm' => $explain->confirmVisualExplain($validated['connection']),
                 ] : null,
             ]);
         } catch (Exception $e) {

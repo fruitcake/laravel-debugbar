@@ -15,7 +15,7 @@ class AssetController
 {
     public function getAssets(AssetRequest $request, AssetHandler $assetHandler, LaravelDebugbar $debugbar): Response
     {
-        $type = $request->string('type')->value();
+        $type = $request->validated('type');
 
         $response = new Response();
         $driver = $debugbar->getHttpDriver();
