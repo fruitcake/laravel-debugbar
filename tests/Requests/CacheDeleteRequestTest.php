@@ -25,7 +25,7 @@ class CacheDeleteRequestTest extends TestCase
     {
         $method = new ReflectionMethod(CacheController::class, 'delete');
         $parameter = collect($method->getParameters())->first(
-            fn ($p) => $p->getName() === 'request'
+            fn($p) => $p->getName() === 'request'
         );
 
         static::assertNotNull($parameter);

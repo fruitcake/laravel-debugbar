@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Tests\Controllers;
 
-use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\Tests\TestCase;
-use ReflectionObject;
 
 class QueriesControllerTest extends TestCase
 {

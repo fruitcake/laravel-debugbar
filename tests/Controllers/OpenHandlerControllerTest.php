@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Tests\Controllers;
 
-use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\Tests\TestCase;
-use ReflectionObject;
 
 class OpenHandlerControllerTest extends TestCase
 {
@@ -84,7 +82,7 @@ class OpenHandlerControllerTest extends TestCase
     {
         $path = config('debugbar.storage.path', storage_path('debugbar'));
         if (!is_dir($path)) {
-            mkdir($path, 0755, true);
+            mkdir($path, 0o755, true);
         }
     }
 }

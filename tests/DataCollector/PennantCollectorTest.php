@@ -26,7 +26,7 @@ class PennantCollectorTest extends TestCase
     protected function getPackageProviders($app)
     {
         if (!class_exists(PennantServiceProvider::class)) {
-            $this->markTestSkipped('Pennant is not installed');
+            static::markTestSkipped('Pennant is not installed');
         }
         return [ServiceProvider::class, PennantServiceProvider::class];
     }

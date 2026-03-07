@@ -14,9 +14,7 @@ readonly class DebugbarEnabled
      * Create a new middleware instance.
      *
      */
-    public function __construct(protected LaravelDebugbar $debugbar)
-    {
-    }
+    public function __construct(protected LaravelDebugbar $debugbar) {}
 
     /**
      * Handle an incoming request.
