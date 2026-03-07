@@ -44,6 +44,7 @@ class OpenHandlerControllerTest extends TestCase
     {
         $this->app['config']->set('debugbar.storage.open', true);
         $this->resetStorageOpen();
+        $this->ensureStorageDirectory();
 
         $response = $this->get('/_debugbar/open?op=find');
 
@@ -69,12 +70,21 @@ class OpenHandlerControllerTest extends TestCase
 
         // With the header, callback returns true — storage is open
         $this->resetStorageOpen();
+        $this->ensureStorageDirectory();
         $response = $this->get('/_debugbar/open?op=find', ['X-Debugbar-Token' => 'valid-token']);
         $response->assertOk();
 
         $data = $response->json();
         if (is_array($data) && isset($data[0]['method'])) {
             static::assertNotEquals('ERROR', $data[0]['method']);
+        }
+    }
+
+    private function ensureStorageDirectory(): void
+    {
+        $path = config('debugbar.storage.path', storage_path('debugbar'));
+        if (!is_dir($path)) {
+            mkdir($path, 0755, true);
         }
     }
 }
