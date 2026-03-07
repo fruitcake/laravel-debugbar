@@ -22,6 +22,7 @@ return [
         'telescope*',
         'horizon*',
         '_boost/browser-logs',
+        'livewire-*/livewire.js'
     ],
 
     /*

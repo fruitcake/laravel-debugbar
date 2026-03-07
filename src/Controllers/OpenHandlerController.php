@@ -7,15 +7,15 @@ namespace Fruitcake\LaravelDebugbar\Controllers;
 use DebugBar\Bridge\Symfony\SymfonyHttpDriver;
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\LaravelHttpDriver;
+use Fruitcake\LaravelDebugbar\Requests\OpenHandlerRequest;
 use Fruitcake\LaravelDebugbar\Support\Clockwork\Converter;
 use DebugBar\OpenHandler;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class OpenHandlerController
 {
-    public function handle(Request $request, LaravelDebugbar $debugbar, OpenHandler $openHandler): Response|JsonResponse
+    public function handle(OpenHandlerRequest $request, LaravelDebugbar $debugbar, OpenHandler $openHandler): Response|JsonResponse
     {
         if ($request->input('op') !== 'get' && !$debugbar->isStorageOpen($request)) {
             return new JsonResponse([

@@ -44,9 +44,34 @@ class CacheControllerTest extends TestCase
         $key = 'test-key';
         Cache::put($key, 'test-value');
 
-        $this->delete('/_debugbar/cache/' . $key)->assertUnauthorized();
+        $this->delete('/_debugbar/cache/' . $key)->assertForbidden();
 
         static::assertTrue(Cache::has($key));
+    }
+
+    public function testItRejectsRequestWhenStorageIsNotOpen(): void
+    {
+        $this->app['config']->set('debugbar.storage.open', false);
+        $this->resetStorageOpen();
+
+        $key = 'test-key';
+        Cache::put($key, 'test-value');
+
+        $url = url()->signedRoute('debugbar.cache.delete', ['key' => urlencode($key)]);
+
+        $this->delete($url)->assertForbidden();
+
+        static::assertTrue(Cache::has($key));
+    }
+
+    public function testItRejectsInvalidTagsParameter(): void
+    {
+        $key = 'test-key';
+        Cache::put($key, 'test-value');
+
+        $url = url()->signedRoute('debugbar.cache.delete', ['key' => urlencode($key), 'tags' => 'not-an-array']);
+
+        $this->deleteJson($url)->assertUnprocessable();
     }
 
     /** @return array<string, list<string>> */

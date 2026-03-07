@@ -8,14 +8,14 @@ use DebugBar\AssetHandler;
 use DebugBar\Bridge\Symfony\SymfonyHttpDriver;
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\LaravelHttpDriver;
-use Illuminate\Http\Request;
+use Fruitcake\LaravelDebugbar\Requests\AssetRequest;
 use Illuminate\Http\Response;
 
 class AssetController
 {
-    public function getAssets(Request $request, AssetHandler $assetHandler, LaravelDebugbar $debugbar): Response
+    public function getAssets(AssetRequest $request, AssetHandler $assetHandler, LaravelDebugbar $debugbar): Response
     {
-        $type = (string) $request->input('type');
+        $type = $request->string('type')->value();
 
         $response = new Response();
         $driver = $debugbar->getHttpDriver();

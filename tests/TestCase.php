@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\Tests;
 
 use Fruitcake\LaravelDebugbar\Facades\Debugbar;
+use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Fruitcake\LaravelDebugbar\ServiceProvider;
 use Illuminate\Routing\Router;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Fruitcake\LaravelDebugbar\Tests\Mocks\MockController;
 use Fruitcake\LaravelDebugbar\Tests\Mocks\MockViewComponent;
 use Fruitcake\LaravelDebugbar\Tests\Mocks\MockMiddleware;
+use ReflectionObject;
 
 class TestCase extends Orchestra
 {
@@ -100,5 +102,13 @@ class TestCase extends Orchestra
     protected function addViewPaths()
     {
         config(['view.paths' => array_merge(config('view.paths'), [__DIR__ . '/resources/views'])]);
+    }
+
+    protected function resetStorageOpen(): void
+    {
+        $debugbar = app(LaravelDebugbar::class);
+        (new ReflectionObject($debugbar))
+            ->getProperty('storageOpen')
+            ->setValue($debugbar, null);
     }
 }

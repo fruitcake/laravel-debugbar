@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\Controllers;
 
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
+use Fruitcake\LaravelDebugbar\Requests\QueriesExplainRequest;
 use Fruitcake\LaravelDebugbar\Support\Explain;
 use Exception;
-use Illuminate\Http\Request;
 
 class QueriesController
 {
     /**
      * Generate explain data for query.
      */
-    public function explain(Request $request, LaravelDebugbar $debugbar, Explain $explain): \Illuminate\Http\JsonResponse
+    public function explain(QueriesExplainRequest $request, LaravelDebugbar $debugbar, Explain $explain): \Illuminate\Http\JsonResponse
     {
         if (!config('debugbar.options.db.explain.enabled', false) || !$debugbar->isStorageOpen($request)) {
             return response()->json([
