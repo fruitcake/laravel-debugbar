@@ -568,7 +568,7 @@ class LaravelDebugbar extends DebugBar
                 $configEnabled = config('app.debug');
             }
 
-            $this->enabled = $configEnabled && $this->canBeEnabled();
+            $this->enabled = $configEnabled && static::canBeEnabled();
         }
 
         return $this->enabled;
