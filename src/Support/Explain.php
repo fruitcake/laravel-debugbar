@@ -52,13 +52,15 @@ class Explain
 
         return match (DB::connection($connection)->getDriverName()) {
             'mariadb', 'mysql', 'pgsql' => hash_hmac('sha256', "{$connection}::{$sql}::{$bindings}", config('app.key')),
-            default => null,
+            default => throw new Exception('EXPLAIN is not supported for this database driver.'),
         };
     }
 
     private function verify(string $connection, string $sql, array $bindings, string $hash): void
     {
-        if (!hash_equals($this->hash($connection, $sql, $bindings), $hash)) {
+        $computedHash = $this->hash($connection, $sql, $bindings);
+
+        if (!hash_equals($computedHash, $hash)) {
             throw new Exception('Query to execute could not be verified.');
         }
     }
@@ -66,6 +68,7 @@ class Explain
     public function generateSelectResult(string $connection, string $sql, array $bindings, string $hash, ?string $format): array
     {
         $this->verify($connection, $sql, $bindings, $hash);
+        $this->validateReadOnlyQuery($sql);
 
         $result = DB::connection($connection)->select($sql, $bindings);
 
@@ -79,6 +82,7 @@ class Explain
     public function generateRawExplain(string $connection, string $sql, array $bindings, string $hash): array
     {
         $this->verify($connection, $sql, $bindings, $hash);
+        $this->validateReadOnlyQuery($sql);
 
         $connection = DB::connection($connection);
 
@@ -92,6 +96,8 @@ class Explain
     public function generateVisualExplain(string $connection, string $sql, array $bindings, string $hash): string
     {
         $this->verify($connection, $sql, $bindings, $hash);
+        $this->validateReadOnlyQuery($sql);
+
         if (!$this->isVisualExplainSupported($connection)) {
             throw new Exception('Visual explain not available for this connection.');
         }
@@ -105,13 +111,27 @@ class Explain
         };
     }
 
+    private function validateReadOnlyQuery(string $sql): void
+    {
+        $normalized = ltrim($sql);
+
+        if (!preg_match('/^(SELECT|WITH)\b/i', $normalized)) {
+            throw new Exception('Only SELECT queries can be explained or executed.');
+        }
+    }
+
+    private static function redactBindings(array $bindings): array
+    {
+        return array_map(fn () => '?', $bindings);
+    }
+
     private function generateVisualExplainMysql(ConnectionInterface $connection, string $query, array $bindings): string
     {
         return Http::withHeaders([
             'User-Agent' => 'fruitcake/laravel-debugbar',
         ])->post('https://api.mysqlexplain.com/v2/explains', [
             'query' => $query,
-            'bindings' => $bindings,
+            'bindings' => self::redactBindings($bindings),
             'version' => $connection->selectOne("SELECT VERSION()")->{'VERSION()'},
             'explain_json' => $connection->selectOne("EXPLAIN FORMAT=JSON {$query}", $bindings)->EXPLAIN,
             'explain_tree' => rescue(fn() => $connection->selectOne("EXPLAIN FORMAT=TREE {$query}", $bindings)->EXPLAIN, report: false),
