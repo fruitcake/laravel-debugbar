@@ -43,9 +43,14 @@ jobs:
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif
 
+      - name: Remove incompatible dependencies
+        if: matrix.laravel == '^13'
+        run: |
+            composer remove --dev --no-update laravel/octane laravel/pennant
+
       - name: Install dependencies
         run: |
-          composer remove --dev --no-update larastan/larastan laravel/octane laravel/pennant phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules
+          composer remove --dev --no-update larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
 
