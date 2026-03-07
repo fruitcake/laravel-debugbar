@@ -122,7 +122,7 @@ class Explain
 
     private static function redactBindings(array $bindings): array
     {
-        return array_map(fn () => '?', $bindings);
+        return array_map(fn() => '?', $bindings);
     }
 
     private function generateVisualExplainMysql(ConnectionInterface $connection, string $query, array $bindings): string

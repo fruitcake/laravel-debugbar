@@ -17,7 +17,7 @@ class CacheController extends BaseController
     {
         if (! $request->hasValidSignature() || ! $this->debugbar->isStorageOpen($request)) {
             abort(401);
-        }   
+        }
 
         if ($request->has('tags')) {
             $cache = $cache->tags($request->input('tags'));
