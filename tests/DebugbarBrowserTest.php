@@ -23,8 +23,7 @@ class DebugbarBrowserTest extends BrowserTestCase
         parent::getEnvironmentSetUp($app);
 
         $app['env'] = 'local';
-
-        //$app['config']->set('app.debug', true);
+        $app['config']->set('app.debug', true);
         $app['config']->set('debugbar.hide_empty_tabs', false);
 
         /** @var Router $router */
@@ -38,7 +37,7 @@ class DebugbarBrowserTest extends BrowserTestCase
         $kernel->pushMiddleware(\Illuminate\Session\Middleware\StartSession::class);
         $kernel->pushMiddleware(\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
 
-        \Orchestra\Testbench\Dusk\Options::withoutUI();
+//        \Orchestra\Testbench\Dusk\Options::withoutUI();
     }
 
     protected function addWebRoutes(Router $router)
@@ -263,7 +262,7 @@ class DebugbarBrowserTest extends BrowserTestCase
                 ->click('.phpdebugbar-tab[data-collector="queries"]')
                 ->screenshotElement('.phpdebugbar', 'queries-tab')
                 ->waitForText('executed')
-                ->waitForText('600 statements were executed, 400 of which were duplicates, 200 unique.')
+                ->waitForText('600 statements were executed, 100 have been excluded, 400 of which were duplicates, 200 unique.')
                 ->waitForText('Query soft and hard limit for Debugbar are reached. Only the first 100 queries show details. Queries after the first 500 are ignored. ')
                 ->screenshotElement('.phpdebugbar', 'queries-expanded');
         });

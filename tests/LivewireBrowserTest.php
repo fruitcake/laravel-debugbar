@@ -25,8 +25,7 @@ class LivewireBrowserTest extends BrowserTestCase
         parent::getEnvironmentSetUp($app);
 
         $app['env'] = 'local';
-
-        //$app['config']->set('app.debug', true);
+        $app['config']->set('app.debug', true);
         $app['config']->set('debugbar.hide_empty_tabs', false);
         config(['view.paths' => array_merge(config('view.paths'), [__DIR__ . '/resources/views'])]);
 

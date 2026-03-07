@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Tests\DataCollector;
 
+use DebugBar\DataFormatter\HtmlDataFormatter;
+use Fruitcake\LaravelDebugbar\DataCollector\RouteCollector;
 use Fruitcake\LaravelDebugbar\Tests\TestCase;
 use DebugBar\DataCollector\DataCollector;
 
@@ -73,6 +75,8 @@ class RouteCollectorTest extends TestCase
      */
     public function testItCollectsWithClosureHandler($file)
     {
+        RouteCollector::setDefaultDataFormatter(new HtmlDataFormatter());
+
         $this->get('web/html');
 
         $collected = $this->routeCollector->collect();

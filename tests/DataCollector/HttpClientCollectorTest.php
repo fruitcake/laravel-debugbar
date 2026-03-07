@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Tests\DataCollector;
 
+use DebugBar\DataFormatter\HtmlDataFormatter;
 use Fruitcake\LaravelDebugbar\DataCollector\HttpClientCollector;
 use Fruitcake\LaravelDebugbar\Tests\TestCase;
 use GuzzleHttp\Psr7\Response as Psr7Response;
@@ -67,6 +68,7 @@ class HttpClientCollectorTest extends TestCase
 
     public function testItMasksAuthorizationHeader()
     {
+        HttpClientCollector::setDefaultDataFormatter(new HtmlDataFormatter());
         $collector = new HttpClientCollector();
 
         $request = new Request(
