@@ -64,9 +64,11 @@ class CacheCollector extends TimeDataCollector implements AssetProvider, Resetta
         $label = $this->classMap[$class][0];
 
         if (isset($params['value'])) {
-            try {
-                $params['memoryUsage'] = strlen(serialize($params['value'])) * 8;
-            } catch (Throwable) {
+            if (!($params['value'] instanceof \Closure || is_resource($params['value']))) {
+                try {
+                    $params['memoryUsage'] = strlen(serialize($params['value'])) * 8;
+                } catch (Throwable) {
+                }
             }
 
             if (!$this->collectValues) {
