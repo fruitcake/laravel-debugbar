@@ -4,18 +4,10 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Tests\Controllers;
 
-use Fruitcake\LaravelDebugbar\Tests\TestCase;
+use Fruitcake\LaravelDebugbar\Tests\DebugbarTest;
 
-class AssetControllerTest extends TestCase
+class AssetControllerTest extends DebugbarTest
 {
-    protected function getEnvironmentSetUp($app): void
-    {
-        parent::getEnvironmentSetUp($app);
-
-        $app['config']->set('app.debug', true);
-        $app['config']->set('debugbar.enabled', true);
-    }
-
     public function testAssetRouteRequiresTypeParameter(): void
     {
         $response = $this->getJson('/_debugbar/assets');

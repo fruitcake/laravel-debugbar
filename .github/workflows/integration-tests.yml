@@ -52,7 +52,7 @@ jobs:
         run: |
           cd sample
           sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
-          composer require --dev "barryvdh/laravel-debugbar:*"
+          composer require --dev "fruitcake/laravel-debugbar:*"
 
       - name: Execute generate run
         run: |
@@ -62,4 +62,17 @@ jobs:
 
       - name: Check file count in logs
         run: |
-          if [ `ls -1q "sample/storage/debugbar/" | wc -l` -gt 0 ];then exit 1;fi
+          echo "Files in sample/storage/debugbar/:"
+          ls -la "sample/storage/debugbar/"
+          FILE_COUNT=$(ls -1q "sample/storage/debugbar/" | wc -l)
+          echo "File count: $FILE_COUNT"
+          if [ "$FILE_COUNT" -gt 0 ]; then
+            echo "ERROR: Expected 0 files but found $FILE_COUNT"
+            echo "File contents:"
+            for f in sample/storage/debugbar/*; do
+              echo "--- $f ---"
+              head -c 500 "$f"
+              echo ""
+            done
+            exit 1
+          fi
