@@ -4,28 +4,12 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Tests\Controllers;
 
-use Fruitcake\LaravelDebugbar\LaravelDebugbar;
-use Fruitcake\LaravelDebugbar\Tests\TestCase;
+use Fruitcake\LaravelDebugbar\Tests\DebugbarTest;
 use Illuminate\Support\Facades\Cache;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionObject;
 
-class CacheControllerTest extends TestCase
+class CacheControllerTest extends DebugbarTest
 {
-    protected function getEnvironmentSetUp($app): void
-    {
-        parent::getEnvironmentSetUp($app);
-
-        $app['config']->set('app.debug', true);
-        $app['config']->set('debugbar.storage.open', true);
-
-        $app->resolving(LaravelDebugbar::class, function ($debugbar): void {
-            (new ReflectionObject($debugbar))
-                ->getProperty('enabled')
-                ->setValue($debugbar, true);
-        });
-    }
-
     #[DataProvider('cacheKeyProvider')]
     public function testItDeletesCacheKeyWithSignedUrl(string $key): void
     {

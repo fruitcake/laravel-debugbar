@@ -4,18 +4,10 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Tests\Controllers;
 
-use Fruitcake\LaravelDebugbar\Tests\TestCase;
+use Fruitcake\LaravelDebugbar\Tests\DebugbarTest;
 
-class QueriesControllerTest extends TestCase
+class QueriesControllerTest extends DebugbarTest
 {
-    protected function getEnvironmentSetUp($app): void
-    {
-        parent::getEnvironmentSetUp($app);
-
-        $app['config']->set('app.debug', true);
-        $app['config']->set('debugbar.enabled', true);
-    }
-
     public function testExplainReturnsErrorWhenStorageIsNotOpen(): void
     {
         $this->app['config']->set('debugbar.storage.open', false);
