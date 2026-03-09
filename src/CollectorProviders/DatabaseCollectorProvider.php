@@ -49,7 +49,7 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
         }
 
         if (($options['explain']['enabled'] ?? false) && $this->debugbar->isStorageOpen($request)) {
-            $queryCollector->setExplainSource(true);
+            $queryCollector->setExplainQuery(true);
         }
 
         if (($options['show_query_result'] ?? false) && $this->debugbar->isStorageOpen($request)) {

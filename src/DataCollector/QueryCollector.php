@@ -128,7 +128,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
      */
     public function setExplainSource(bool $enabled): void
     {
-        $this->setexplainQuery($enabled);
+        $this->setExplainQuery($enabled);
     }
 
     /**
