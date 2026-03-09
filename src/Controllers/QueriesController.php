@@ -48,8 +48,6 @@ class QueriesController
                 ]);
             }
 
-
-
             return response()->json([
                 'success' => true,
                 'data' => $explain->generateRawExplain($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash']),

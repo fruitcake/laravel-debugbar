@@ -123,6 +123,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
 
     /**
      * Enable/disable the EXPLAIN queries
+     *
      * @deprecated use setExplainQuery()
      */
     public function setExplainSource(bool $enabled): void
