@@ -15,7 +15,7 @@ class QueriesExplainRequest extends FormRequest
             'query' => ['required', 'string'],
             'bindings' => ['nullable', 'array'],
             'hash' => ['required', 'string'],
-            'mode' => ['nullable', 'string', 'in:visual,result'],
+            'mode' => ['nullable', 'string', 'in:explain,visual,result'],
             'format' => ['nullable', 'string'],
         ];
     }
