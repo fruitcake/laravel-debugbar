@@ -32,6 +32,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
     protected bool|int $findSource = false;
     protected array $middleware = [];
     protected bool $explainQuery = false;
+    protected bool $showQueryResult = false;
     protected array $reflection = [];
     protected array $excludePaths = [];
     protected array $backtraceExcludePaths = [
@@ -122,10 +123,27 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
 
     /**
      * Enable/disable the EXPLAIN queries
+     * @deprecated use setExplainQuery()
      */
     public function setExplainSource(bool $enabled): void
     {
+        $this->setexplainQuery($enabled);
+    }
+
+    /**
+     * Enable/disable the EXPLAIN queries
+     */
+    public function setExplainQuery(bool $enabled): void
+    {
         $this->explainQuery = $enabled;
+    }
+
+    /**
+     * Enable/disable the EXPLAIN queries
+     */
+    public function setShowQueryResult(bool $enabled): void
+    {
+        $this->showQueryResult = $enabled;
     }
 
     public function startMemoryUsage(): void
@@ -430,13 +448,15 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
                 $connectionName = $this->normalizeFilePath($connectionName);
             }
 
-            $canRunQuery = $this->explainQuery && $explain->isReadOnlyQuery($query['query'] ?? '');
             $explainModes = [];
+            $isReadonly = $explain->isReadOnlyQuery($query['query'] ?? '');
+            $canRunQuery = $this->showQueryResult && $isReadonly;
             if ($canRunQuery) {
                 $explainModes[] = 'result';
-                if ($explain->isRawExplainSupported($query['driver'], $query['bindings'])) {
-                    $explainModes[] = 'explain';
-                }
+            }
+
+            if ($isReadonly && $this->explainQuery && $explain->isRawExplainSupported($query['driver'], $query['bindings'])) {
+                $explainModes[] = 'explain';
             }
 
             $statements[] = [

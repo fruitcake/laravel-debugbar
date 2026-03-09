@@ -61,13 +61,13 @@ class QueryCollectorTest extends TestCase
         });
     }
 
-    public function testExplainModesForSelectQueryWithSupportedDriver(): void
+    public function testResultModeForSelectQuery(): void
     {
         debugbar()->boot();
 
         /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
         $collector = debugbar()->getCollector('queries');
-        $collector->setExplainSource(true);
+        $collector->setShowQueryResult(true);
         $collector->addQuery(new QueryExecuted(
             'SELECT * FROM users WHERE id = ?',
             [1],
@@ -76,57 +76,18 @@ class QueryCollectorTest extends TestCase
         ));
 
         tap(Arr::first($collector->collect()['statements']), function (array $statement) {
-            // SQLite doesn't support raw explain, so only 'result' mode
             $this->assertNotNull($statement['explain']);
             $this->assertContains('result', $statement['explain']['modes']);
         });
     }
 
-    public function testExplainModesNullForNonSelectQuery(): void
+    public function testResultModeForWithQuery(): void
     {
         debugbar()->boot();
 
         /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
         $collector = debugbar()->getCollector('queries');
-        $collector->setExplainSource(true);
-        $collector->addQuery(new QueryExecuted(
-            'INSERT INTO users (name) VALUES (?)',
-            ['test'],
-            0,
-            $this->app['db']->connection(),
-        ));
-
-        tap(Arr::first($collector->collect()['statements']), function (array $statement) {
-            $this->assertNull($statement['explain']);
-        });
-    }
-
-    public function testExplainModesNullWhenExplainDisabled(): void
-    {
-        debugbar()->boot();
-
-        /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
-        $collector = debugbar()->getCollector('queries');
-        $collector->setExplainSource(false);
-        $collector->addQuery(new QueryExecuted(
-            'SELECT * FROM users',
-            [],
-            0,
-            $this->app['db']->connection(),
-        ));
-
-        tap(Arr::first($collector->collect()['statements']), function (array $statement) {
-            $this->assertNull($statement['explain']);
-        });
-    }
-
-    public function testExplainModesForWithQuery(): void
-    {
-        debugbar()->boot();
-
-        /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
-        $collector = debugbar()->getCollector('queries');
-        $collector->setExplainSource(true);
+        $collector->setShowQueryResult(true);
         $collector->addQuery(new QueryExecuted(
             'WITH cte AS (SELECT 1) SELECT * FROM cte',
             [],
@@ -140,13 +101,32 @@ class QueryCollectorTest extends TestCase
         });
     }
 
-    public function testExplainModesExcludeExplainForSqlite(): void
+    public function testResultModeExcludedForNonSelectQuery(): void
     {
         debugbar()->boot();
 
         /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
         $collector = debugbar()->getCollector('queries');
-        $collector->setExplainSource(true);
+        $collector->setShowQueryResult(true);
+        $collector->addQuery(new QueryExecuted(
+            'INSERT INTO users (name) VALUES (?)',
+            ['test'],
+            0,
+            $this->app['db']->connection(),
+        ));
+
+        tap(Arr::first($collector->collect()['statements']), function (array $statement) {
+            $this->assertNull($statement['explain']);
+        });
+    }
+
+    public function testResultModeExcludedWhenDisabled(): void
+    {
+        debugbar()->boot();
+
+        /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
+        $collector = debugbar()->getCollector('queries');
+        $collector->setShowQueryResult(false);
         $collector->addQuery(new QueryExecuted(
             'SELECT * FROM users',
             [],
@@ -155,18 +135,36 @@ class QueryCollectorTest extends TestCase
         ));
 
         tap(Arr::first($collector->collect()['statements']), function (array $statement) {
-            $this->assertNotNull($statement['explain']);
-            $this->assertNotContains('explain', $statement['explain']['modes']);
+            $this->assertNull($statement['explain']);
         });
     }
 
-    public function testExplainModesExcludeExplainWhenBindingsNull(): void
+    public function testExplainModeExcludedForSqlite(): void
     {
         debugbar()->boot();
 
         /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
         $collector = debugbar()->getCollector('queries');
-        $collector->setExplainSource(true);
+        $collector->setExplainQuery(true);
+        $collector->addQuery(new QueryExecuted(
+            'SELECT * FROM users',
+            [],
+            0,
+            $this->app['db']->connection(),
+        ));
+
+        tap(Arr::first($collector->collect()['statements']), function (array $statement) {
+            $this->assertNull($statement['explain']);
+        });
+    }
+
+    public function testExplainModeExcludedWhenBindingsNull(): void
+    {
+        debugbar()->boot();
+
+        /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
+        $collector = debugbar()->getCollector('queries');
+        $collector->setExplainQuery(true);
         $collector->setLimits(0, null);
         $collector->addQuery(new QueryExecuted(
             'SELECT * FROM users WHERE id = ?',
@@ -176,10 +174,26 @@ class QueryCollectorTest extends TestCase
         ));
 
         tap(Arr::first($collector->collect()['statements']), function (array $statement) {
-            // Bindings are null due to soft limit, so 'explain' mode should not be present
-            // But 'result' should still be there for read-only queries
-            $this->assertNotNull($statement['explain']);
-            $this->assertContains('result', $statement['explain']['modes']);
+            $this->assertNull($statement['explain']);
+        });
+    }
+
+    public function testExplainModeExcludedForNonSelectQuery(): void
+    {
+        debugbar()->boot();
+
+        /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
+        $collector = debugbar()->getCollector('queries');
+        $collector->setExplainQuery(true);
+        $collector->addQuery(new QueryExecuted(
+            'UPDATE users SET name = ?',
+            ['test'],
+            0,
+            $this->app['db']->connection(),
+        ));
+
+        tap(Arr::first($collector->collect()['statements']), function (array $statement) {
+            $this->assertNull($statement['explain']);
         });
     }
 

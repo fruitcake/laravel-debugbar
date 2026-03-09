@@ -16,14 +16,29 @@ class QueriesController
      */
     public function explain(QueriesExplainRequest $request, LaravelDebugbar $debugbar, Explain $explain): \Illuminate\Http\JsonResponse
     {
+        $validated = $request->validated();
+
+        if (($validated['mode'] ?? null) === 'result') {
+
+            if (!config('debugbar.options.db.query_result', false) || !$debugbar->isStorageOpen($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Query result is currently disabled in the Debugbar.',
+                ], 400);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $explain->generateSelectResult($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash'], $validated['format'] ?? null),
+            ]);
+        }
+
         if (!config('debugbar.options.db.explain.enabled', false) || !$debugbar->isStorageOpen($request)) {
             return response()->json([
                 'success' => false,
                 'message' => 'EXPLAIN is currently disabled in the Debugbar.',
             ], 400);
         }
-
-        $validated = $request->validated();
 
         try {
             if (($validated['mode'] ?? null) === 'visual') {
@@ -33,12 +48,7 @@ class QueriesController
                 ]);
             }
 
-            if (($validated['mode'] ?? null) === 'result') {
-                return response()->json([
-                    'success' => true,
-                    'data' => $explain->generateSelectResult($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash'], $validated['format'] ?? null),
-                ]);
-            }
+
 
             return response()->json([
                 'success' => true,
