@@ -56,7 +56,7 @@ class Explain
         };
     }
 
-    public function hash(string $connection, string $sql, array $bindings): string
+    public function hash(string $connection, string $sql, ?array $bindings): string
     {
         $bindings = json_encode($bindings);
 
