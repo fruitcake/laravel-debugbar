@@ -20,7 +20,7 @@ class QueriesController
 
         if (($validated['mode'] ?? null) === 'result') {
 
-            if (!config('debugbar.options.db.query_result', false) || !$debugbar->isStorageOpen($request)) {
+            if (!config('debugbar.options.db.show_query_result', false) || !$debugbar->isStorageOpen($request)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Query result is currently disabled in the Debugbar.',

@@ -52,7 +52,7 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
             $queryCollector->setExplainSource(true);
         }
 
-        if (($options['query_result'] ?? false) && $this->debugbar->isStorageOpen($request)) {
+        if (($options['show_query_result'] ?? false) && $this->debugbar->isStorageOpen($request)) {
             $queryCollector->setShowQueryResult(true);
         }
 
