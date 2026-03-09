@@ -12,8 +12,8 @@ class QueryCollectorRuntimeDatabaseTest extends TestCase
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('database.default', null);
-
         $app['config']->set('database.connections', []);
+        $app['config']->set('debugbar.options.db.explain.enabled', false);
     }
 
     public function testCollectsQueriesFromRuntimeConnections()

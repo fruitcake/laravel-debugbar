@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\Http;
 
 class Explain
 {
+    public function isReadOnlyQuery(string $query): bool
+    {
+        return (bool) preg_match('/^(SELECT|WITH)\b/i', ltrim($query));
+    }
+
+    public function isRawExplainSupported(string $driver, ?array $bindings): bool
+    {
+        return in_array($driver, ['mariadb', 'mysql', 'pgsql'], true) && $bindings !== null;
+    }
+
     public function isVisualExplainSupported(string $connection): bool
     {
         $driver = DB::connection($connection)->getDriverName();
@@ -50,10 +60,7 @@ class Explain
     {
         $bindings = json_encode($bindings);
 
-        return match (DB::connection($connection)->getDriverName()) {
-            'mariadb', 'mysql', 'pgsql' => hash_hmac('sha256', "{$connection}::{$sql}::{$bindings}", config('app.key')),
-            default => throw new Exception('EXPLAIN is not supported for this database driver.'),
-        };
+        return hash_hmac('sha256', "{$connection}::{$sql}::{$bindings}", config('app.key'));
     }
 
     private function verify(string $connection, string $sql, array $bindings, string $hash): void
@@ -115,7 +122,7 @@ class Explain
     {
         $normalized = ltrim($sql);
 
-        if (!preg_match('/^(SELECT|WITH)\b/i', $normalized)) {
+        if (!$this->isReadOnlyQuery($normalized)) {
             throw new Exception('Only SELECT queries can be explained or executed.');
         }
     }

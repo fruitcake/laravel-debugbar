@@ -105,6 +105,10 @@
             }
             return fetch(statement.explain.url, {
                 method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(body),
             }).then((response) =>
                 response.json().then((json) => {
@@ -211,9 +215,12 @@
             if (stmt.explain) {
                 let table = li.querySelector(`.${csscls('params')}`);
                 table.style.display = '';
-
-                this.renderDetailSection(table, 'Result', stmt, 'result');
-                this.renderDetailSection(table, 'Performance', stmt, 'explain');
+                if (stmt.explain.modes.includes('result')) {
+                    this.renderDetailSection(table, 'Result', stmt, 'result');
+                }
+                if (stmt.explain.modes.includes('explain')) {
+                    this.renderDetailSection(table, 'Performance', stmt, 'explain');
+                }
             }
         }
 
