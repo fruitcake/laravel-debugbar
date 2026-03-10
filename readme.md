@@ -73,13 +73,9 @@ php artisan vendor:publish --provider='Fruitcake\LaravelDebugbar\ServiceProvider
 
 ### Laravel with Octane:
 
-Make sure to add LaravelDebugbar to your flush list in `config/octane.php`.
+Laravel Debugbar 4.x works out of the box with Octane. No need to add anything to your config.
 
-```php
-    'flush' => [
-        \Fruitcake\LaravelDebugbar\LaravelDebugbar::class,
-    ],
-```
+If you're upgrading from Laravel Debugbar 3.x, remove the 'flush' config for Debugbar in `config/octane.php`.
 
 ## Usage
 

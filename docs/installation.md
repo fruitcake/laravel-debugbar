@@ -78,26 +78,10 @@ public function register(): void
 
 ### With Octane
 
-Make sure to add LaravelDebugbar to your flush list in `config/octane.php`.
+Laravel Debugbar 4.x works out of the box with Octane. No need to add anything to your config.
 
-```php
-    'flush' => [
-        \Fruitcake\LaravelDebugbar\LaravelDebugbar::class,
-    ],
-```
+If you're upgrading from Laravel Debugbar 3.x, remove the 'flush' config for Debugbar in `config/octane.php`.
 
 ### With Lumen
 
-For Lumen, register a different Provider in `bootstrap/app.php`:
-
-```php
-if (env('APP_DEBUG')) {
- $app->register(Fruitcake\LaravelDebugbar\LumenServiceProvider::class);
-}
-```
-
-To change the configuration, copy the file to your config folder and enable it:
-
-```php
-$app->configure('debugbar');
-```
+Lumen is not supported anymore, as it's no longer actively maintained.
