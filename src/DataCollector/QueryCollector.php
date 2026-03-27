@@ -354,7 +354,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
     /**
      * Adds a custom message to statements.
      */
-    public function addMessage(string $message): void
+    public function addMessage(string $message, string $type = 'message'): void
     {
         $this->infoStatements++;
         $source = [];
@@ -368,7 +368,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
 
         $this->queries[] = [
             'sql' => $message,
-            'type' => 'message',
+            'type' => $type,
             'start' => microtime(true),
             ...(count($source) ? ['xdebug_link' => $source[0]] : []),
         ];
