@@ -36,7 +36,7 @@ class QueriesCommand extends Command
 
         $queries = $storage->get($id)['queries'] ?? [];
 
-        if (empty($queries) || empty($queries['statements'])) {
+        if (count($queries) === 0 || count($queries['statements']) === 0) {
             $this->info('No queries found');
             return;
         }
@@ -86,10 +86,10 @@ class QueriesCommand extends Command
                 continue;
             }
             $key = $stmt['sql'] ?? '';
-            if (!empty($stmt['params'])) {
+            if (isset($stmt['params']) && count($stmt['params']) > 0) {
                 $key .= json_encode($stmt['params']);
             }
-            if (!empty($stmt['connection'])) {
+            if (isset($stmt['connection'])) {
                 $key .= '@' . $stmt['connection'];
             }
             $duplicates[$key] ??= [];
@@ -124,8 +124,8 @@ class QueriesCommand extends Command
         $this->table(['#', 'Conn', 'Type', 'SQL', 'Duration', 'Slow', 'Dup', 'Source'], $rows);
 
         // Show duplicates summary
-        $dupGroups = array_filter($duplicates, fn ($indices) => count($indices) > 1);
-        if (!empty($dupGroups)) {
+        $dupGroups = array_filter($duplicates, fn($indices) => count($indices) > 1);
+        if ($dupGroups) {
             $totalDup = array_sum(array_map('count', $dupGroups));
             $this->newLine();
             $this->warn("  {$totalDup} duplicate queries in " . count($dupGroups) . ' group(s):');
@@ -152,7 +152,7 @@ class QueriesCommand extends Command
         $this->newLine();
         $this->line('<fg=gray>SQL:</> ' . ($stmt['sql'] ?? ''));
 
-        if (!empty($stmt['params'])) {
+        if (isset($stmt['params']) && count($stmt['params']) > 0) {
             $this->line('<fg=gray>Params:</> ' . json_encode($stmt['params']));
         }
 
@@ -181,7 +181,7 @@ class QueriesCommand extends Command
 
         if (isset($stmt['explain']['modes'])) {
             $this->newLine();
-            $runModes = array_map(fn ($mode) => '--' . $mode, $stmt['explain']['modes']);
+            $runModes = array_map(fn($mode) => '--' . $mode, $stmt['explain']['modes']);
             $this->info('Run this command with ' . implode(' or ', $runModes) . ' to query the database directly.');
         }
     }
@@ -204,9 +204,9 @@ class QueriesCommand extends Command
             $this->info('EXPLAIN for: ' . $sql);
             $this->newLine();
 
-            $rows = array_map(fn ($row) => (array) $row, $result);
+            $rows = array_map(fn($row) => (array) $row, $result);
 
-            if (!empty($rows) && is_array($rows[0])) {
+            if ($rows) {
                 $this->table(array_keys($rows[0]), $rows);
             }
         } catch (\Exception $e) {
@@ -234,12 +234,12 @@ class QueriesCommand extends Command
             $this->info('Result for: ' . $sql);
             $this->newLine();
 
-            if (empty($rows)) {
+            if (!$rows) {
                 $this->info('No results returned.');
                 return;
             }
 
-            $rows = array_map(fn ($row) => (array) $row, $rows);
+            $rows = array_map(fn($row) => (array) $row, $rows);
             $this->table(array_keys($rows[0]), $rows);
         } catch (\Exception $e) {
             $this->error('Query failed: ' . $e->getMessage());
