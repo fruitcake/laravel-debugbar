@@ -13,7 +13,6 @@ class GetCommand extends Command
     protected $signature = 'debugbar:get {id}
     {--collector= : Show a specific collector}
     {--raw : Show raw JSON data}
-    {--dump : Dump JSON data}
     ';
     protected $description = 'List the Debugbar Storage';
 
@@ -37,20 +36,17 @@ class GetCommand extends Command
             }
         }
 
+        // Fix the JSON formatted text
         $reverseFormatter = new ReverseJsonDumper();
-
         $result = $this->reverseFormat($result, $reverseFormatter);
 
         if ($this->option('raw')) {
             $this->line(json_encode($result, JSON_PRETTY_PRINT));
-            return;
-        } elseif ($this->option('dump') || $this->option('collector')) {
+        } elseif($this->option('collector')) {
             dump($result);
-            return;
+        } else {
+            $this->showSummary($result);
         }
-
-
-        $this->showSummary($result);
     }
 
     private function showSummary(array $result): void
