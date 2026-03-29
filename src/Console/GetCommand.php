@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Console;
 
+use DebugBar\DataCollector\Renderable;
 use DebugBar\DataFormatter\VarDumper\DebugBarJsonCaster;
 use DebugBar\DataFormatter\VarDumper\DebugBarJsonVar;
 use DebugBar\DataFormatter\VarDumper\ReverseJsonDumper;
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 
 class GetCommand extends Command
 {
-    protected $signature = 'debugbar:get {id}
+    protected $signature = 'debugbar:get
+    {id : The id of the request to show, or "latest" to show the latest}
     {--collector= : Show a specific collector}
     {--raw : Show raw JSON data}
     ';
@@ -29,6 +32,10 @@ class GetCommand extends Command
         }
 
         $id = $this->argument('id');
+        if ($id === 'latest') {
+            $latest = $storage->find([], 1);
+            $id = $latest[0]['id'] ?? null;
+        }
 
         $result = $storage->get($id);
         $collector = $this->option('collector');
@@ -51,19 +58,42 @@ class GetCommand extends Command
 
     private function showSummary(array $result): void
     {
+        $meta = $result['__meta'];
+        unset($meta['utime']);
+
+        $this->table(array_keys($meta), [$meta]);
+
         $rows = [];
-        foreach ($result as $collector => $data) {
-            if (!is_array($data)) {
+        foreach ($result as $name => $data) {
+            if (!is_array($data) || $name === '__meta') {
                 continue;
             }
+
             $badge = $data['count'] ?? '';
-            $rows[] = [$collector, $badge];
+            if (debugbar()->hasCollector($name)) {
+                $collector = debugbar()->getCollector($name);
+                if ($collector instanceof Renderable) {
+                    $widgets = $collector->getWidgets();
+                    if (isset($widgets[ $collector->getName() . ':badge']['map'])) {
+                        $badge = Arr::get($result, $widgets[ $collector->getName() . ':badge']['map'], $badge);
+                    }
+                }
+            }
+
+            $summary = match($name) {
+                'request' => $data['tooltip'] ?? null,
+                default => '',
+            };
+
+            $summary = $summary ? $this->dumpResult($summary, true) : '';
+
+            $rows[] = [$name, $badge, $summary];
         }
 
-        $this->table(['Collector', 'Badge'], $rows);
+        $this->table(['Collector', 'Badge', 'Summary'], $rows);
     }
 
-    public function dumpResult(array $result): void
+    public function dumpResult(array $result, $output = null): null|string
     {
         $reverseFormatter = new ReverseJsonDumper();
         $result = $this->wrapJsonDumps($result, $reverseFormatter);
@@ -73,7 +103,7 @@ class GetCommand extends Command
         $data = $cloner->cloneVar($result);
 
         $dumper = new CliDumper();
-        $dumper->dump($data);
+        return $dumper->dump($data, $output);
     }
 
     private function wrapJsonDumps(mixed $data, ReverseJsonDumper $formatter): mixed
