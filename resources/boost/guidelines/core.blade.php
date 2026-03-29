@@ -51,7 +51,7 @@ php artisan debugbar:get {id}
 php artisan debugbar:get latest --collector=queries
 
 # Output raw JSON data
-php artisan debugbar:get latest --raw
+php artisan debugbar:get latest
 </code-snippet>
 @endverbatim
 
