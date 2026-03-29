@@ -52,7 +52,7 @@ class FindCommand extends Command
             return;
         }
 
-        $result = array_map(function ($row) {
+        $result = array_map(function ($row): mixed {
             unset($row['utime']);
             return $row;
         }, $result);

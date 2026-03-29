@@ -80,7 +80,7 @@ class GetCommand extends Command
                 }
             }
 
-            $summary = match($name) {
+            $summary = match ($name) {
                 'request' => $data['tooltip'] ?? null,
                 default => '',
             };
@@ -93,7 +93,7 @@ class GetCommand extends Command
         $this->table(['Collector', 'Badge', 'Summary'], $rows);
     }
 
-    public function dumpResult(array $result, $output = null): null|string
+    public function dumpResult(array $result, $output = null): ?string
     {
         $reverseFormatter = new ReverseJsonDumper();
         $result = $this->wrapJsonDumps($result, $reverseFormatter);
