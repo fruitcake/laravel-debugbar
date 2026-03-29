@@ -52,8 +52,12 @@ class FindCommand extends Command
             return;
         }
 
-        $latest = $result[0];
+        $result = array_map(function ($row) {
+            unset($row['utime']);
+            return $row;
+        }, $result);
 
+        $latest = $result[0];
         $this->table(array_keys($latest), $result);
     }
 }
