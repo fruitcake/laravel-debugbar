@@ -47,7 +47,7 @@ class FindCommand extends Command
             (int) $this->option('offset'),
         );
 
-        if (empty($result)) {
+        if (count($result) === 0) {
             $this->info('No results found');
             return;
         }
