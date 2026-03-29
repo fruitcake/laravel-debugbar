@@ -6,6 +6,7 @@ Laravel Debugbar integrates PHP Debug Bar with Laravel. It collects data from yo
 
 - `debugbar:find` - Search stored debugbar requests with filters. Useful for finding specific requests to inspect.
 - `debugbar:get {id}` - View details of a specific debugbar request by its ID.
+- `debugbar:queries {id}` - Inspect queries for a specific request, with duplicate detection, EXPLAIN, and result output.
 - `debugbar:clear` - Clear all stored debugbar data.
 
 ### Finding Requests
@@ -52,6 +53,29 @@ php artisan debugbar:get latest --collector=queries
 
 # Output raw JSON data
 php artisan debugbar:get latest
+</code-snippet>
+@endverbatim
+
+### Inspecting Queries
+
+Use `debugbar:queries` to view queries with duplicate detection, run EXPLAIN, or re-execute a query:
+
+@verbatim
+<code-snippet name="Inspect queries" lang="bash">
+# Show all queries for the latest request, with duplicate counts
+php artisan debugbar:queries latest
+
+# Show all queries for a specific request, with duplicate counts
+php artisan debugbar:queries {id}
+
+# Show details for a specific statement (backtrace, params)
+php artisan debugbar:queries {id} --statement=2
+
+# Run EXPLAIN on a specific query
+php artisan debugbar:queries {id} --statement=2 --explain
+
+# Re-execute a SELECT query and show results
+php artisan debugbar:queries {id} --statement=2 --result
 </code-snippet>
 @endverbatim
 

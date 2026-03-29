@@ -10,6 +10,7 @@ use DebugBar\DebugBar;
 use Fruitcake\LaravelDebugbar\Console\ClearCommand;
 use Fruitcake\LaravelDebugbar\Console\FindCommand;
 use Fruitcake\LaravelDebugbar\Console\GetCommand;
+use Fruitcake\LaravelDebugbar\Console\QueriesCommand;
 use Fruitcake\LaravelDebugbar\Support\Octane\ResetDebugbar;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -56,7 +57,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $configPath = __DIR__ . '/../config/debugbar.php';
             $this->publishes([$configPath => $this->getConfigPath()], 'config');
 
-            $this->commands([FindCommand::class, GetCommand::class, ClearCommand::class]);
+            $this->commands([FindCommand::class, GetCommand::class, ClearCommand::class, QueriesCommand::class]);
         }
 
         // Eearly return if debugbar can not enabled

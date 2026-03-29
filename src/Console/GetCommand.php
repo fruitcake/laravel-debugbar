@@ -82,10 +82,13 @@ class GetCommand extends Command
 
             $summary = match ($name) {
                 'request' => $data['tooltip'] ?? null,
+                'queries' => 'Run `php artisan debugbar:queries ' . $result['__meta']['id'] . '` to see the query details',
                 default => '',
             };
 
-            $summary = $summary ? $this->dumpResult($summary, true) : '';
+            if ($summary && !is_string($summary)) {
+                $summary = $this->dumpResult($summary);
+            }
 
             $rows[] = [$name, $badge, $summary];
         }
