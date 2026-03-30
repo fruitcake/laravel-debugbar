@@ -57,6 +57,36 @@ class FindCommand extends Command
             return $row;
         }, $result);
 
+        foreach ($result as $i => &$row) {
+            unset($row['utime']);
+
+            $data = $storage->get($row['id']);
+
+            $summary = [];
+            if (isset($data['request']['tooltip']['status'])) {
+                $summary[] = $data['request']['tooltip']['status'];
+            }
+            if (isset($data['time']['duration_str'], $data['memory']['peak_usage_str'])) {
+                $summary[] = $data['time']['duration_str'] . '/' . $data['memory']['peak_usage_str'] . ' request';
+            } else {
+                if (isset($data['time']['duration_str'])) {
+                    $summary[] = $data['time']['duration_str'];
+                }
+                if (isset($data['memory']['peak_usage_str'])) {
+                    $summary[] = $data['memory']['peak_usage_str'];
+                }
+            }
+
+            if (isset($data['exception']['count']) && $data['exception']['count']) {
+                $summary[] = $data['queries']['count'] . ' exception';
+            }
+            if (isset($data['queries']['count'])) {
+                $summary[] = $data['queries']['count'] . ' queries in ' . $data['queries']['accumulated_duration_str'];
+            }
+
+            $row['summary'] = implode(', ', $summary);
+        }
+
         $latest = $result[0];
         $this->table(array_keys($latest), $result);
     }
