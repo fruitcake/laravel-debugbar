@@ -80,8 +80,8 @@ class FindCommand extends Command
             if (isset($data['exception']['count']) && $data['exception']['count']) {
                 $summary[] = $data['queries']['count'] . ' exception';
             }
-            if (isset($data['queries']['count'])) {
-                $summary[] = $data['queries']['count'] . ' queries in ' . $data['queries']['accumulated_duration_str'];
+            if (isset($data['queries']['nb_statements'])) {
+                $summary[] = $data['queries']['nb_statements'] . ' queries in ' . $data['queries']['accumulated_duration_str'];
             }
 
             $row['summary'] = implode(', ', $summary);

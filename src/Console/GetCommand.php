@@ -11,6 +11,7 @@ use DebugBar\DataFormatter\VarDumper\ReverseJsonDumper;
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 
@@ -69,31 +70,48 @@ class GetCommand extends Command
                 continue;
             }
 
-            $badge = $data['count'] ?? '';
+            $badge = $data['count'] ?? null;
             if (debugbar()->hasCollector($name)) {
                 $collector = debugbar()->getCollector($name);
                 if ($collector instanceof Renderable) {
                     $widgets = $collector->getWidgets();
+                    dump($widgets[ $collector->getName() . ':badge']['map'] ?? null);
                     if (isset($widgets[ $collector->getName() . ':badge']['map'])) {
                         $badge = Arr::get($result, $widgets[ $collector->getName() . ':badge']['map'], $badge);
                     }
                 }
             }
 
+            $plural = match ($name) {
+                'caches' => 'cache events',
+                'symfonymailer_mails' => 'mails sent',
+                'livewire' => 'livewire components',
+                'http_client' => 'http requests',
+                'session' => 'session values',
+                default => Str::plural($name),
+            };
+
             $summary = match ($name) {
-                'request' => $data['tooltip'] ?? null,
-                'queries' => 'Run `php artisan debugbar:queries ' . $result['__meta']['id'] . '` to see the query details',
-                default => '',
+                'request' => $data['tooltip'],
+                'time' => $data['duration_str'] ?? null,
+                'memory' => $data['peak_usage_str'] ?? null,
+                'queries' => $data['nb_statements'] . ' queries in ' . $data['accumulated_duration_str'],
+                'route' => ($data['as'] ?? '') . ' @ ' . ($data['file']['value'] ?? ''),
+                default => $badge !== null ? $badge . ' ' . $plural : null,
             };
 
             if ($summary && !is_string($summary)) {
-                $summary = $this->dumpResult($summary);
+                $summary = $this->dumpResult($summary, true);
             }
 
-            $rows[] = [$name, $badge, $summary];
+            $rows[] = [$name, $summary];
         }
 
-        $this->table(['Collector', 'Badge', 'Summary'], $rows);
+        $this->table(['Collector', 'Summary'], $rows);
+
+        if (isset($data['queries'])) {
+            $this->newLine('Run `php artisan debugbar:queries ' . $result['__meta']['id'] . '` to see the query details');
+        }
     }
 
     public function dumpResult(array $result, $output = null): ?string
