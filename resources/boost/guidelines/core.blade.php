@@ -1,85 +1,64 @@
 ## Laravel Debugbar
 
-Laravel Debugbar integrates PHP Debug Bar with Laravel. It collects data from your application during each request (queries, views, routes, mail, etc.) and stores it for review.
-
-### Artisan Commands
-
-- `debugbar:find` - Search stored debugbar requests with filters. Useful for finding specific requests to inspect.
-- `debugbar:get {id}` - View details of a specific debugbar request by its ID.
-- `debugbar:queries {id}` - Inspect queries for a specific request, with duplicate detection, EXPLAIN, and result output.
-- `debugbar:clear` - Clear all stored debugbar data.
+Laravel Debugbar stores data from each request (queries, exceptions, views, routes, mail, etc.) for review via Artisan commands.
 
 ### Finding Requests
 
-Use `debugbar:find` to search through stored requests:
-
 @verbatim
-<code-snippet name="Find recent requests" lang="bash">
+<code-snippet name="Find requests" lang="bash">
+# List recent requests (shows summary with status, duration, memory, query count)
 php artisan debugbar:find
+
+# Filter by URI pattern (fnmatch) and/or HTTP method
+php artisan debugbar:find --uri="/api/*" --method=POST
+
+# Only show requests with issues (exceptions, slow queries, duplicates, errors)
+php artisan debugbar:find --issues --max=50
+
+# Customize issue thresholds (defaults: --min-queries=50, --min-duration=1000, --min-duplicates=2)
+php artisan debugbar:find --issues --min-queries=10 --min-duration=500
+
+# Threshold options also work standalone, filtering on just that criteria
+php artisan debugbar:find --min-queries=20
 </code-snippet>
 @endverbatim
 
-@verbatim
-<code-snippet name="Find requests with filters" lang="bash">
-# Filter by HTTP method
-php artisan debugbar:find --method=POST
-
-# Filter by URI pattern (fnmatch format)
-php artisan debugbar:find --uri="/api/*"
-
-# Filter by IP address
-php artisan debugbar:find --ip=127.0.0.1
-
-# Combine filters with pagination
-php artisan debugbar:find --method=GET --uri="/admin/*" --max=50 --offset=0
-</code-snippet>
-@endverbatim
+`--issues` flags: exceptions, non-2xx status, high query count, slow queries, duplicate query groups, slow request duration, and failed queries. Issue filtering applies on top of the fetched result set — increase `--max` to scan further back.
 
 ### Inspecting a Request
 
-After finding a request ID with `debugbar:find`, inspect it with `debugbar:get` to get a summary,
-and add --collector=name to get the full details for that collector.
-
 @verbatim
-<code-snippet name="Get request details" lang="bash">
-# Show summary of all collectors for the latest request
+<code-snippet name="Inspect request" lang="bash">
+# Summary of all collectors (available collectors depend on config)
 php artisan debugbar:get latest
-
-# Show summary by specific ID
 php artisan debugbar:get {id}
 
-# View a specific collector (e.g. queries, views, route, mail)
-php artisan debugbar:get latest --collector=queries
-
-# Output raw JSON data
-php artisan debugbar:get latest
+# Full data for a specific collector
+php artisan debugbar:get {id} --collector=exceptions
 </code-snippet>
 @endverbatim
 
-### Inspecting Queries
+Use the collector name from the summary table. Common ones by issue type:
+- **Error/500** → `exceptions` · **Slow page** → `queries`, `time` · **Auth** → `auth`, `gate` · **Cache** → `cache`
 
-Use `debugbar:queries` to view queries with duplicate detection, run EXPLAIN, or re-execute a query:
+### Analyzing Queries
 
 @verbatim
-<code-snippet name="Inspect queries" lang="bash">
-# Show all queries for the latest request, with duplicate counts
-php artisan debugbar:queries latest
-
-# Show all queries for a specific request, with duplicate counts
+<code-snippet name="Query analysis" lang="bash">
+# Overview with duplicate detection and slow query flags
 php artisan debugbar:queries {id}
 
-# Show details for a specific statement (backtrace, params)
-php artisan debugbar:queries {id} --statement=2
+# Backtrace and params for a specific statement
+php artisan debugbar:queries {id} --statement=N
 
-# Run EXPLAIN on a specific query
-php artisan debugbar:queries {id} --statement=2 --explain
-
-# Re-execute a SELECT query and show results
-php artisan debugbar:queries {id} --statement=2 --result
+# EXPLAIN plan or re-execute a SELECT
+php artisan debugbar:queries {id} --statement=N --explain
+php artisan debugbar:queries {id} --statement=N --result
 </code-snippet>
 @endverbatim
 
-### Configuration
+Duplicate queries are a strong N+1 signal. Use `--statement=N` to get the backtrace and find the origin.
 
-- Debugbar is enabled by default when APP_DEBUG=true. It should be disabled in production.
-- Collectors can be enabled/disabled individually in `config/debugbar.php` under the `collectors` key.
+### Other Commands
+
+- `debugbar:clear` — Clear all stored debugbar data.
