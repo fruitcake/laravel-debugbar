@@ -109,7 +109,7 @@ class GetCommand extends Command
         $this->table(['Collector', 'Summary'], $rows);
 
         if (isset($data['queries'])) {
-            $this->newLine('Run `php artisan debugbar:queries ' . $result['__meta']['id'] . '` to see the query details');
+            $this->line('Run `php artisan debugbar:queries ' . $result['__meta']['id'] . '` to see the query details');
         }
     }
 

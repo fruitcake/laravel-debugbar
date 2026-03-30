@@ -161,7 +161,7 @@ class FindCommand extends Command
         // Slow queries
         $slowCount = 0;
         foreach ($data['queries']['statements'] ?? [] as $stmt) {
-            if (!empty($stmt['slow'])) {
+            if ($stmt['slow'] ?? false) {
                 $slowCount++;
             }
         }
