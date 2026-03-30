@@ -75,7 +75,6 @@ class GetCommand extends Command
                 $collector = debugbar()->getCollector($name);
                 if ($collector instanceof Renderable) {
                     $widgets = $collector->getWidgets();
-                    dump($widgets[ $collector->getName() . ':badge']['map'] ?? null);
                     if (isset($widgets[ $collector->getName() . ':badge']['map'])) {
                         $badge = Arr::get($result, $widgets[ $collector->getName() . ':badge']['map'], $badge);
                     }
