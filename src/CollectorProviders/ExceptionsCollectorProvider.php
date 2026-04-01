@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\CollectorProviders;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
-use Illuminate\Database\QueryException;
-use Illuminate\View\ViewException;
 
 class ExceptionsCollectorProvider extends AbstractCollectorProvider
 {
