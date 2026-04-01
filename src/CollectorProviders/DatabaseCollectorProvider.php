@@ -15,10 +15,11 @@ use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use Illuminate\View\ViewException;
 
 class DatabaseCollectorProvider extends AbstractCollectorProvider
 {
-    public function __invoke(Dispatcher $events, Router $router, Request $request, array $options): void
+    public function __invoke(Dispatcher $events, Router $router, Request $request, ExceptionHandler $exceptionHandler, array $options): void
     {
         $queryCollector = new QueryCollector();
         if ($options['timeline'] ?? false) {
@@ -82,15 +83,19 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
         }
 
         try {
-            $handler = app()->make(ExceptionHandler::class);
-
-            if (method_exists($handler, 'reportable')) {
-                $handler->reportable(function (QueryException $exception) use ($queryCollector): void {
+            if (method_exists($exceptionHandler, 'reportable')) {
+                $exceptionHandler->reportable(function (QueryException $exception) use ($queryCollector): void {
                     $queryCollector->addFailedQuery($exception);
+                });
+
+                $exceptionHandler->reportable(function (ViewException $exception) use ($queryCollector): void {
+                    if ($exception->getPrevious() instanceof QueryException) {
+                        $queryCollector->addFailedQuery($exception->getPrevious());
+                    }
                 });
             }
         } catch (\Throwable $e) {
-            $this->addCollectorException('Cannot listen to failed queries', $e);
+            $this->addCollectorException('Cannot listen to Exceptions in Database ExceptionHandler', $e);
         }
 
         try {
