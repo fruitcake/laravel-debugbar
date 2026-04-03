@@ -213,7 +213,7 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
         }
 
         if (isset($result['middleware']) && is_array($result['middleware'])) {
-            $result['middleware'] =$this->getDataFormatter()->formatVar($result['middleware']);
+            $result['middleware'] = $this->getDataFormatter()->formatVar($result['middleware']);
         }
 
         return array_filter($result);
