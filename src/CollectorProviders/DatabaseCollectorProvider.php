@@ -51,6 +51,10 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
             $queryCollector->mergeBacktraceExcludePaths($excludeBacktracePaths);
         }
 
+        if ($options['backtrace_editor_links'] ?? false) {
+            $queryCollector->setBacktraceEditorLinks(true);
+        }
+
         if (($options['explain']['enabled'] ?? false) && $this->debugbar->isStorageOpen($request)) {
             $queryCollector->setExplainQuery(true);
         }

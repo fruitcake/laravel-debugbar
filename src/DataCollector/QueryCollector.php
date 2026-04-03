@@ -51,6 +51,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
     protected bool $renderSqlWithParams = false;
     protected bool $durationBackground = false;
     protected ?float $slowThreshold = null;
+    protected bool $backtraceEditorLinks = false;
 
     public function getQueryFormatter(): QueryFormatter
     {
@@ -147,6 +148,14 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
     public function setShowQueryResult(bool $enabled): void
     {
         $this->showQueryResult = $enabled;
+    }
+
+    /**
+     * Enable/disable editor links on backtrace entries
+     */
+    public function setBacktraceEditorLinks(bool $enabled): void
+    {
+        $this->backtraceEditorLinks = $enabled;
     }
 
     public function startMemoryUsage(): void
@@ -504,7 +513,14 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
                 'sql' => $this->getSqlQueryToDisplay($query),
                 'type' => $query['type'],
                 'params' => $query['bindings'] ?? [],
-                'backtrace' => array_values($query['source']),
+                'backtrace' => array_map(function ($trace): mixed {
+                    if ($this->backtraceEditorLinks && is_object($trace) && $trace->file !== null && $trace->file !== ''
+                        && !str_starts_with($this->normalizeFilePath($trace->file), 'vendor/')
+                    ) {
+                        $trace->xdebug_link = $this->getXdebugLink($trace->file, $trace->line);
+                    }
+                    return $trace;
+                }, array_values($query['source'])),
                 'start' => $query['start'] ?? null,
                 'duration' => $query['time'],
                 'duration_str' => $query['time'] ? $this->getDataFormatter()->formatDuration($query['time']) : null,
