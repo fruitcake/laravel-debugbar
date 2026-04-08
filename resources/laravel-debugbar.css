@@ -134,6 +134,10 @@ table.phpdebugbar-widgets-tablevar td {
     border-top: 0px;
 }
 
+dl.phpdebugbar-widgets-kvlist {
+    grid-template-columns: minmax(160px, 15%) minmax(0, 1fr);
+}
+
 div.phpdebugbar-widgets-messages div.phpdebugbar-widgets-toolbar a.phpdebugbar-widgets-filter,
 div.phpdebugbar-widgets-messages div.phpdebugbar-widgets-toolbar a.phpdebugbar-widgets-filter.phpdebugbar-widgets-excluded {
     background-color: #6d6d6d;
