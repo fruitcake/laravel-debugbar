@@ -45,9 +45,9 @@ class GateCollectorTest extends TestCase
         );
         static::assertEquals(
             [
-                'ability' => '"view"',
-                'target' => '"Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)"',
-                'result' => 'null',
+                'ability' => 'view',
+                'target' => 'Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)',
+                'result' => 'NULL',
                 'user' => '1',
                 'arguments' => 'array:1 [
   0 => "Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)"
@@ -65,8 +65,8 @@ class GateCollectorTest extends TestCase
         static::assertEquals(
             $gateSuccess['context'],
             [
-                'ability' => '"view"',
-                'target' => '"Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)"',
+                'ability' => 'view',
+                'target' => 'Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)',
                 'result' => 'true',
                 'user' => '1',
                 'arguments' => 'array:1 [
