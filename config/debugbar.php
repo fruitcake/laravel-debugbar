@@ -262,6 +262,21 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Force Allow Debugbar to be Enabled during boot
+     |--------------------------------------------------------------------------
+     |
+     | By default, debugbar can only be enabled when the app is in debug mode and not in production.
+     | For special cases, eg admin panels behind proper authentication, you can force debugbar to be enabled.
+     | Just this setting alone will not enable the Debugbar, but it will boot the Debugbar including routes and listeners,
+     | so you can enable it further in the requests using $debugbar->enable().
+     |
+     | Warning: Use with caution. Debugbar is a development tool and should never be exposed in non-trusted endpoints.
+     |
+    */
+    'force_allow_enable' => env('DEBUGBAR_FORCE_ALLOW_ENABLE', false),
+
+    /*
+     |--------------------------------------------------------------------------
      | Assets
      |--------------------------------------------------------------------------
      |

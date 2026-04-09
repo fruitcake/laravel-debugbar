@@ -551,6 +551,11 @@ class LaravelDebugbar extends DebugBar
 
     public static function canBeEnabled(): bool
     {
+        // For specific cases, Debugbar can be enabled even if app is in production
+        if (config('debugbar.force_allow_enable', false)) {
+            return true;
+        }
+
         $app = app();
         return $app->hasDebugModeEnabled() && !$app->environment('testing', 'production');
     }

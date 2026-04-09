@@ -160,6 +160,10 @@ You can enable or disable the debugbar during run time.
 
 NB. Once enabled, the collectors are added (and could produce extra overhead), so if you want to use the debugbar in production, disable in the config and only enable when needed.
 
+> Note: by default Debugbar can only be enabled in debug mode and non-production environments. It's highly recommended to don't install this in production at all.
+> If you really need to enable it in production, you can set `debugbar.force_allow_enable` to true, or set `DEBUGBAR_FORCE_ALLOW_ENABLE=true` in your .env.
+> This will not enable the Debugbar, but will run the ServiceProvider bootstrap so you can enable it after booting.
+
 ## Storage
 
 Debugbar remembers previous requests, which you can view using the Browse button on the right. This will only work if you enable `debugbar.storage.open` in the config.
