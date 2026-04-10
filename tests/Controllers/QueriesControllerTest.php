@@ -17,7 +17,7 @@ class QueriesControllerTest extends DebugbarTest
         $response = $this->postJson('/_debugbar/queries/explain', [
             'connection' => 'sqlite',
             'query' => 'SELECT 1',
-            'bindings' => [],
+            'bindings' => '[]',
             'hash' => 'abc123',
         ]);
 
@@ -33,7 +33,7 @@ class QueriesControllerTest extends DebugbarTest
         $response = $this->postJson('/_debugbar/queries/explain', [
             'connection' => 'sqlite',
             'query' => 'SELECT 1',
-            'bindings' => [],
+            'bindings' => '[]',
             'hash' => 'abc123',
         ]);
 
@@ -63,7 +63,7 @@ class QueriesControllerTest extends DebugbarTest
         $response = $this->postJson('/_debugbar/queries/explain', [
             'connection' => 'sqlite',
             'query' => 'SELECT 1',
-            'bindings' => [],
+            'bindings' => '[]',
             'hash' => 'abc123',
             'mode' => 'invalid',
         ]);
@@ -81,7 +81,7 @@ class QueriesControllerTest extends DebugbarTest
             $response = $this->postJson('/_debugbar/queries/explain', [
                 'connection' => 'sqlite',
                 'query' => 'SELECT 1',
-                'bindings' => [],
+                'bindings' => '[]',
                 'hash' => 'abc123',
                 'mode' => $mode,
             ]);

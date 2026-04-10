@@ -17,6 +17,7 @@ class QueriesController
     public function explain(QueriesExplainRequest $request, LaravelDebugbar $debugbar, Explain $explain): \Illuminate\Http\JsonResponse
     {
         $validated = $request->validated();
+        $validated['bindings'] = json_decode($validated['bindings'] ?? '[]', true) ?: [];
 
         if (($validated['mode'] ?? null) === 'result') {
 
@@ -29,7 +30,7 @@ class QueriesController
 
             return response()->json([
                 'success' => true,
-                'data' => $explain->generateSelectResult($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash'], $validated['format'] ?? null),
+                'data' => $explain->generateSelectResult($validated['connection'], $validated['query'], $validated['bindings'], $validated['hash'], $validated['format'] ?? null),
             ]);
         }
 
@@ -44,13 +45,13 @@ class QueriesController
             if (($validated['mode'] ?? null) === 'visual') {
                 return response()->json([
                     'success' => true,
-                    'data' => $explain->generateVisualExplain($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash']),
+                    'data' => $explain->generateVisualExplain($validated['connection'], $validated['query'], $validated['bindings'], $validated['hash']),
                 ]);
             }
 
             return response()->json([
                 'success' => true,
-                'data' => $explain->generateRawExplain($validated['connection'], $validated['query'], $validated['bindings'] ?? null, $validated['hash']),
+                'data' => $explain->generateRawExplain($validated['connection'], $validated['query'], $validated['bindings'], $validated['hash']),
                 'visual' => $explain->isVisualExplainSupported($validated['connection']) ? [
                     'confirm' => $explain->confirmVisualExplain($validated['connection']),
                 ] : null,

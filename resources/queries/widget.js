@@ -96,7 +96,7 @@
             const body = {
                 connection: statement.explain.connection,
                 query: statement.explain.query,
-                bindings: statement.params,
+                bindings: JSON.stringify(statement.params),
                 hash: statement.explain.hash,
                 mode: mode,
             };
