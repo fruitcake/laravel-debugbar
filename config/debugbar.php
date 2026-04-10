@@ -104,9 +104,7 @@ return [
             'backtrace_editor_links' => env('DEBUGBAR_OPTIONS_DB_BACKTRACE_EDITOR_LINKS', false), // Add editor links to backtrace entries (non-vendor files only)
             'timeline'          => env('DEBUGBAR_OPTIONS_DB_TIMELINE', false),  // Add the queries to the timeline
             'duration_background'  => env('DEBUGBAR_OPTIONS_DB_DURATION_BACKGROUND', true),   // Show shaded background on each query relative to how long it took to execute.
-            'explain' => [                 // Show EXPLAIN output on queries
-                'enabled' => env('DEBUGBAR_OPTIONS_DB_EXPLAIN_ENABLED', true),
-            ],
+            'explain'           => env('DEBUGBAR_OPTIONS_DB_EXPLAIN_ENABLED', true), // Show EXPLAIN output on queries
             'show_query_result' => env('DEBUGBAR_OPTIONS_DB_SHOW_QUERY_RESULT', false), // Show option to re-run SELECT queries and show the result
             'only_slow_queries' => env('DEBUGBAR_OPTIONS_DB_ONLY_SLOW_QUERIES', true), // Only track queries that last longer than `slow_threshold`
             'slow_threshold'    => env('DEBUGBAR_OPTIONS_DB_SLOW_THRESHOLD', false), // Max query execution time (ms). Exceeding queries will be highlighted

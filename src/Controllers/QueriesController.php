@@ -33,7 +33,7 @@ class QueriesController
             ]);
         }
 
-        if (!config('debugbar.options.db.explain.enabled', false) || !$debugbar->isStorageOpen($request)) {
+        if (config('debugbar.options.db.explain') !== true || !$debugbar->isStorageOpen($request)) {
             return response()->json([
                 'success' => false,
                 'message' => 'EXPLAIN is currently disabled in the Debugbar.',

@@ -55,7 +55,7 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
             $queryCollector->setBacktraceEditorLinks(true);
         }
 
-        if (($options['explain']['enabled'] ?? false) && $this->debugbar->isStorageOpen($request)) {
+        if (($options['explain'] ?? false) === true && $this->debugbar->isStorageOpen($request)) {
             $queryCollector->setExplainQuery(true);
         }
 
