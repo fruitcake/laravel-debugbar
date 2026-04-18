@@ -510,7 +510,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
             }
 
             $statements[] = array_filter([
-                'sql' => $this->getSqlQueryToDisplay($query),
+                'sql' => $this->getQueryFormatter()->formatSql($this->getSqlQueryToDisplay($query)),
                 'type' => $query['type'],
                 'params' => $query['bindings'] ?? [],
                 'backtrace' => array_map(function ($trace): mixed {
@@ -642,17 +642,17 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
     protected function getSqlQueryToDisplay(array $query): string
     {
         $sql = $query['query'];
-        $grammar = $query['connection']->getQueryGrammar();
-        if ($query['type'] === 'query' && $grammar instanceof Grammar) {
-            try {
-                $sql = $grammar->substituteBindingsIntoRawSql($sql, $query['bindings'] ?? []);
-                return $this->getQueryFormatter()->formatSql($sql);
-            } catch (\Throwable $e) {
-                // Continue using the old substitute
-            }
-        }
 
         if ($query['type'] === 'query' && $this->renderSqlWithParams) {
+            $grammar = $query['connection']->getQueryGrammar();
+            if ($grammar instanceof Grammar) {
+                try {
+                    return $grammar->substituteBindingsIntoRawSql($sql, $query['bindings'] ?? []);
+                } catch (\Throwable $e) {
+                    // Continue using the old substitute
+                }
+            }
+
             $pdo = null;
             try {
                 $pdo = $query['connection']->getPdo();
@@ -660,10 +660,10 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
                 // ignore error for non-pdo laravel drivers
             }
 
-            $sql = $this->getQueryFormatter()->formatSqlWithBindings($sql, $query['bindings'] ?? [], $pdo);
+            return $this->getQueryFormatter()->formatSqlWithBindings($sql, $query['bindings'] ?? [], $pdo);
         }
 
-        return $this->getQueryFormatter()->formatSql($sql);
+        return $sql;
     }
 
     public function getAssets(): array
