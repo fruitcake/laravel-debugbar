@@ -12,6 +12,8 @@ class AssetRequest extends FormRequest
     {
         return [
             'type' => ['required', 'string', 'in:js,css'],
+            'mtime' => ['nullable'],
+            'hash' => ['nullable'],
         ];
     }
 }
