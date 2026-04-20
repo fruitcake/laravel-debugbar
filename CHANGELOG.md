@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.2.7 - 2026-04-20
+
+### What's Changed
+
+* Avoid hash mismatch on query explain/result by @erikn69 in https://github.com/fruitcake/laravel-debugbar/pull/2030
+* Tweak formatting queries by @barryvdh in https://github.com/fruitcake/laravel-debugbar/pull/2031
+
+**Full Changelog**: https://github.com/fruitcake/laravel-debugbar/compare/v4.2.6...v4.2.7
+
 ## v4.2.6 - 2026-04-10
 
 ### What's Changed

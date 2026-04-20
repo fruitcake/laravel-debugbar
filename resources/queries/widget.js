@@ -94,9 +94,7 @@
 
         fetchQuery(statement, mode, format) {
             const body = {
-                connection: statement.explain.connection,
-                query: statement.explain.query,
-                bindings: statement.params,
+                id: PhpDebugBar.instance.activeDatasetId,
                 hash: statement.explain.hash,
                 mode: mode,
             };

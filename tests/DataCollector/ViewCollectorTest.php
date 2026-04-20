@@ -25,7 +25,7 @@ class ViewCollectorTest extends TestCase
 
         tap(Arr::first($collector->collect()['templates']), function (array $template) {
             $this->assertEquals(
-                'phpstorm://open?file=' . urlencode(str_replace('\\', '/', realpath(__DIR__ . '/../resources/views/dashboard.blade.php'))) . '&line=1',
+                'phpstorm://open?file=' . rawurlencode(str_replace('\\', '/', realpath(__DIR__ . '/../resources/views/dashboard.blade.php'))) . '&line=1',
                 $template['xdebug_link']['url'],
             );
         });

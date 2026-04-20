@@ -101,7 +101,7 @@ class RouteCollectorTest extends TestCase
 
     public static function controllerData()
     {
-        $filePath = urlencode(str_replace('\\', '/', realpath(__DIR__ . '/../Mocks/MockController.php')));
+        $filePath = rawurlencode(str_replace('\\', '/', realpath(__DIR__ . '/../Mocks/MockController.php')));
         return [['MockController@show',
             'MockController.php',
             sprintf('phpstorm://open?file=%s', $filePath),
@@ -110,7 +110,7 @@ class RouteCollectorTest extends TestCase
 
     public static function viewComponentData()
     {
-        $filePath = urlencode(str_replace('\\', '/', realpath(__DIR__ . '/../Mocks/MockViewComponent.php')));
+        $filePath = rawurlencode(str_replace('\\', '/', realpath(__DIR__ . '/../Mocks/MockViewComponent.php')));
         return [['MockViewComponent@render',
             'MockViewComponent.php',
             sprintf('phpstorm://open?file=%s', $filePath),

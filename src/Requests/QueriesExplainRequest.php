@@ -11,9 +11,7 @@ class QueriesExplainRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'connection' => ['required', 'string'],
-            'query' => ['required', 'string'],
-            'bindings' => ['nullable', 'array'],
+            'id' => ['required', 'string'],
             'hash' => ['required', 'string'],
             'mode' => ['nullable', 'string', 'in:explain,visual,result'],
             'format' => ['nullable', 'string'],
