@@ -220,7 +220,7 @@ class LaravelDebugbar extends DebugBar
     {
         $startTime = defined('LARAVEL_START') ? (float) LARAVEL_START : null;
         if ($startTime) {
-            $this->addMeasure('Booting', $startTime, microtime(true));
+            $this->addMeasure('Booting', $startTime, microtime(true), [], 'time');
         }
         $this->startMeasure('application', 'Application', 'time');
     }
