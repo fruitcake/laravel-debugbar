@@ -454,3 +454,7 @@ span.phpdebugbar-widgets-visual-link a {
     margin-left: 5px;
     font-size: 11px;
 }
+
+.phpdebugbar-widgets-cache table.phpdebugbar-widgets-params .phpdebugbar-widgets-name {
+    width: 45%;
+}
