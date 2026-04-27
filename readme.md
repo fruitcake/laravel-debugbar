@@ -59,8 +59,6 @@ composer require fruitcake/laravel-debugbar --dev
 > Note: The package name has changed to `fruitcake/laravel-debugbar`. If you're using `barryvdh/laravel-debugbar`,
 > you can safely replace this with the new package name: `composer remove barryvdh/laravel-debugbar --dev --no-scripts`
 
-> Tip: Use 'composer require fruitcake/laravel-debugbar:"^4@beta" --dev' flag to try the new 4.x Beta version!
-
 Laravel uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider.
 
 The Debugbar will be enabled when `APP_DEBUG` is `true` and when the environment is not `production` or `testing`.
