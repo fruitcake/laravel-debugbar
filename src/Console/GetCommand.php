@@ -19,7 +19,7 @@ class GetCommand extends Command
     {--collector= : Show a specific collector}
     {--raw : Show raw JSON data}
     ';
-    protected $description = 'List the Debugbar Storage';
+    protected $description = 'Shows a Debugbar request from the Storage';
 
     public function handle(LaravelDebugbar $debugbar): void
     {
