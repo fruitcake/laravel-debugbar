@@ -52,6 +52,7 @@ use Illuminate\Contracts\Queue\Job;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\HttpFoundation\IpUtils;
@@ -356,6 +357,10 @@ class LaravelDebugbar extends DebugBar
 
         if ($this->getStorage()) {
             $renderer->setOpenHandlerUrl(route('debugbar.openhandler'));
+        }
+
+        if ($renderer->getCspNonce() === null && Vite::cspNonce() !== null) {
+            $renderer->setCspNonce(Vite::cspNonce());
         }
 
         $this->jsRenderer = $renderer;
