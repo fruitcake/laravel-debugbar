@@ -45,6 +45,7 @@ jobs:
         run: |
           composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample
           cd sample
+          composer config audit.block-insecure false || true
           composer config minimum-stability dev
           composer update --prefer-stable --prefer-dist --no-progress
 
