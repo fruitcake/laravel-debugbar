@@ -52,6 +52,7 @@ use Illuminate\Contracts\Queue\Job;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -357,10 +358,6 @@ class LaravelDebugbar extends DebugBar
 
         if ($this->getStorage()) {
             $renderer->setOpenHandlerUrl(route('debugbar.openhandler'));
-        }
-
-        if ($renderer->getCspNonce() === null && Vite::cspNonce() !== null) {
-            $renderer->setCspNonce(Vite::cspNonce());
         }
 
         $this->jsRenderer = $renderer;
@@ -732,6 +729,10 @@ class LaravelDebugbar extends DebugBar
 
         $renderer = $this->getJavascriptRenderer();
 
+        if ($renderer->getCspNonce() === null) {
+            $renderer->setCspNonce($this->detectCspNonce());
+        }
+
         $widget = "<!-- Laravel Debugbar Widget -->\n" . $renderer->renderHead() . $renderer->render();
 
         // Try to put the widget at the end, directly before the </body>
@@ -775,6 +776,9 @@ class LaravelDebugbar extends DebugBar
         $this->storageOpen = null;
         $this->responseIsModified = false;
         $this->httpDriver = null;
+        if ($this->jsRenderer !== null) {
+            $this->jsRenderer->setCspNonce(null);
+        }
     }
 
     /**
@@ -902,5 +906,22 @@ class LaravelDebugbar extends DebugBar
         $remotePaths = array_filter(explode(',', config('debugbar.remote_sites_path') ?: '')) ?: [base_path()];
 
         return array_fill_keys($remotePaths, $localPath);
+    }
+
+    protected function detectCspNonce(): ?string
+    {
+        // Vite nonce
+        if ($nonce = Vite::cspNonce()) {
+            return $nonce;
+        }
+
+        // Spatie CSP nonce
+        if (app()->bound('csp-nonce') && $nonce = app('csp-nonce')) {
+            if (is_string($nonce)) {
+                return $nonce;
+            }
+        }
+
+        return null;
     }
 }
