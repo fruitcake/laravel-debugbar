@@ -222,4 +222,60 @@ class QueryCollectorTest extends TestCase
             );
         });
     }
+
+    /**
+     * @dataProvider tableExtractionProvider
+     */
+    public function testExtractTableName(string $sql, ?string $expectedTable): void
+    {
+        debugbar()->boot();
+
+        /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
+        $collector = debugbar()->getCollector('queries');
+        $collector->addQuery(new QueryExecuted(
+            $sql,
+            [],
+            0,
+            $this->app['db']->connection(),
+        ));
+
+        tap(Arr::first($collector->collect()['statements']), function (array $statement) use ($expectedTable) {
+            if ($expectedTable === null) {
+                $this->assertArrayNotHasKey('table', $statement);
+            } else {
+                $this->assertEquals($expectedTable, $statement['table']);
+            }
+        });
+    }
+
+    public static function tableExtractionProvider(): array
+    {
+        return [
+            // MySQL style
+            'mysql select' => ['SELECT * FROM `users` WHERE id = 1', 'users'],
+            'mysql schema.table' => ['SELECT * FROM `my_app`.`users` WHERE id = 1', 'users'],
+            'mysql insert' => ['INSERT INTO `posts` (title) VALUES (?)', 'posts'],
+            'mysql update' => ['UPDATE `orders` SET status = ?', 'orders'],
+            'mysql join fallback' => ['DELETE FROM `users` JOIN `posts` ON posts.user_id = users.id', 'users'],
+
+            // PostgreSQL style
+            'pgsql select' => ['SELECT * FROM "users" WHERE id = $1', 'users'],
+            'pgsql schema.table' => ['SELECT * FROM "public"."users" WHERE id = $1', 'users'],
+            'pgsql insert' => ['INSERT INTO "posts" (title) VALUES ($1)', 'posts'],
+            'pgsql update' => ['UPDATE "orders" SET status = $1', 'orders'],
+
+            // SQL Server style
+            'sqlsrv select' => ['SELECT * FROM [users] WHERE id = @p1', 'users'],
+            'sqlsrv schema.table' => ['SELECT * FROM [dbo].[users] WHERE id = @p1', 'users'],
+            'sqlsrv insert' => ['INSERT INTO [dbo].[posts] (title) VALUES (@p1)', 'posts'],
+
+            // Unquoted (SQLite / simple)
+            'unquoted select' => ['SELECT * FROM users WHERE id = ?', 'users'],
+            'unquoted insert' => ['INSERT INTO posts (title) VALUES (?)', 'posts'],
+
+            // No table extractable
+            'set statement' => ['SET NAMES utf8mb4', null],
+            'pragma' => ['PRAGMA foreign_keys = ON', null],
+        ];
+    }
 }
