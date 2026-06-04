@@ -1,35 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php"
-         backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         verbose="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Laravel Debugbar Test Suite">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="junit" target="build/report.junit.xml"/>
-        <log type="coverage-html" target="build/coverage"/>
-        <log type="coverage-text" target="build/coverage.txt"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
-    <php>
-        <env name="APP_KEY" value="base64:7wIIWanUEVY4708Piu6RodsiLOH1E24a9LU5vKYs0tc="/>
-        <env name="APP_ENV" value="local"/>
-        <env name="APP_DEBUG" value="true"/>
-        <env name="DB_CONNECTION" value="testing"/>
-        <ini name="xdebug.file_link_format" value="vscode://file/%f:%l"/>
-    </php>
+<phpunit bootstrap="vendor/autoload.php" backupGlobals="false" colors="true" processIsolation="false" stopOnFailure="false" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+  <coverage>
+    <report>
+      <clover outputFile="build/logs/clover.xml"/>
+      <html outputDirectory="build/coverage"/>
+      <text outputFile="build/coverage.txt"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Laravel Debugbar Test Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <logging>
+    <junit outputFile="build/report.junit.xml"/>
+  </logging>
+  <php>
+    <env name="APP_KEY" value="base64:7wIIWanUEVY4708Piu6RodsiLOH1E24a9LU5vKYs0tc="/>
+    <env name="APP_ENV" value="local"/>
+    <env name="APP_DEBUG" value="true"/>
+    <env name="DB_CONNECTION" value="testing"/>
+    <ini name="xdebug.file_link_format" value="vscode://file/%f:%l"/>
+  </php>
+  <source>
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+  </source>
 </phpunit>
