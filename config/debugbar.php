@@ -384,4 +384,13 @@ return [
      | If you need larger stacktraces, you can increase this number. Setting it to 0 will result in no limit.
      */
     'debug_backtrace_limit' => (int) env('DEBUGBAR_DEBUG_BACKTRACE_LIMIT', 50),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Default visible backtrace length
+     |--------------------------------------------------------------------------
+     |
+     | By default, the Debugbar limits the number of printed backtrace lines.
+     */
+    'debug_visible_backtrace_length_limit' => (int) env('DEBUGBAR_DEBUG_VISIBLE_BACKTRACE_LENGTH_LIMIT', 5),
 ];
