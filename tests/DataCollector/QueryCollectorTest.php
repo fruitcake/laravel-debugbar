@@ -61,6 +61,19 @@ class QueryCollectorTest extends TestCase
         });
     }
 
+    public function testItAcceptsNonStringMessages(): void
+    {
+        debugbar()->boot();
+
+        /** @var \Fruitcake\LaravelDebugbar\DataCollector\QueryCollector $collector */
+        $collector = debugbar()->getCollector('queries');
+        $collector->addMessage(42);
+
+        tap(Arr::first($collector->collect()['statements']), function (array $statement) {
+            $this->assertSame('42', $statement['sql']);
+        });
+    }
+
     public function testResultModeForSelectQuery(): void
     {
         debugbar()->boot();
