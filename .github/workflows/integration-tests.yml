@@ -41,6 +41,11 @@ jobs:
           coverage: none
           tools: composer:v2
 
+      - name: Remove incompatible PHP dependencies
+        if: matrix.php == '8.2'
+        run: |
+            composer remove --dev --no-update laravel/ai
+
       - name: Install dependencies
         run: |
           composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample --no-blocking
