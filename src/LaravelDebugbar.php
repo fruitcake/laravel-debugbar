@@ -10,6 +10,7 @@ use DebugBar\DataFormatter\JsonDataFormatter;
 use DebugBar\JavascriptRenderer;
 use DebugBar\RequestIdGeneratorInterface;
 use DebugBar\Storage\FileStorage;
+use Fruitcake\LaravelDebugbar\CollectorProviders\AiCollectorProvider;
 use Fruitcake\LaravelDebugbar\CollectorProviders\ConfigCollectorProvider;
 use Fruitcake\LaravelDebugbar\CollectorProviders\ExceptionsCollectorProvider;
 use Fruitcake\LaravelDebugbar\CollectorProviders\HttpClientCollectorProvider;
@@ -253,6 +254,7 @@ class LaravelDebugbar extends DebugBar
             'cache' => CacheCollectorProvider::class,
             'jobs' => JobsCollectorProvider::class,
             'pennant' => PennantCollectorProvider::class,
+            'ai' => AiCollectorProvider::class,
             'config' => ConfigCollectorProvider::class,
             'session' => SessionCollectorProvider::class,
             'http_client' => HttpClientCollectorProvider::class,
