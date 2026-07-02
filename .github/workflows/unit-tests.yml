@@ -43,11 +43,16 @@ jobs:
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif
 
-      - name: Remove incompatible dependencies
+      - name: Remove incompatible Laravel dependencies
         if: matrix.laravel == '^13'
         run: |
             composer remove --dev --no-update laravel/octane laravel/pennant
 
+      - name: Remove incompatible PHP dependencies
+        if: matrix.php == '8.2' || matrix.laravel == '^11'
+        run: |
+            composer remove --dev --no-update laravel/ai
+            
       - name: Install dependencies
         run: |
           composer remove --dev --no-update larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules

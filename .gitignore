@@ -8,6 +8,7 @@ composer.lock
 /node_modules
 /build/phpstan
 /build/docs
+/build/report.junit.xml
 /site
 /docs/overrides/__pycache__/
 /docs/assets/dist
