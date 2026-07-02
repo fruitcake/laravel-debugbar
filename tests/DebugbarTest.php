@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\Tests;
 
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class DebugbarTest extends TestCase
@@ -103,5 +104,48 @@ class DebugbarTest extends TestCase
         static::assertTrue(Str::contains($crawler->content(), 'debugbar'));
         static::assertEquals(200, $crawler->getStatusCode());
         static::assertNotEmpty($crawler->headers->get('phpdebugbar-id'));
+    }
+
+    public function testItStoresRequestCorrelationIdFromHeader()
+    {
+        $meta = $this->collectMetaDataForRequest(
+            Request::create('web/html', 'GET', server: ['HTTP_PHPDEBUGBAR_REQUEST_ID' => 'abc-123_x.1'])
+        );
+
+        static::assertSame('abc-123_x.1', $meta['rid']);
+    }
+
+    public function testItSanitizesRequestCorrelationId()
+    {
+        $meta = $this->collectMetaDataForRequest(
+            Request::create('web/html', 'GET', server: ['HTTP_PHPDEBUGBAR_REQUEST_ID' => 'a*b/c<>d'])
+        );
+
+        static::assertSame('abcd', $meta['rid']);
+    }
+
+    public function testItTruncatesRequestCorrelationId()
+    {
+        $meta = $this->collectMetaDataForRequest(
+            Request::create('web/html', 'GET', server: ['HTTP_PHPDEBUGBAR_REQUEST_ID' => str_repeat('a', 100)])
+        );
+
+        static::assertSame(str_repeat('a', 64), $meta['rid']);
+    }
+
+    public function testItOmitsRequestCorrelationIdWhenAbsent()
+    {
+        $meta = $this->collectMetaDataForRequest(Request::create('web/html', 'GET'));
+
+        static::assertArrayNotHasKey('rid', $meta);
+    }
+
+    private function collectMetaDataForRequest(Request $request): array
+    {
+        /** @var LaravelDebugbar $debugbar */
+        $debugbar = $this->app->make(LaravelDebugbar::class);
+        $debugbar->setRequest($request);
+
+        return $debugbar->collectMetaData();
     }
 }

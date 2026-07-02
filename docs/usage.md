@@ -106,6 +106,28 @@ Make sure you only do this on local development, because otherwise other people 
 In general, Debugbar should only be used locally or at least restricted by IP.
 It's possible to pass a callback, which will receive the Request object, so you can determine access to the OpenHandler storage.
 
+## Streamed responses
+
+Debugbar normally attaches its data to a response through the `phpdebugbar-id` header. Streamed responses (Server-Sent Events, `StreamedResponse`, Livewire streaming, or anything flushed mid-request) commit their HTTP headers on the first flush, so that header is lost and the toolbar can't load the data.
+
+This is off by default. Enable it with `capture_streamed` (or `DEBUGBAR_CAPTURE_STREAMED=true`):
+
+```php
+// config/debugbar.php
+'capture_streamed' => env('DEBUGBAR_CAPTURE_STREAMED', false),
+'streamed_content_types' => ['text/event-stream'],
+```
+
+When enabled, the JavaScript adds a `phpdebugbar-request-id` header to every same-origin `fetch`/XHR (cross-origin requests are skipped to avoid CORS preflight). Debugbar stores that id in the request metadata, so when a response comes back without the `phpdebugbar-id` header it looks the data up again through the open handler. This requires `debugbar.storage.enabled` **and** `debugbar.storage.open` to be set (see [Storage](#storage) above); without them the fallback no-ops.
+
+The lookup only runs for responses whose `Content-Type` is listed in `streamed_content_types` (default `['text/event-stream']`). To also correlate other streamed responses (for example chunked HTML or JSON from a `StreamedResponse`), broaden the list, or set it to `[]` / `null` to fall back for any response missing the id header:
+
+```php
+'streamed_content_types' => ['text/event-stream', 'text/html', 'application/json', 'application/x-ndjson'],
+```
+
+> Note: `EventSource`/SSE clients can't set request headers, so those specific connections aren't auto-correlated — only `fetch`/XHR are covered. With the feature on, every stored same-origin request also gains an `rid` in its metadata; it's harmless and only used as a fallback when the id header is missing.
+
 ## Twig Integration
 
 Laravel Debugbar comes with two Twig Extensions. These are tested with [rcrowe/TwigBridge](https://github.com/rcrowe/TwigBridge) 0.6.x

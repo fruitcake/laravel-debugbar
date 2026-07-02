@@ -351,6 +351,8 @@ class LaravelDebugbar extends DebugBar
         $renderer->setUseDistFiles($config->get('debugbar.use_dist_files', true));
         $renderer->setAjaxHandlerAutoShow($config->get('debugbar.ajax_handler_auto_show', true));
         $renderer->setAjaxHandlerEnableTab($config->get('debugbar.ajax_handler_enable_tab', true));
+        $renderer->setAjaxHandlerCaptureStreamed($config->get('debugbar.capture_streamed', false));
+        $renderer->setAjaxHandlerStreamedContentTypes($config->get('debugbar.streamed_content_types', ['text/event-stream']));
         $renderer->setTheme($config->get('debugbar.theme', 'auto'));
 
         $renderer->setAssetHandlerUrl(route('debugbar.assets'));
@@ -700,6 +702,12 @@ class LaravelDebugbar extends DebugBar
             'ip' => $this->request->getClientIp(),
         ];
 
+        // Correlation id supplied by the client, so streamed/AJAX responses that
+        // cannot receive the phpdebugbar-id header can still be looked up later.
+        if ($rid = $this->getRequestCorrelationId()) {
+            $meta['rid'] = $rid;
+        }
+
         if ($this->processingJob) {
             $meta['method'] = 'JOB';
             $meta['uri'] =  $this->processingJob->resolveName() . '@' . $this->processingJob->getConnectionName();
@@ -709,6 +717,25 @@ class LaravelDebugbar extends DebugBar
         }
 
         return $meta;
+    }
+
+    /**
+     * Read a client-generated correlation id from the request, used to match a
+     * streamed response back to its stored Debugbar data via the OpenHandler.
+     *
+     * Sanitised so it can be safely used as an fnmatch() filter in storage.
+     */
+    protected function getRequestCorrelationId(): ?string
+    {
+        $rid = $this->request->headers->get('phpdebugbar-request-id');
+
+        if (!is_string($rid) || $rid === '') {
+            return null;
+        }
+
+        $rid = preg_replace('/[^A-Za-z0-9\-_.]/', '', $rid);
+
+        return $rid !== '' ? substr($rid, 0, 64) : null;
     }
 
     public function terminate(): void
