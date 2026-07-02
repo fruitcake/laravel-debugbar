@@ -49,7 +49,7 @@ jobs:
             composer remove --dev --no-update laravel/octane laravel/pennant
 
       - name: Remove incompatible PHP dependencies
-        if: matrix.php == '8.2'
+        if: matrix.php == '8.2' || matrix.laravel == '^11'
         run: |
             composer remove --dev --no-update laravel/ai
             
