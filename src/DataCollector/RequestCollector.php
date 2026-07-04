@@ -157,7 +157,7 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
         $uses = $action['uses'] ?? null;
         $controller = is_string($action['controller'] ?? null) ? $action['controller'] : '';
 
-        if (request()->hasHeader('X-Livewire') && class_exists(HandleComponents::class)) {
+        if (request()->hasHeader('X-Livewire') && app()->bound('livewire.factory')) {
             try {
                 $componentData = $this->request->request->all()['components'][0] ?? null;
                 if (isset($componentData['snapshot'], $componentData['updates'])) {
@@ -167,10 +167,13 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
                     } else {
                         $method = null;
                     }
-                    [$component] = app(HandleComponents::class)->fromSnapshot($snapshot);
-                    $result['controller'] = ltrim($component::class, '\\');
-                    $reflector = new \ReflectionClass($component);
-                    $controller = $component::class . '@' . $method;
+
+                    if (isset($snapshot['memo']['name'])) {
+                        $component = app('livewire.factory')->resolveComponentClass($snapshot['memo']['name']);
+                        $result['controller'] = $component;
+                        $reflector = new \ReflectionClass($component);
+                        $controller = $component . '@' . $method;
+                    }
                 }
             } catch (\Throwable $e) {
                 //
