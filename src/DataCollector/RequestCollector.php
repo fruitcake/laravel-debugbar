@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
-use Livewire\Mechanisms\HandleComponents\HandleComponents;
 use Symfony\Component\Console\Input\ArgvInput;
 
 class RequestCollector extends SymfonyRequestCollector implements DataCollectorInterface, Renderable

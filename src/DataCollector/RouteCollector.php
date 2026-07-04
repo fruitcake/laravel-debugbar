@@ -8,7 +8,6 @@ use Closure;
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
 use Illuminate\Routing\Router;
-use Livewire\Mechanisms\HandleComponents\HandleComponents;
 
 /**
  * Based on Illuminate\Foundation\Console\RoutesCommand for Taylor Otwell
