@@ -1,0 +1,18 @@
+:root {
+    --md-primary-fg-color:        #eb4432;
+    --md-primary-fg-color--light: #eb4432;
+    --md-primary-fg-color--dark:  #eb4432;
+    --md-accent-fg-color:         #eb4432;
+    --md-accent-fg-color--light:  #eb4432;
+    --md-accent-fg-color--dark:   #eb4432;
+}
+
+.mdx-badge__icon{
+    background:var(--md-accent-fg-color--transparent);
+    padding:.2rem
+}
+.mdx-badge__text{
+    font-size:.85em;
+    box-shadow:0 0 0 1px inset var(--md-accent-fg-color--transparent);
+    padding:.2rem .3rem
+}
