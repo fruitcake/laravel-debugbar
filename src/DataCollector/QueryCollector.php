@@ -260,7 +260,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
             $sources[] = $this->parseTrace($index, $trace);
         }
 
-        return array_slice(array_filter($sources), 0, is_int($this->findSource) ? $this->findSource : 5);
+        return array_slice(array_filter($sources), 0, is_int($this->findSource) ? $this->findSource : app('config')->get('debugbar.debug_visible_backtrace_length_limit', 5));
     }
 
     /**
