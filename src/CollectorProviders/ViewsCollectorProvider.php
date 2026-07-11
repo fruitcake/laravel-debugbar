@@ -17,7 +17,7 @@ class ViewsCollectorProvider extends AbstractCollectorProvider
 
         $viewCollector = new ViewCollector($collectData, $excludePaths, $group);
 
-        if ($options['timeline'] ?? true) {
+        if (($options['timeline'] ?? true) && !($options['timeline_duration'] ?? false)) {
             $timeCollector = $this->debugbar->getTimeCollector();
             $viewCollector->setTimeDataCollector($timeCollector);
         }
