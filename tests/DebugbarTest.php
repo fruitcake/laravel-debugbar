@@ -140,6 +140,20 @@ class DebugbarTest extends TestCase
         static::assertArrayNotHasKey('rid', $meta);
     }
 
+    public function testIsStorageOpenReturnsFalseForEmptyClientIp()
+    {
+        $this->app['config']->set('debugbar.storage.open', null);
+        $this->resetStorageOpen();
+
+        $request = Request::create('web/html', 'GET', server: ['REMOTE_ADDR' => '']);
+
+        /** @var LaravelDebugbar $debugbar */
+        $debugbar = $this->app->make(LaravelDebugbar::class);
+
+        static::assertSame('', $request->getClientIp());
+        static::assertFalse($debugbar->isStorageOpen($request));
+    }
+
     private function collectMetaDataForRequest(Request $request): array
     {
         /** @var LaravelDebugbar $debugbar */

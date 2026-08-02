@@ -617,6 +617,7 @@ class LaravelDebugbar extends DebugBar
                 // Allow localhost request when not explicitly allowed/disallowed
                 $this->storageOpen = IpUtils::isPrivateIp($request->getClientIp());
             } catch (\ValueError $e) {
+                $this->storageOpen = false;
             }
         }
 
