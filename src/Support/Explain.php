@@ -15,7 +15,11 @@ class Explain
 {
     public function isReadOnlyQuery(string $query): bool
     {
-        return (bool) preg_match('/^(SELECT|WITH)\b/i', ltrim($query));
+        return (bool) preg_match('/^(SELECT|WITH)\b/i', ltrim(preg_replace(
+            '/\A(?:\s+|\/\*.*?\*\/|--[^\r\n]*(?:\R|$)|#[^\r\n]*(?:\R|$))+/s',
+            '',
+            $query
+        )));
     }
 
     public function isRawExplainSupported(string $driver, ?array $bindings): bool
