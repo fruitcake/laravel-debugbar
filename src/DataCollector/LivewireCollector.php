@@ -34,9 +34,50 @@ class LivewireCollector extends TemplateCollector
         $data['#component'] = get_class($component);
         $data['#id'] = $id;
 
-        $path = (new \ReflectionClass($component))->getFileName();
+        $this->addTemplate($key, $data, 'livewire', $this->resolveSourcePath($component));
+    }
 
-        $this->addTemplate($key, $data, 'livewire', $path);
+    /**
+     * Resolve the file the component was written in.
+     *
+     * Livewire 4 compiles single- and multi-file components into the cache
+     * directory, so reflection reports the compiled class rather than the
+     * source the user can edit.
+     */
+    protected function resolveSourcePath(Component $component): ?string
+    {
+        $path = (new \ReflectionClass($component))->getFileName() ?: null;
+
+        if (!app()->bound('livewire.finder')) {
+            return $path;
+        }
+
+        try {
+            $finder = app('livewire.finder');
+            $name = $component->getName();
+
+            // A multi-file component resolves to its directory, so point at the
+            // class file inside it rather than the directory itself.
+            if ($directory = $finder->resolveMultiFileComponentPath($name)) {
+                $basename = basename($directory);
+
+                foreach ([$basename . '.php', $basename . '.blade.php'] as $candidate) {
+                    if (is_file($file = $directory . DIRECTORY_SEPARATOR . $candidate)) {
+                        return $file;
+                    }
+                }
+
+                return $directory;
+            }
+
+            if ($singleFile = $finder->resolveSingleFileComponentPath($name)) {
+                return $singleFile;
+            }
+        } catch (\Throwable $e) {
+            //
+        }
+
+        return $path;
     }
 
     /**
