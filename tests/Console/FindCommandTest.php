@@ -256,6 +256,114 @@ class FindCommandTest extends TestCase
         static::assertStringContainsString('15 queries', Artisan::output());
     }
 
+    /** The status code lives on the request collector, `__meta` never carries one. */
+    public function testFindCommandDetectsHttpErrorFromRequestCollector(): void
+    {
+        $this->setupStorage(
+            [$this->makeRequestRow('real1', '/boom')],
+            ['real1' => [
+                'exceptions' => ['count' => 0],
+                'time' => ['duration' => 0.05, 'duration_str' => '50ms'],
+                'memory' => ['peak_usage_str' => '2MB'],
+                '__meta' => ['id' => 'real1'],
+                'request' => [
+                    'data' => ['status_code' => 500],
+                    'tooltip' => ['status' => '500 Internal Server Error'],
+                    'badge' => 500,
+                ],
+            ]],
+        );
+
+        Artisan::call('debugbar:find', ['--issues' => true]);
+        static::assertStringContainsString('HTTP 500', Artisan::output());
+    }
+
+    public function testFindCommandDetectsHttpErrorFromTooltipOnly(): void
+    {
+        $this->setupStorage(
+            [$this->makeRequestRow('real2', '/gone')],
+            ['real2' => [
+                '__meta' => ['id' => 'real2'],
+                'request' => ['tooltip' => ['status' => '404 Not Found']],
+            ]],
+        );
+
+        Artisan::call('debugbar:find', ['--issues' => true]);
+        static::assertStringContainsString('HTTP 404', Artisan::output());
+    }
+
+    /** `nb_failed_statements` is not always populated, the statements are the source of truth. */
+    public function testFindCommandDetectsFailedQueriesFromStatements(): void
+    {
+        $this->setupStorage(
+            [$this->makeRequestRow('real3', '/fail')],
+            ['real3' => $this->makeRequestData([
+                'queries' => [
+                    'nb_statements' => 1,
+                    'accumulated_duration_str' => '5ms',
+                    'nb_failed_statements' => 0,
+                    'statements' => [
+                        ['sql' => 'select * from nope', 'type' => 'query', 'is_success' => false, 'error_message' => 'no such table'],
+                    ],
+                ],
+            ])],
+        );
+
+        Artisan::call('debugbar:find', ['--issues' => true]);
+        static::assertStringContainsString('1 failed query', Artisan::output());
+    }
+
+    public function testFindCommandJsonOutput(): void
+    {
+        $this->setupStorage(
+            [$this->makeRequestRow('json1', '/api/users', 'POST')],
+            ['json1' => $this->makeRequestData([
+                'time' => ['duration' => 0.25, 'duration_str' => '250ms'],
+            ])],
+        );
+
+        Artisan::call('debugbar:find', ['--json' => true]);
+        $decoded = json_decode(Artisan::output(), true);
+
+        static::assertIsArray($decoded);
+        static::assertSame('json1', $decoded[0]['id']);
+        static::assertSame('/api/users', $decoded[0]['uri']);
+        static::assertSame('POST', $decoded[0]['method']);
+        static::assertSame(200, $decoded[0]['status']);
+        static::assertEqualsWithDelta(250, $decoded[0]['duration_ms'], 0.01);
+        static::assertSame([], $decoded[0]['issues']);
+    }
+
+    public function testFindCommandJsonOutputIsEmptyArrayWhenNothingMatches(): void
+    {
+        $this->setupStorage([]);
+
+        Artisan::call('debugbar:find', ['--json' => true]);
+        static::assertSame([], json_decode(Artisan::output(), true));
+    }
+
+    public function testFindCommandIssuesFilterShowsNPlusOne(): void
+    {
+        $this->setupStorage(
+            [$this->makeRequestRow('np1', '/posts')],
+            ['np1' => $this->makeRequestData([
+                'queries' => [
+                    'nb_statements' => 3,
+                    'accumulated_duration_str' => '15ms',
+                    'nb_failed_statements' => 0,
+                    'statements' => [
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [1], 'type' => 'query', 'connection' => 'mysql'],
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [2], 'type' => 'query', 'connection' => 'mysql'],
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [3], 'type' => 'query', 'connection' => 'mysql'],
+                    ],
+                ],
+            ])],
+        );
+
+        Artisan::call('debugbar:find', ['--issues' => true, '--min-duplicates' => 1]);
+        static::assertStringContainsString('N+1 group(s)', Artisan::output());
+    }
+
     public function testFindCommandShowsExceptionCountInSummary(): void
     {
         $this->setupStorage(

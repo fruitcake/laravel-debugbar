@@ -18,6 +18,7 @@ class GetCommand extends Command
     {id : The id of the request to show, or "latest" to show the latest}
     {--collector= : Show a specific collector}
     {--raw : Show raw JSON data}
+    {--json : Alias for --raw}
     ';
     protected $description = 'Get a Debugbar request from the Storage';
 
@@ -27,27 +28,39 @@ class GetCommand extends Command
         $storage = $debugbar->getStorage();
         if (!$storage) {
             $this->error('No Debugbar Storage found..');
+            return;
         }
 
         $id = $this->argument('id');
         if ($id === 'latest') {
             $latest = $storage->find([], 1);
             $id = $latest[0]['id'] ?? null;
-        }
-
-        $result = $storage->get($id);
-        $collector = $this->option('collector');
-        if ($collector) {
-            $result = $result[$collector] ?? null;
-            if (!$result) {
-                $this->error('No data found for collector ' . $collector);
+            if ($id === null) {
+                $this->error('No requests in the Debugbar Storage yet.');
                 return;
             }
         }
 
-        if ($this->option('raw')) {
-            $this->line(json_encode($result, JSON_PRETTY_PRINT));
-        } elseif ($this->option('collector')) {
+        $result = $storage->get($id);
+        if (!$result) {
+            $this->error("Request {$id} not found. Run `php artisan debugbar:find` to list stored requests.");
+            return;
+        }
+
+        $collector = $this->option('collector');
+        if ($collector) {
+            $available = array_keys(array_filter($result, fn($data, $name): bool => is_array($data) && $name !== '__meta', ARRAY_FILTER_USE_BOTH));
+            $result = $result[$collector] ?? null;
+            if (!$result) {
+                $this->error('No data found for collector ' . $collector);
+                $this->line('Collectors with data: ' . implode(', ', $available));
+                return;
+            }
+        }
+
+        if ($this->option('raw') || $this->option('json')) {
+            $this->line((string) json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        } elseif ($collector) {
             $this->dumpResult($result);
         } else {
             $this->showSummary($result);
@@ -56,7 +69,7 @@ class GetCommand extends Command
 
     private function showSummary(array $result): void
     {
-        $meta = $result['__meta'];
+        $meta = $result['__meta'] ?? [];
         unset($meta['utime']);
 
         $this->table(array_keys($meta), [$meta]);
@@ -88,7 +101,7 @@ class GetCommand extends Command
             };
 
             $summary = match ($name) {
-                'request' => $data['tooltip'],
+                'request' => $this->requestSummary($data),
                 'time' => $data['duration_str'] ?? null,
                 'memory' => $data['peak_usage_str'] ?? null,
                 'queries' => $data['nb_statements'] . ' queries in ' . $data['accumulated_duration_str'],
@@ -105,9 +118,28 @@ class GetCommand extends Command
 
         $this->table(['Collector', 'Summary'], $rows);
 
-        if (isset($data['queries'])) {
-            $this->line('Run `php artisan debugbar:queries ' . $result['__meta']['id'] . '` to see the query details');
+        if (isset($result['queries']['statements']) && count($result['queries']['statements']) > 0) {
+            $this->line('Run `php artisan debugbar:queries ' . ($result['__meta']['id'] ?? '{id}') . '` to see the query details');
         }
+    }
+
+    /**
+     * Flatten the request tooltip into a single line, rather than dumping the array.
+     */
+    private function requestSummary(array $data): string
+    {
+        $tooltip = $data['tooltip'] ?? [];
+        if (!is_array($tooltip)) {
+            return (string) $tooltip;
+        }
+
+        $parts = array_filter([
+            $tooltip['status'] ?? null,
+            $tooltip['full_url'] ?? $tooltip['uri'] ?? null,
+            $tooltip['controller_action'] ?? $tooltip['action_name'] ?? null,
+        ], fn($value): bool => is_string($value) && $value !== '');
+
+        return implode(' ', $parts);
     }
 
     public function dumpResult(array $result, $output = null): ?string

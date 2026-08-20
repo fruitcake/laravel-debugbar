@@ -106,6 +106,36 @@ Make sure you only do this on local development, because otherwise other people 
 In general, Debugbar should only be used locally or at least restricted by IP.
 It's possible to pass a callback, which will receive the Request object, so you can determine access to the OpenHandler storage.
 
+## Artisan commands
+
+Previous requests can be inspected from the CLI, which is mostly useful for AI coding agents. This requires `debugbar.storage.enabled` in the config.
+
+```bash
+php artisan debugbar:find --issues   # list stored requests, or only ones with issues
+php artisan debugbar:get {id}        # show a request summary, or a single --collector
+php artisan debugbar:queries {id}    # analyse queries, with N+1 detection and EXPLAIN
+php artisan debugbar:clear           # clear the storage
+```
+
+Use `latest` instead of an id to inspect the most recent request. All three read commands accept `--json`
+for machine readable output.
+
+`debugbar:queries` reports two kinds of repetition separately. **Duplicate queries** are byte for byte
+identical, usually something that should have been cached. **Repeated query shapes** are the same query with
+a different value each time — the classic N+1 caused by a lazily loaded relation. Because the collector
+renders bindings into the SQL, shape detection strips literals before comparing, so `where user_id = 1` and
+`where user_id = 2` are recognised as one shape.
+
+## AI agents { #agents }
+
+Debugbar ships a [skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) that teaches coding agents how to use the commands above to debug requests and find N+1 queries. [Laravel Boost](https://github.com/laravel/boost) picks it up automatically. Without Boost, install it into your project:
+
+```bash
+php artisan debugbar:install-skill
+```
+
+Without arguments this installs to whichever agent directories your project already has. Use `--agent=claude` for `.claude/skills`, `--agent=agents` for `.agents/skills` (read by Codex, Cursor, Copilot and Gemini CLI), or `--agent=all` for both. Pass `--symlink` to link to the package instead of copying, so the skill updates along with Debugbar, and `--force` to overwrite an existing installation.
+
 ## Streamed responses
 
 Debugbar normally attaches its data to a response through the `phpdebugbar-id` header. Streamed responses (Server-Sent Events, `StreamedResponse`, Livewire streaming, or anything flushed mid-request) commit their HTTP headers on the first flush, so that header is lost and the toolbar can't load the data.

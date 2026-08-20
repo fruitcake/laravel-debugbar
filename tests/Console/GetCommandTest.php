@@ -140,4 +140,96 @@ class GetCommandTest extends TestCase
         static::assertStringContainsString('"nb_statements"', $output);
         static::assertStringContainsString('3', $output);
     }
+
+    public function testGetCommandHandlesNoStorage(): void
+    {
+        $debugbar = app(LaravelDebugbar::class);
+        $debugbar->boot();
+        $debugbar->setStorage(null);
+
+        Artisan::call('debugbar:get', ['id' => 'latest']);
+        static::assertStringContainsString('No Debugbar Storage found', Artisan::output());
+    }
+
+    public function testGetCommandHandlesLatestOnEmptyStorage(): void
+    {
+        $this->setupStorage([], []);
+
+        Artisan::call('debugbar:get', ['id' => 'latest']);
+        static::assertStringContainsString('No requests in the Debugbar Storage yet', Artisan::output());
+    }
+
+    public function testGetCommandHandlesUnknownId(): void
+    {
+        $this->setupStorage([], []);
+
+        Artisan::call('debugbar:get', ['id' => 'nope']);
+        static::assertStringContainsString('Request nope not found', Artisan::output());
+    }
+
+    public function testGetCommandListsAvailableCollectorsOnMiss(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                '__meta' => ['id' => 'abc123'],
+                'queries' => ['nb_statements' => 1],
+                'views' => ['count' => 2],
+            ],
+        ]);
+
+        Artisan::call('debugbar:get', ['id' => 'abc123', '--collector' => 'exceptions']);
+        $output = Artisan::output();
+
+        static::assertStringContainsString('No data found for collector exceptions', $output);
+        static::assertStringContainsString('queries, views', $output);
+    }
+
+    public function testGetCommandRendersRequestSummaryAsOneLine(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                '__meta' => ['id' => 'abc123', 'uri' => '/users', 'method' => 'GET'],
+                'request' => ['tooltip' => [
+                    'status' => '200 OK',
+                    'full_url' => 'http://localhost/users',
+                    'controller_action' => 'App\\Http\\Controllers\\UserController@index',
+                ]],
+            ],
+        ]);
+
+        Artisan::call('debugbar:get', ['id' => 'abc123']);
+        $output = Artisan::output();
+
+        static::assertStringContainsString('200 OK', $output);
+        static::assertStringNotContainsString('array:', $output);
+    }
+
+    public function testGetCommandShowsQueriesHintWhenQueriesExist(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                '__meta' => ['id' => 'abc123', 'uri' => '/users', 'method' => 'GET'],
+                'views' => ['count' => 2],
+                'queries' => ['nb_statements' => 2, 'accumulated_duration_str' => '3ms', 'statements' => [
+                    ['sql' => 'select 1', 'type' => 'query'],
+                    ['sql' => 'select 2', 'type' => 'query'],
+                ]],
+            ],
+        ]);
+
+        Artisan::call('debugbar:get', ['id' => 'abc123']);
+        static::assertStringContainsString('debugbar:queries abc123', Artisan::output());
+    }
+
+    public function testGetCommandJsonIsAliasForRaw(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => ['__meta' => ['id' => 'abc123'], 'queries' => ['nb_statements' => 7]],
+        ]);
+
+        Artisan::call('debugbar:get', ['id' => 'abc123', '--json' => true]);
+        $decoded = json_decode(Artisan::output(), true);
+
+        static::assertSame(7, $decoded['queries']['nb_statements']);
+    }
 }

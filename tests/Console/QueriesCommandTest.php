@@ -258,4 +258,219 @@ class QueriesCommandTest extends TestCase
         Artisan::call('debugbar:queries', ['id' => 'abc123']);
         static::assertStringContainsString('...', Artisan::output());
     }
+
+    /** Info statements (query limit notices) carry no `slow` key. */
+    public function testQueriesCommandHandlesStatementsWithoutSlowKey(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 1,
+                    'accumulated_duration_str' => '1ms',
+                    'statements' => [
+                        ['sql' => '# Query soft limit reached', 'type' => 'info'],
+                        ['sql' => 'select 1', 'type' => 'query', 'connection' => 'mysql', 'duration_str' => '1ms'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123']);
+        static::assertStringContainsString('select 1', Artisan::output());
+    }
+
+    public function testQueriesCommandSurfacesFailedQueries(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 1,
+                    'accumulated_duration_str' => '1ms',
+                    'nb_failed_statements' => 0,
+                    'statements' => [
+                        [
+                            'sql' => 'select * from nope',
+                            'type' => 'query',
+                            'connection' => 'mysql',
+                            'is_success' => false,
+                            'error_code' => '42S02',
+                            'error_message' => 'Base table or view not found',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123']);
+        $output = Artisan::output();
+
+        static::assertStringContainsString('1 statements | 1ms total | 1 failed', $output);
+        static::assertStringContainsString('FAILED', $output);
+        static::assertStringContainsString('Base table or view not found', $output);
+    }
+
+    public function testQueriesCommandShowsErrorOnStatementDetail(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 1,
+                    'statements' => [
+                        ['sql' => 'select * from nope', 'type' => 'query', 'is_success' => false, 'error_code' => '42S02', 'error_message' => 'no such table'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123', '--statement' => 0]);
+        static::assertStringContainsString('FAILED: 42S02 no such table', Artisan::output());
+    }
+
+    public function testQueriesCommandRequiresStatementForExplain(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => ['queries' => ['nb_statements' => 1, 'statements' => [['sql' => 'select 1', 'type' => 'query']]]],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123', '--explain' => true]);
+        static::assertStringContainsString('require --statement=N', Artisan::output());
+    }
+
+    public function testQueriesCommandHandlesLatestOnEmptyStorage(): void
+    {
+        $this->setupStorage([], []);
+
+        Artisan::call('debugbar:queries', ['id' => 'latest']);
+        static::assertStringContainsString('No requests in the Debugbar Storage yet', Artisan::output());
+    }
+
+    public function testQueriesCommandHandlesUnknownId(): void
+    {
+        $this->setupStorage([], []);
+
+        Artisan::call('debugbar:queries', ['id' => 'nope']);
+        static::assertStringContainsString('Request nope not found', Artisan::output());
+    }
+
+    public function testQueriesCommandHandlesNoStorage(): void
+    {
+        $debugbar = app(LaravelDebugbar::class);
+        $debugbar->boot();
+        $debugbar->setStorage(null);
+
+        Artisan::call('debugbar:queries', ['id' => 'latest']);
+        static::assertStringContainsString('No Debugbar Storage found', Artisan::output());
+    }
+
+    public function testQueriesCommandJsonSummary(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 3,
+                    'accumulated_duration' => 0.015,
+                    'accumulated_duration_str' => '15ms',
+                    'statements' => [
+                        ['sql' => 'select * from users where id = ?', 'params' => [1], 'type' => 'query', 'connection' => 'mysql', 'duration_str' => '5ms', 'filename' => 'UserController.php:10'],
+                        ['sql' => 'select * from users where id = ?', 'params' => [1], 'type' => 'query', 'connection' => 'mysql', 'duration_str' => '5ms'],
+                        ['sql' => 'select 1', 'type' => 'query', 'connection' => 'mysql', 'slow' => true, 'duration_str' => '5ms'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123', '--json' => true]);
+        $decoded = json_decode(Artisan::output(), true);
+
+        static::assertSame(3, $decoded['nb_statements']);
+        static::assertCount(1, $decoded['duplicate_groups']);
+        static::assertSame(2, $decoded['duplicate_groups'][0]['count']);
+        static::assertSame([0, 1], $decoded['duplicate_groups'][0]['statements']);
+        static::assertSame(2, $decoded['statements'][0]['duplicates']);
+        static::assertTrue($decoded['statements'][2]['slow']);
+        static::assertSame('UserController.php:10', $decoded['statements'][0]['source']);
+    }
+
+    public function testQueriesCommandJsonStatementDetail(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 1,
+                    'statements' => [['sql' => 'select 1', 'type' => 'query', 'connection' => 'mysql']],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123', '--statement' => 0, '--json' => true]);
+        $decoded = json_decode(Artisan::output(), true);
+
+        static::assertSame('select 1', $decoded['sql']);
+    }
+
+    /** The classic N+1: same SQL, different binding each time, so never an exact duplicate. */
+    public function testQueriesCommandDetectsNPlusOne(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 3,
+                    'statements' => [
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [1], 'type' => 'query', 'connection' => 'mysql'],
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [2], 'type' => 'query', 'connection' => 'mysql'],
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [3], 'type' => 'query', 'connection' => 'mysql'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123']);
+        $output = Artisan::output();
+
+        static::assertStringContainsString('repeated query shape(s) with varying bindings', $output);
+        static::assertStringContainsString('3x', $output);
+    }
+
+    public function testQueriesCommandDoesNotReportExactDuplicatesAsNPlusOne(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 2,
+                    'statements' => [
+                        ['sql' => 'select * from users', 'type' => 'query', 'connection' => 'mysql'],
+                        ['sql' => 'select * from users', 'type' => 'query', 'connection' => 'mysql'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123']);
+        $output = Artisan::output();
+
+        static::assertStringContainsString('duplicate queries in 1 group(s)', $output);
+        static::assertStringNotContainsString('varying bindings', $output);
+    }
+
+    public function testQueriesCommandJsonIncludesNPlusOneGroups(): void
+    {
+        $this->setupStorage([], [
+            'abc123' => [
+                'queries' => [
+                    'nb_statements' => 2,
+                    'statements' => [
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [1], 'type' => 'query', 'connection' => 'mysql'],
+                        ['sql' => 'select * from posts where user_id = ?', 'params' => [2], 'type' => 'query', 'connection' => 'mysql'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Artisan::call('debugbar:queries', ['id' => 'abc123', '--json' => true]);
+        $decoded = json_decode(Artisan::output(), true);
+
+        static::assertCount(1, $decoded['n_plus_one_groups']);
+        static::assertSame(2, $decoded['n_plus_one_groups'][0]['count']);
+        static::assertSame([], $decoded['duplicate_groups']);
+    }
 }

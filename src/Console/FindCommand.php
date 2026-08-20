@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Fruitcake\LaravelDebugbar\Console;
 
+use Fruitcake\LaravelDebugbar\Console\Concerns\AnalyzesQueries;
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Illuminate\Console\Command;
 
 class FindCommand extends Command
 {
+    use AnalyzesQueries;
+
     protected $signature = 'debugbar:find
     {--utime= : Shows only requests after this micro timestamp}
     {--ip= : Filter by IP}
@@ -20,6 +23,7 @@ class FindCommand extends Command
     {--min-queries= : Flag requests with at least this many queries (default: 50 with --issues)}
     {--min-duration= : Flag requests slower than this in ms (default: 1000 with --issues)}
     {--min-duplicates= : Flag requests with at least this many duplicate query groups (default: 2 with --issues)}
+    {--json : Output as JSON}
     ';
     protected $description = 'List the Debugbar Storage';
 
@@ -53,7 +57,7 @@ class FindCommand extends Command
         );
 
         if (count($result) === 0) {
-            $this->info('No results found');
+            $this->option('json') ? $this->line('[]') : $this->info('No results found');
             return;
         }
 
@@ -74,14 +78,20 @@ class FindCommand extends Command
             : ($this->option('issues') ? 2 : null);
 
         $rows = [];
-        foreach ($result as &$row) {
+        $json = [];
+        foreach ($result as $row) {
             unset($row['utime']);
 
             $data = $storage->get($row['id']);
 
+            $status = $this->requestStatus($data);
+            $failed = $this->countFailedQueries($data);
+
             $summary = [];
             if (isset($data['request']['tooltip']['status'])) {
                 $summary[] = $data['request']['tooltip']['status'];
+            } elseif ($status !== null) {
+                $summary[] = (string) $status;
             }
             if (isset($data['time']['duration_str'], $data['memory']['peak_usage_str'])) {
                 $summary[] = $data['time']['duration_str'] . '/' . $data['memory']['peak_usage_str'] . ' request';
@@ -98,13 +108,19 @@ class FindCommand extends Command
                 $summary[] = $data['exceptions']['count'] . ' exception(s)';
             }
             if (isset($data['queries']['nb_statements'])) {
-                $summary[] = $data['queries']['nb_statements'] . ' queries in ' . $data['queries']['accumulated_duration_str'];
+                $summary[] = $data['queries']['nb_statements'] . ' queries in ' . ($data['queries']['accumulated_duration_str'] ?? '?');
+            }
+            if ($failed > 0) {
+                $summary[] = $failed . ' failed ' . ($failed === 1 ? 'query' : 'queries');
             }
 
             $row['summary'] = implode(', ', $summary);
 
+            $issues = $checkIssues
+                ? $this->detectIssues($data, $minQueries, $minDuration, $minDuplicates)
+                : [];
+
             if ($checkIssues) {
-                $issues = $this->detectIssues($data, $minQueries, $minDuration, $minDuplicates);
                 if (count($issues) === 0) {
                     continue;
                 }
@@ -112,10 +128,33 @@ class FindCommand extends Command
             }
 
             $rows[] = $row;
+            $json[] = [
+                'id' => $row['id'],
+                'datetime' => $row['datetime'] ?? null,
+                'method' => $row['method'] ?? null,
+                'uri' => $row['uri'] ?? null,
+                'status' => $status,
+                'duration_ms' => isset($data['time']['duration']) ? round($data['time']['duration'] * 1000, 2) : null,
+                'memory' => $data['memory']['peak_usage_str'] ?? null,
+                'queries' => $data['queries']['nb_statements'] ?? 0,
+                'failed_queries' => $failed,
+                'exceptions' => $data['exceptions']['count'] ?? 0,
+                'issues' => $issues,
+            ];
         }
 
         if (count($rows) === 0) {
+            if ($this->option('json')) {
+                $this->line('[]');
+                return;
+            }
+
             $this->info($checkIssues ? 'No issues found in ' . count($result) . ' scanned requests.' : 'No results found');
+            return;
+        }
+
+        if ($this->option('json')) {
+            $this->line((string) json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
             return;
         }
 
@@ -147,8 +186,8 @@ class FindCommand extends Command
         }
 
         // Non-2xx status
-        $status = $data['__meta']['status'] ?? $data['request']['tooltip']['status_code'] ?? null;
-        if ($status !== null && (int) $status >= 400) {
+        $status = $this->requestStatus($data);
+        if ($status !== null && $status >= 400) {
             $issues[] = "HTTP {$status}";
         }
 
@@ -170,9 +209,15 @@ class FindCommand extends Command
         }
 
         // Duplicate query groups
-        $dupGroups = $this->countDuplicateGroups($data['queries']['statements'] ?? []);
+        $dupGroups = count($this->duplicateGroups($data['queries']['statements'] ?? []));
         if ($minDuplicates !== null && $dupGroups >= $minDuplicates) {
             $issues[] = "{$dupGroups} duplicate group(s)";
+        }
+
+        // Repeated query shapes with varying bindings, the classic N+1
+        $nPlusOne = count($this->nPlusOneGroups($data['queries']['statements'] ?? []));
+        if ($minDuplicates !== null && $nPlusOne >= $minDuplicates) {
+            $issues[] = "{$nPlusOne} N+1 group(s)";
         }
 
         // Slow request duration
@@ -183,7 +228,7 @@ class FindCommand extends Command
         }
 
         // Failed queries
-        $failedCount = $data['queries']['nb_failed_statements'] ?? 0;
+        $failedCount = $this->countFailedQueries($data);
         if ($failedCount > 0) {
             $issues[] = "{$failedCount} failed " . ($failedCount === 1 ? 'query' : 'queries');
         }
@@ -191,23 +236,34 @@ class FindCommand extends Command
         return $issues;
     }
 
-    private function countDuplicateGroups(array $statements): int
+    /**
+     * The status code lives in the request collector; `__meta` never carries one.
+     */
+    private function requestStatus(array $data): ?int
     {
-        $seen = [];
-        foreach ($statements as $stmt) {
-            if (($stmt['type'] ?? 'query') !== 'query') {
-                continue;
-            }
-            $key = $stmt['sql'] ?? '';
-            if (isset($stmt['params']) && count($stmt['params']) > 0) {
-                $key .= json_encode($stmt['params']);
-            }
-            if (isset($stmt['connection'])) {
-                $key .= '@' . $stmt['connection'];
-            }
-            $seen[$key] = ($seen[$key] ?? 0) + 1;
+        $status = $data['request']['data']['status_code']
+            ?? $data['request']['badge']
+            ?? $data['__meta']['status']
+            ?? null;
+
+        if ($status === null && isset($data['request']['tooltip']['status'])) {
+            // The tooltip holds a rendered "404 Not Found"
+            $status = strtok((string) $data['request']['tooltip']['status'], ' ');
         }
 
-        return count(array_filter($seen, fn(int $count): bool => $count > 1));
+        return is_numeric($status) ? (int) $status : null;
+    }
+
+    /**
+     * `nb_failed_statements` is not always populated, so fall back to the statements.
+     */
+    private function countFailedQueries(array $data): int
+    {
+        $failed = (int) ($data['queries']['nb_failed_statements'] ?? 0);
+        if ($failed > 0) {
+            return $failed;
+        }
+
+        return count($this->failedStatements($data['queries']['statements'] ?? []));
     }
 }
