@@ -170,6 +170,7 @@ class DebugbarBrowserTest extends BrowserTestCase
                 ->assertSee('GET /web/ajax')
                 ->click('#ajax-link')
                 ->waitForTextIn('#result', 'pong')
+                ->waitForText('GET /api/ping')
                 ->assertSee('GET /api/ping');
         });
     }
