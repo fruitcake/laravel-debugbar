@@ -170,11 +170,12 @@ class MultiAuthCollector extends DataCollector implements Renderable
                 "map" => "auth.guards",
                 "default" => "{}",
             ];
+            // Tied to the control above: a summary widget for a control that does not
+            // exist breaks the bar.
+            $widgets['auth:summary'] = [
+                'map' => 'auth.summary',
+            ];
         }
-
-        $widgets['auth:summary'] = [
-            'map' => 'auth.summary',
-        ];
 
         if ($this->showName) {
             $widgets['auth.name'] = [

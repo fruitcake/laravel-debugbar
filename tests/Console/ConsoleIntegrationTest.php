@@ -176,7 +176,8 @@ class ConsoleIntegrationTest extends TestCase
         static::assertStringContainsString('## Queries', $summary);
         static::assertStringContainsString('n_plus_one', $summary);
         static::assertStringContainsString('3x select * from console_posts where user_id = ?', $summary);
-        static::assertStringContainsString('## Laravel', $summary);
+        // Titled after the `version` control the summary is attached to.
+        static::assertStringContainsString('## Version', $summary);
         static::assertStringNotContainsString('127.0.0.1', $summary, 'the client IP is deliberately left out');
     }
 }

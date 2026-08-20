@@ -84,6 +84,47 @@ class SummaryTest extends TestCase
         static::assertGreaterThan(5, $checked, 'expected several collectors to declare a summary');
     }
 
+    /**
+     * A `<control>:summary` widget whose control is not declared crashes the whole bar:
+     * dataChangeHandler() calls .set() on the missing control. Guards data being off
+     * makes this conditional, so both settings are checked.
+     */
+    #[\PHPUnit\Framework\Attributes\TestWith([true])]
+    #[\PHPUnit\Framework\Attributes\TestWith([false])]
+    public function testEverySummaryWidgetHasAMatchingControl(bool $showGuards): void
+    {
+        config(['debugbar.options.auth.show_guards' => $showGuards]);
+
+        $debugbar = $this->debugbar();
+
+        $controls = [];
+        $summaries = [];
+        foreach ($debugbar->getCollectors() as $collector) {
+            if (!$collector instanceof Renderable) {
+                continue;
+            }
+
+            foreach (array_keys($collector->getWidgets()) as $widget) {
+                $widget = (string) $widget;
+                if (str_ends_with($widget, ':summary')) {
+                    $summaries[substr($widget, 0, -strlen(':summary'))] = get_class($collector);
+                } elseif (!str_contains($widget, ':')) {
+                    $controls[$widget] = true;
+                }
+            }
+        }
+
+        static::assertNotEmpty($summaries);
+
+        foreach ($summaries as $control => $class) {
+            static::assertArrayHasKey(
+                $control,
+                $controls,
+                sprintf('%s declares "%s:summary" but no "%s" control exists', $class, $control, $control)
+            );
+        }
+    }
+
     public function testQuerySummarySeparatesDuplicatesFromNPlusOne(): void
     {
         $debugbar = $this->debugbar();
