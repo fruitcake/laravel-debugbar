@@ -156,4 +156,27 @@ class ConsoleIntegrationTest extends TestCase
         Artisan::call('debugbar:queries', ['id' => $id]);
         static::assertStringContainsString('console_tx', Artisan::output());
     }
+
+    public function testSummaryRendersTheWholeRequestAsPastableText(): void
+    {
+        DB::statement('create table console_users (id integer primary key, name text)');
+        DB::statement('create table console_posts (id integer primary key, user_id integer)');
+        DB::insert('insert into console_users (id, name) values (1, ?), (2, ?), (3, ?)', ['a', 'b', 'c']);
+
+        $id = $this->capture(function () {
+            foreach (DB::select('select * from console_users') as $user) {
+                DB::select('select * from console_posts where user_id = ?', [$user->id]);
+            }
+        });
+
+        Artisan::call('debugbar:get', ['id' => $id, '--summary' => true]);
+        $summary = Artisan::output();
+
+        static::assertStringContainsString('# PHP DebugBar summary', $summary);
+        static::assertStringContainsString('## Queries', $summary);
+        static::assertStringContainsString('n_plus_one', $summary);
+        static::assertStringContainsString('3x select * from console_posts where user_id = ?', $summary);
+        static::assertStringContainsString('## Laravel', $summary);
+        static::assertStringNotContainsString('127.0.0.1', $summary, 'the client IP is deliberately left out');
+    }
 }

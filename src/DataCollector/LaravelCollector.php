@@ -58,6 +58,11 @@ class LaravelCollector extends DataCollector implements Renderable
                 "map" => "laravel.tooltip",
                 "default" => "{}",
             ],
+            // The tooltip is already the environment at a glance, so it doubles as the summary.
+            // Keyed on `laravel` rather than `version` so the summary section is titled "Laravel".
+            "laravel:summary" => [
+                "map" => "laravel.tooltip",
+            ],
         ];
     }
 }

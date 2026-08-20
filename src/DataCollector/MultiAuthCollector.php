@@ -72,6 +72,9 @@ class MultiAuthCollector extends DataCollector implements Renderable
             }
         }
 
+        // Built before formatting, while the guard payloads are still plain arrays.
+        $data['summary'] = $this->buildSummary($data['guards']);
+
         foreach ($data['guards'] as $key => $var) {
             $data['guards'][$key] = $this->getDataFormatter()->formatVar($var);
         }
@@ -82,6 +85,27 @@ class MultiAuthCollector extends DataCollector implements Renderable
         }
 
         return $data;
+    }
+
+    /**
+     * Who is signed in, per guard.
+     *
+     * Only the identifier the bar already shows in its auth indicator is included,
+     * never the whole user payload.
+     *
+     * @param array<string, mixed> $guards
+     *
+     * @return array<string, string>
+     */
+    protected function buildSummary(array $guards): array
+    {
+        $summary = [];
+        foreach ($guards as $guard => $info) {
+            $name = is_array($info) ? ($info['name'] ?? null) : null;
+            $summary[$guard] = is_scalar($name) && $name !== '' ? (string) $name : 'guest';
+        }
+
+        return $summary;
     }
 
     /**
@@ -147,6 +171,10 @@ class MultiAuthCollector extends DataCollector implements Renderable
                 "default" => "{}",
             ];
         }
+
+        $widgets['auth:summary'] = [
+            'map' => 'auth.summary',
+        ];
 
         if ($this->showName) {
             $widgets['auth.name'] = [
