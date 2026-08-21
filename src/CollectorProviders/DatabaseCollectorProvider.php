@@ -40,7 +40,7 @@ class DatabaseCollectorProvider extends AbstractCollectorProvider
         }
 
         if ($backtrace = ($options['backtrace'] ?? true)) {
-            $queryCollector->setFindSource($backtrace, $router->getMiddleware());
+            $queryCollector->setFindSource(is_bool($backtrace) ? $backtrace : (int) $backtrace, $router->getMiddleware());
         }
 
         if ($excludePaths = ($options['exclude_paths'] ?? [])) {
