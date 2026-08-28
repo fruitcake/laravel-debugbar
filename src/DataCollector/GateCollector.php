@@ -38,17 +38,19 @@ class GateCollector extends MessagesCollector implements Resettable
         }
 
         $target = null;
-        if (isset($arguments[0])) {
-            if ($arguments[0] instanceof Model) {
-                $model = $arguments[0];
-                if ($model->getKeyName() && isset($model[$model->getKeyName()])) {
-                    $target = get_class($model) . '(' . $model->getKeyName() . '=' . $model->getKey() . ')';
+        foreach ($arguments as $key => $argument) {
+            if ($argument instanceof Model) {
+                if ($argument->getKeyName() && isset($argument[$argument->getKeyName()])) {
+                    $arguments[$key] = get_class($argument) . '(' . $argument->getKeyName() . '=' . $argument->getKey() . ')';
                 } else {
-                    $target = get_class($model);
+                    $arguments[$key] = get_class($argument);
                 }
-                $arguments[0] = $target;
-            } elseif (is_string($arguments[0])) {
-                $target = $arguments[0];
+
+                if ($key === 0) {
+                    $target = $arguments[$key];
+                }
+            } elseif ($key === 0 && is_string($argument)) {
+                $target = $argument;
             }
         }
 
