@@ -37,18 +37,28 @@ class GateCollector extends MessagesCollector implements Resettable
             $label = $result->allowed() ? 'success' : 'error';
         }
 
+        // Stringify every Model in the arguments, not just $arguments[0]. When a
+        // policy method authorizes creation of a not-yet-existing resource
+        // (Gate::allows('create', [Post::class, $category])), $arguments[0] is the
+        // class name and the real model sits at a later index. Left as-is it is
+        // stored as a live reference in the message array, which - with
+        // Model::automaticallyEagerLoadRelationships() on - drags the whole
+        // hydrating collection along with it, once per check.
         $target = null;
-        if (isset($arguments[0])) {
-            if ($arguments[0] instanceof Model) {
-                $model = $arguments[0];
-                if ($model->getKeyName() && isset($model[$model->getKeyName()])) {
-                    $target = get_class($model) . '(' . $model->getKeyName() . '=' . $model->getKey() . ')';
+        foreach ($arguments as $i => $argument) {
+            if ($argument instanceof Model) {
+                if ($argument->getKeyName() && isset($argument[$argument->getKeyName()])) {
+                    $stringified = get_class($argument) . '(' . $argument->getKeyName() . '=' . $argument->getKey() . ')';
                 } else {
-                    $target = get_class($model);
+                    $stringified = get_class($argument);
                 }
-                $arguments[0] = $target;
-            } elseif (is_string($arguments[0])) {
-                $target = $arguments[0];
+                $arguments[$i] = $stringified;
+
+                if ($i === 0) {
+                    $target = $stringified;
+                }
+            } elseif ($i === 0 && is_string($argument)) {
+                $target = $argument;
             }
         }
 
