@@ -58,6 +58,12 @@ class LaravelCollector extends DataCollector implements Renderable
                 "map" => "laravel.tooltip",
                 "default" => "{}",
             ],
+            // The tooltip is already the environment at a glance, so it doubles as the summary.
+            // Must be keyed on `version`, the name of the control above: a summary widget
+            // for a control that does not exist breaks the bar.
+            "version:summary" => [
+                "map" => "laravel.tooltip",
+            ],
         ];
     }
 }
