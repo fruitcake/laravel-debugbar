@@ -531,6 +531,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
                 'source' => $source,
                 'xdebug_link' => is_object($source) ? $this->getXdebugLink($source->file ?: '', $source->line) : null,
                 'connection' => $connectionName,
+                'table' => $this->extractTableName($query['query']),
                 'explain' => $explainModes ? [
                     'url' => route('debugbar.queries.explain'),
                     'driver' => $query['driver'],
@@ -637,6 +638,44 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
                 "default" => 0,
             ],
         ];
+    }
+
+    /**
+     * Extract the main table name from a SQL query.
+     *
+     * Handles all drivers supported by Laravel (MySQL, PostgreSQL, SQLite, SQL Server)
+     * with their respective identifier quoting styles:
+     *  - MySQL: `table` or `schema`.`table`
+     *  - PostgreSQL: "table" or "schema"."table"
+     *  - SQLite: "table" or `table`
+     *  - SQL Server: [table] or [schema].[table]
+     */
+    protected function extractTableName(string $sql): ?string
+    {
+        // Remove inline comments and normalize whitespace
+        $normalized = preg_replace('/\s+/', ' ', trim($sql));
+
+        // Identifier pattern: matches quoted (`name`, "name", [name]) or unquoted identifiers
+        // Optionally preceded by a schema prefix (schema.table)
+        $ident = '(?:[`"\[][\w-]+[`"\]]|\w+)';
+        $table = "(?:{$ident}\\.)?[`\"\\[]?([\\w-]+)[`\"\\]]?";
+
+        // Match FROM, INTO, UPDATE, JOIN followed by a table name
+        // Priority: FROM > INTO > UPDATE > JOIN (fallback)
+        $patterns = [
+            "/\\bFROM\\s+{$table}/i",
+            "/\\bINTO\\s+{$table}/i",
+            "/\\bUPDATE\\s+{$table}/i",
+            "/\\bJOIN\\s+{$table}/i",
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $normalized, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return null;
     }
 
     protected function getSqlQueryToDisplay(array $query): string
