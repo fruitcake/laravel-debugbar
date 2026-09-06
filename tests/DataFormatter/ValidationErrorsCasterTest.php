@@ -52,4 +52,29 @@ class ValidationErrorsCasterTest extends TestCase
         static::assertStringContainsString('The name field is required.', $json);
         static::assertStringNotContainsString('_cut', $json);
     }
+
+    public function testMultipleNamedBagsAreAllFlattened()
+    {
+        // Laravel's documented pattern for pages with more than one form,
+        // e.g. $errors->getBag('login') / withErrors($errors, 'register').
+        $bag = new ViewErrorBag();
+        $bag->put('login', new MessageBag(['email' => ['These credentials do not match.']]));
+        $bag->put('register', new MessageBag(['email' => ['The email has already been taken.']]));
+
+        $formatted = DataCollector::getDefaultDataFormatter()->formatVar($bag);
+        $json = json_encode($formatted);
+
+        static::assertStringContainsString('These credentials do not match.', $json);
+        static::assertStringContainsString('The email has already been taken.', $json);
+        static::assertStringNotContainsString('_cut', $json);
+    }
+
+    public function testEmptyViewErrorBagDoesNotError()
+    {
+        // The default state shared with every view when there are no validation errors.
+        $formatted = DataCollector::getDefaultDataFormatter()->formatVar(new ViewErrorBag());
+
+        static::assertIsArray($formatted);
+        static::assertStringNotContainsString('_cut', json_encode($formatted));
+    }
 }
