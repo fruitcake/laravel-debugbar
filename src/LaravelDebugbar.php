@@ -330,6 +330,14 @@ class LaravelDebugbar extends DebugBar
                         'database' => $connection->getDatabaseName(),
                     ];
                 },
+                // Flatten to plain arrays so validation messages survive the cloner's max_depth
+                // instead of being cut off inside the nested MessageBag object (see #2036).
+                \Illuminate\Support\ViewErrorBag::class => static function (\Illuminate\Support\ViewErrorBag $bag, array $a, Stub $stub): array {
+                    return array_map(static fn(\Illuminate\Contracts\Support\MessageBag $messageBag): array => $messageBag->toArray(), $bag->getBags());
+                },
+                \Illuminate\Support\MessageBag::class => static function (\Illuminate\Support\MessageBag $bag, array $a, Stub $stub): array {
+                    return $bag->toArray();
+                },
             ],
         ]);
 
