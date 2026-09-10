@@ -19,6 +19,7 @@ class GetCommand extends Command
     {--collector= : Show a specific collector}
     {--raw : Show raw JSON data}
     {--json : Alias for --raw}
+    {--summary : Show the plain text request summary, ready to paste}
     ';
     protected $description = 'Get a Debugbar request from the Storage';
 
@@ -44,6 +45,11 @@ class GetCommand extends Command
         $result = $storage->get($id);
         if (!$result) {
             $this->error("Request {$id} not found. Run `php artisan debugbar:find` to list stored requests.");
+            return;
+        }
+
+        if ($this->option('summary')) {
+            $this->showTextSummary($debugbar, $result);
             return;
         }
 
@@ -121,6 +127,23 @@ class GetCommand extends Command
         if (isset($result['queries']['statements']) && count($result['queries']['statements']) > 0) {
             $this->line('Run `php artisan debugbar:queries ' . ($result['__meta']['id'] ?? '{id}') . '` to see the query details');
         }
+    }
+
+    /**
+     * Prints the summaries the collectors contributed, as plain text.
+     *
+     * This is the whole request in a form you can paste into an issue or hand to an
+     * agent, as opposed to the drill-down the other options give you.
+     */
+    private function showTextSummary(LaravelDebugbar $debugbar, array $result): void
+    {
+        $summary = $debugbar->getSummary($result);
+        if (trim($summary) === '') {
+            $this->error('This request has no summaries. None of its collectors contributed one.');
+            return;
+        }
+
+        $this->line($summary);
     }
 
     /**

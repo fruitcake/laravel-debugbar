@@ -120,6 +120,11 @@ php artisan debugbar:clear           # clear the storage
 Use `latest` instead of an id to inspect the most recent request. All three read commands accept `--json`
 for machine readable output.
 
+`php artisan debugbar:get {id} --summary` prints the plain text request summary — the same text the
+summary button in the bar copies. It is the quickest way to see what a request did, and it is meant to be
+pasted into an issue or handed to an AI agent. The client IP, request body values and session values are
+deliberately left out; only key names appear.
+
 `debugbar:queries` reports two kinds of repetition separately. **Duplicate queries** are byte for byte
 identical, usually something that should have been cached. **Repeated query shapes** are the same query with
 a different value each time — the classic N+1 caused by a lazily loaded relation. Because the collector

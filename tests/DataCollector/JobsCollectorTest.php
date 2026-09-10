@@ -46,7 +46,7 @@ class JobsCollectorTest extends TestCase
                 'is_counter' => true,
                 'key_map' => [],
             ],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
 
         OrderShipped::dispatch(1);
@@ -59,7 +59,7 @@ class JobsCollectorTest extends TestCase
                 'is_counter' => true,
                 'key_map' => [],
             ],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
 
         dispatch(new SendNotification());
@@ -74,7 +74,7 @@ class JobsCollectorTest extends TestCase
                 'is_counter' => true,
                 'key_map' => [],
             ],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
     }
 
@@ -98,5 +98,17 @@ class JobsCollectorTest extends TestCase
                 });
             }
         })->up();
+    }
+
+    /**
+     * The collected data without its summary, which is asserted separately so these
+     * exact-shape comparisons stay about the counting behaviour.
+     */
+    private function countsOnly(\DebugBar\DataCollector\ObjectCountCollector $collector): array
+    {
+        $data = $collector->collect();
+        unset($data['summary']);
+
+        return $data;
     }
 }
