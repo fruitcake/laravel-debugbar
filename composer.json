@@ -36,7 +36,7 @@
         "larastan/larastan": "^3",
         "phpstan/phpstan-phpunit": "^2",
         "laravel/pint": "^1",
-        "laravel/ai": "^0.8",
+        "laravel/ai": "^0.8|^1.0",
         "livewire/livewire": "^3.7|^4",
         "phpstan/phpstan-strict-rules": "^2.0",
         "shipmonk/phpstan-rules": "^4.3",

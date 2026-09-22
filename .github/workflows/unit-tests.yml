@@ -71,3 +71,34 @@ jobs:
         with:
           name: screenshots
           path: tests/Browser/screenshots/*
+
+  ai-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ai: ['^0.8', '^1.0']
+
+    name: AI SDK ${{ matrix.ai }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+          extensions: mbstring, pdo_sqlite
+
+      - name: Install dependencies
+        run: |
+          composer require --dev "laravel/ai:${{ matrix.ai }}" --no-interaction --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction --no-progress
+
+      - name: Execute AI Collector Tests
+        run: composer test -- --filter=AiCollectorTest

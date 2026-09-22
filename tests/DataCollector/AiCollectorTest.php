@@ -12,12 +12,18 @@ use Laravel\Ai\AiManager;
 use Laravel\Ai\AnonymousAgent;
 use Laravel\Ai\Contracts\Providers\TextProvider;
 use Laravel\Ai\Events\AgentPrompted;
+use Laravel\Ai\Events\AgentStreamed;
 use Laravel\Ai\Events\ToolInvoked;
 use Laravel\Ai\Prompts\AgentPrompt;
 use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\Data\Meta;
+use Laravel\Ai\Responses\Data\TextUsage;
 use Laravel\Ai\Responses\Data\Usage;
+use Laravel\Ai\Responses\StreamedAgentResponse;
+use Laravel\Ai\Streaming\Events\StreamEnd;
+use Laravel\Ai\Streaming\Events\TextDelta;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AiCollectorTest extends TestCase
 {
@@ -43,6 +49,7 @@ class AiCollectorTest extends TestCase
         $collector = new AiCollector();
 
         $collector->bufferToolInvocation(new ToolInvoked(
+            ...$this->toolTiming(),
             invocationId: 'inv-1',
             toolInvocationId: 'tool-1',
             agent: $this->agent(),
@@ -82,6 +89,7 @@ class AiCollectorTest extends TestCase
         $collector = new AiCollector();
 
         $collector->bufferToolInvocation(new ToolInvoked(
+            ...$this->toolTiming(),
             invocationId: 'inv-1',
             toolInvocationId: 'tool-1',
             agent: $this->agent(),
@@ -99,11 +107,58 @@ class AiCollectorTest extends TestCase
         static::assertCount(0, $runs[1]['tools']); // second run has no buffered tools
     }
 
+    #[DataProvider('agentTokenUsageProvider')]
+    public function testItCollectsTokenUsageThroughAgentEvents(string $eventClass, int $inputTokens, int $outputTokens, int $expectedTokens): void
+    {
+        debugbar()->enable();
+        debugbar()->boot();
+
+        $event = $this->agentPrompted('inv-1', 'Hello', 'Hi', $inputTokens, $outputTokens);
+
+        if ($eventClass === AgentStreamed::class) {
+            $event->response = new StreamedAgentResponse(
+                invocationId: $event->invocationId,
+                events: collect([
+                    new TextDelta('text-1', 'message-1', 'Hi', 0),
+                    new StreamEnd('end-1', 'stop', $event->response->usage, 0),
+                ]),
+                meta: $event->response->meta,
+            );
+        }
+
+        $event = new $eventClass($event->invocationId, $event->prompt, $event->response);
+
+        $this->app['events']->dispatch($event);
+
+        $collector = debugbar()->getCollector('ai');
+        $runs = $this->runsOf($collector);
+
+        static::assertCount(1, $runs);
+        static::assertSame($expectedTokens, $runs[0]['tokens']);
+        static::assertSame($event->response->usage->toArray(), $runs[0]['usage']);
+        static::assertSame('Hi', $runs[0]['response']);
+    }
+
+    public static function agentTokenUsageProvider(): array
+    {
+        $cases = [];
+
+        foreach ([AgentPrompted::class, AgentStreamed::class] as $eventClass) {
+            $cases[$eventClass . ' nonzero tokens'] = [$eventClass, 10, 20, 30];
+            $cases[$eventClass . ' zero input tokens'] = [$eventClass, 0, 20, 20];
+            $cases[$eventClass . ' zero output tokens'] = [$eventClass, 10, 0, 10];
+            $cases[$eventClass . ' zero tokens'] = [$eventClass, 0, 0, 0];
+        }
+
+        return $cases;
+    }
+
     public function testItOmitsBodiesWhenValuesAreDisabled()
     {
         $collector = new AiCollector(collectValues: false);
 
         $collector->bufferToolInvocation(new ToolInvoked(
+            ...$this->toolTiming(),
             invocationId: 'inv-1',
             toolInvocationId: 'tool-1',
             agent: $this->agent(),
@@ -147,7 +202,12 @@ class AiCollectorTest extends TestCase
         return new AnonymousAgent('You are helpful.', [], []);
     }
 
-    private function agentPrompted(string $invocationId, string $prompt, string $response): AgentPrompted
+    private function toolTiming(): array
+    {
+        return property_exists(ToolInvoked::class, 'time') ? ['time' => 1.0] : [];
+    }
+
+    private function agentPrompted(string $invocationId, string $prompt, string $response, int $inputTokens = 10, int $outputTokens = 20): AgentPrompted
     {
         $agentPrompt = new AgentPrompt(
             agent: $this->agent(),
@@ -160,7 +220,9 @@ class AiCollectorTest extends TestCase
         $agentResponse = new AgentResponse(
             invocationId: $invocationId,
             text: $response,
-            usage: new Usage(promptTokens: 10, completionTokens: 20),
+            usage: class_exists(TextUsage::class)
+                ? new TextUsage(inputTokens: $inputTokens, outputTokens: $outputTokens)
+                : new Usage(promptTokens: $inputTokens, completionTokens: $outputTokens),
             meta: new Meta(provider: 'fake-provider', model: 'gpt-fake'),
         );
 
