@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\Tests\Controllers;
 
 use Fruitcake\LaravelDebugbar\Tests\DebugbarTest;
+use Illuminate\Routing\EncodedParameter;
 use Illuminate\Support\Facades\Cache;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -16,7 +17,12 @@ class CacheControllerTest extends DebugbarTest
         Cache::put($key, 'test-value');
         static::assertTrue(Cache::has($key));
 
-        $url = url()->signedRoute('debugbar.cache.delete', ['key' => urlencode($key)]);
+        $encodedKey = urlencode($key);
+        if (class_exists(EncodedParameter::class)) {
+            $encodedKey = new EncodedParameter($encodedKey);
+        }
+
+        $url = url()->signedRoute('debugbar.cache.delete', ['key' => $encodedKey]);
 
         $this->delete($url)->assertOk()->assertJson(['success' => true]);
 
