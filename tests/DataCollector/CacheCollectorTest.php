@@ -45,8 +45,8 @@ class CacheCollectorTest extends TestCase
         $lastMeasure = end($data['measures']);
 
         static::assertArrayHasKey('delete_url', $lastMeasure);
-        static::assertStringContainsString('_debugbar/cache/', $lastMeasure['delete_url']);
-        static::assertStringContainsString(urlencode($key), $lastMeasure['delete_url']);
+        static::assertStringContainsString('_debugbar/cache?', $lastMeasure['delete_url']);
+        static::assertStringContainsString('key=' . rawurlencode($key), $lastMeasure['delete_url']);
     }
 
     #[DataProvider('cacheKeyProvider')]
@@ -63,7 +63,7 @@ class CacheCollectorTest extends TestCase
         $lastMeasure = end($data['measures']);
 
         static::assertArrayHasKey('delete_url', $lastMeasure);
-        static::assertStringContainsString(urlencode($key), $lastMeasure['delete_url']);
+        static::assertStringContainsString('key=' . rawurlencode($key), $lastMeasure['delete_url']);
     }
 
     #[DataProvider('sizeDataProvider')]
@@ -257,6 +257,7 @@ class CacheCollectorTest extends TestCase
             'simple key'                      => ['simple-key'],
             'key with route parameter syntax' => ['pattern::category,resources/{resource}'],
             'key with colons and slashes'     => ['key:with:colons/and/slashes'],
+            'key with encoded characters'     => ['100%25 done?a=b&c#d'],
         ];
     }
 }

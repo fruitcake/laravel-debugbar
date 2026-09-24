@@ -16,7 +16,7 @@ class CacheControllerTest extends DebugbarTest
         Cache::put($key, 'test-value');
         static::assertTrue(Cache::has($key));
 
-        $url = url()->signedRoute('debugbar.cache.delete', ['key' => urlencode($key)]);
+        $url = url()->signedRoute('debugbar.cache.delete', ['key' => $key]);
 
         $this->delete($url)->assertOk()->assertJson(['success' => true]);
 
@@ -28,7 +28,7 @@ class CacheControllerTest extends DebugbarTest
         $key = 'test-key';
         Cache::put($key, 'test-value');
 
-        $this->delete('/_debugbar/cache/' . $key)->assertForbidden();
+        $this->delete('/_debugbar/cache?key=' . $key)->assertForbidden();
 
         static::assertTrue(Cache::has($key));
     }
@@ -41,7 +41,7 @@ class CacheControllerTest extends DebugbarTest
         $key = 'test-key';
         Cache::put($key, 'test-value');
 
-        $url = url()->signedRoute('debugbar.cache.delete', ['key' => urlencode($key)]);
+        $url = url()->signedRoute('debugbar.cache.delete', ['key' => $key]);
 
         $this->delete($url)->assertForbidden();
 
@@ -53,7 +53,7 @@ class CacheControllerTest extends DebugbarTest
         $key = 'test-key';
         Cache::put($key, 'test-value');
 
-        $url = url()->signedRoute('debugbar.cache.delete', ['key' => urlencode($key), 'tags' => 'not-an-array']);
+        $url = url()->signedRoute('debugbar.cache.delete', ['key' => $key, 'tags' => 'not-an-array']);
 
         $this->deleteJson($url)->assertUnprocessable();
     }
@@ -65,6 +65,7 @@ class CacheControllerTest extends DebugbarTest
             'simple key'                      => ['test-delete-key'],
             'key with route parameter syntax' => ['pattern::category,resources/{resource}'],
             'key with colons and slashes'     => ['key:with:colons/and/slashes'],
+            'key with encoded characters'     => ['100%25 done?a=b&c#d'],
         ];
     }
 }

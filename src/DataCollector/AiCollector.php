@@ -55,15 +55,15 @@ class AiCollector extends DataCollector implements DataCollectorInterface, Rende
         unset($this->toolInvocations[$event->invocationId]);
 
         $prompt = $event->prompt;
-        $usage = $event->response->usage;
+        $usage = $event->response->usage->toArray();
 
         $run = [
             'agent' => $prompt->agent::class,
             'model' => $prompt->model,
-            'tokens' => $usage->promptTokens + $usage->completionTokens,
+            'tokens' => ($usage['input_tokens'] ?? $usage['prompt_tokens']) + ($usage['output_tokens'] ?? $usage['completion_tokens']),
             'provider' => $event->response->meta->provider,
             'attachments' => $prompt->attachments->count(),
-            'usage' => $usage->toArray(),
+            'usage' => $usage,
             'invocation_id' => $event->invocationId,
         ];
 

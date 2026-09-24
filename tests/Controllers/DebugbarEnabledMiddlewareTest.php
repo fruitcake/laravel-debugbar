@@ -15,7 +15,7 @@ class DebugbarEnabledMiddlewareTest extends TestCase
         $this->get('/_debugbar/open')->assertNotFound();
         $this->get('/_debugbar/assets?type=js')->assertNotFound();
         $this->postJson('/_debugbar/queries/explain')->assertNotFound();
-        $this->delete('/_debugbar/cache/test-key')->assertNotFound();
+        $this->delete('/_debugbar/cache?key=test-key')->assertNotFound();
     }
 
     public function testRoutesAreAccessibleWhenDebugbarIsEnabled(): void
