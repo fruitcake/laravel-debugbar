@@ -6,7 +6,7 @@ on:
       - master
   pull_request:
     branches:
-      - *
+      - '*'
 
 jobs:
   unit-tests:
@@ -20,8 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.2, '8.3', '8.4', '8.5', 8.6]
-        livewire: [^3, ^4]
+        php: [8.6, 8.5, 8.4, 8.3, 8.2]
+        livewire: [^4, ^3]
 
     name: Livewire${{ matrix.livewire }}
 
