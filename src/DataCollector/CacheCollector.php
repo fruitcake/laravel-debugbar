@@ -22,7 +22,6 @@ use Illuminate\Cache\Events\{CacheEvent,
     KeyWritten,
     RetrievingKey,
     WritingKey};
-use Illuminate\Routing\EncodedParameter;
 use Illuminate\Support\Facades\Route;
 use Throwable;
 
@@ -90,20 +89,10 @@ class CacheCollector extends TimeDataCollector implements AssetProvider, Resetta
         if (isset($event->key) && in_array($label, ['hit', 'written'], true) && Route::has('debugbar.cache.delete')) {
             $measureIndex = array_key_last($this->measures);
             $this->measures[$measureIndex]['delete_url'] = url()->signedRoute('debugbar.cache.delete', [
-                'key' => $this->encodeKey((string) $event->key),
+                'key' => (string) $event->key,
                 'tags' => $params['tags'] ?? [],
             ]);
         }
-    }
-
-    /**
-     * Laravel 13.33+ escapes '%' in route parameters, unless wrapped in an EncodedParameter.
-     */
-    protected function encodeKey(string $key): string|EncodedParameter
-    {
-        $key = urlencode($key);
-
-        return class_exists(EncodedParameter::class) ? new EncodedParameter($key) : $key;
     }
 
     public function onStartCacheEvent(mixed $event): void

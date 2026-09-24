@@ -13,13 +13,13 @@ class CacheController
      * Forget a cache key
      *
      */
-    public function delete(CacheManager $cache, CacheDeleteRequest $request, string $key): \Illuminate\Http\JsonResponse
+    public function delete(CacheManager $cache, CacheDeleteRequest $request): \Illuminate\Http\JsonResponse
     {
         if ($tags = $request->validated('tags')) {
             $cache = $cache->tags($tags);
         }
 
-        $success = $cache->forget($key);
+        $success = $cache->forget($request->validated('key'));
 
         return response()->json(compact('success'));
     }

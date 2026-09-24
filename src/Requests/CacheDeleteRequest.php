@@ -16,6 +16,7 @@ class CacheDeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'key' => ['required', 'string'],
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['string'],
         ];
