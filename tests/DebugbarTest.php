@@ -7,6 +7,7 @@ namespace Fruitcake\LaravelDebugbar\Tests;
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class DebugbarTest extends TestCase
 {
@@ -152,6 +153,41 @@ class DebugbarTest extends TestCase
 
         static::assertSame('', $request->getClientIp());
         static::assertFalse($debugbar->isStorageOpen($request));
+    }
+
+    public static function storageOpenIpProvider(): array
+    {
+        return [
+            ['127.0.0.1', true],
+            ['127.0.1.1', true],
+            ['::1', true],
+            ['::ffff:127.0.0.1', true],
+            ['172.17.0.1', true],
+            ['192.168.1.10', true],
+            ['10.0.0.1', true],
+            ['fd00::1', true],
+            ['169.254.1.1', false],
+            ['0.0.0.1', false],
+            ['240.0.0.1', false],
+            ['::ffff:8.8.8.8', false],
+            ['::ffff:192.168.1.10', false],
+            ['8.8.8.8', false],
+            ['2001:db8::1', false],
+        ];
+    }
+
+    #[DataProvider('storageOpenIpProvider')]
+    public function testIsStorageOpenOnlyAllowsLocalAndPrivateIpsByDefault(string $ip, bool $expected)
+    {
+        $this->app['config']->set('debugbar.storage.open', null);
+        $this->resetStorageOpen();
+
+        $request = Request::create('web/html', 'GET', server: ['REMOTE_ADDR' => $ip]);
+
+        /** @var LaravelDebugbar $debugbar */
+        $debugbar = $this->app->make(LaravelDebugbar::class);
+
+        static::assertSame($expected, $debugbar->isStorageOpen($request));
     }
 
     private function collectMetaDataForRequest(Request $request): array

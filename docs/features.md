@@ -48,7 +48,7 @@ Tip: you can disable he 'autoshow' toggle in the history tab to keep the current
 
 By default, Debugbar stores request history. This is useful for non-browser requests, redirects or external requests. You can open it with the 'folder' button (3rd from the right).
 
-With the default settings, storage is only visible from your local IP. To enable browsing the history, change the `storage.open` setting or `DEBUGBAR_OPEN_STORAGE` env key.
+With the default settings, the history is only available for requests from localhost or a private network (e.g. Docker/Sail or your LAN). This also applies to on-demand query EXPLAIN and query results. To change this, use the `storage.open` setting or `DEBUGBAR_OPEN_STORAGE` env key.
 
 !!! warning
 
@@ -73,7 +73,8 @@ With the default settings, storage is only visible from your local IP. To enable
      | Warning: Enabling storage.open will allow everyone to access previous
      | request, do not enable open storage in publicly available environments!
      | Specify a callback if you want to limit based on IP or authentication.
-     | Leaving it to null will allow localhost only.
+     | Leaving it to null will allow localhost and private network IPs
+     | (eg. Docker/Sail or LAN) only. Set to false to disable it completely.
      */
     'storage' => [
         'enabled'    => true,

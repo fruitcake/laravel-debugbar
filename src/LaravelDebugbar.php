@@ -622,8 +622,12 @@ class LaravelDebugbar extends DebugBar
             }
 
             try {
-                // Allow localhost request when not explicitly allowed/disallowed
-                $this->storageOpen = IpUtils::isPrivateIp($request->getClientIp());
+                // Allow localhost and private network (eg. Docker/Sail) requests when not explicitly allowed/disallowed
+                $this->storageOpen = IpUtils::checkIp((string) $request->getClientIp(), [
+                    '127.0.0.0/8', '::1', '::ffff:127.0.0.0/104', // Loopback
+                    '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', // RFC1918
+                    'fc00::/7', // Unique Local Address
+                ]);
             } catch (\ValueError $e) {
                 $this->storageOpen = false;
             }

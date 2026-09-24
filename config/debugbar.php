@@ -261,7 +261,8 @@ return [
     | Warning: Enabling storage.open will allow everyone to access previous
     | request, do not enable open storage in publicly available environments!
     | Specify a callback if you want to limit based on IP or authentication.
-    | Leaving it to null will allow localhost only.
+    | Leaving it to null will allow localhost and private network IPs
+    | (eg. Docker/Sail or LAN) only. Set to false to disable it completely.
     */
     'storage' => [
         'enabled'    => env('DEBUGBAR_STORAGE_ENABLED', true),

@@ -101,7 +101,8 @@ debugber()->enable();
 
 ## Storage
 
-Debugbar remembers previous requests, which you can view using the Browse button on the right. This will only work if you enable `debugbar.storage.open` in the config.
+Debugbar remembers previous requests, which you can view using the Browse button on the right. By default, this only works for requests from localhost or a private network (e.g. Docker/Sail or your LAN).
+To change this, set `debugbar.storage.open` (or `DEBUGBAR_OPEN_STORAGE`) to `true`/`false`, or use a callback.
 Make sure you only do this on local development, because otherwise other people will be able to view previous requests.
 In general, Debugbar should only be used locally or at least restricted by IP.
 It's possible to pass a callback, which will receive the Request object, so you can determine access to the OpenHandler storage.

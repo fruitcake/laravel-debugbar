@@ -146,6 +146,7 @@ The Query Collector has the following features
 
 Enable the `options.db.explain` option to run on-demand EXPLAIN queries for any SELECT query in the Debugbar.
 This will update in the interface. You also have an option to navigate to mysqlexplain.com for a visual explain.
+EXPLAIN is only available when the storage is open (see `storage.open`, localhost/private network only by default).
 
 ![Query On-demand Explain](img/query-explain.gif)
 
