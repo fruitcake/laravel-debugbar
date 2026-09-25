@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Fruitcake\LaravelDebugbar\DataCollector;
 
 use DebugBar\Bridge\Symfony\SymfonyRequestCollector;
+use DebugBar\DataCollector\SummarizesData;
 use DebugBar\DataCollector\DataCollectorInterface;
 use DebugBar\DataCollector\Renderable;
 use Fruitcake\LaravelDebugbar\LaravelDebugbar;
 use Illuminate\Contracts\Queue\Job;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Laravel\Telescope\IncomingEntry;
@@ -17,6 +19,8 @@ use Symfony\Component\Console\Input\ArgvInput;
 
 class RequestCollector extends SymfonyRequestCollector implements DataCollectorInterface, Renderable
 {
+    use SummarizesData;
+
     /**
      * {@inheritdoc}
      */
@@ -63,8 +67,72 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
         unset($htmlData['as'], $htmlData['uses']);
 
         $result['data'] = $htmlData + $result['data'];
+        $result['summary'] = $this->summarizeRequest(request(), $result, $route);
 
         return $result;
+    }
+
+    /**
+     * What this request was, in the few lines you would want at the top of a bug report.
+     *
+     * The route and session live in collectors whose widget renders their whole payload,
+     * so a `summary` key there would show up as a row in the panel. They are folded in
+     * here instead. Only *names* of session keys are listed: summaries are made to be
+     * pasted elsewhere, so the values stay in the panel.
+     *
+     * @param array<string, mixed> $result
+     *
+     * @return array<string, mixed>
+     */
+    protected function summarizeRequest(Request $request, array $result, mixed $route): array
+    {
+        $summary = array_filter([
+            'method' => $request->getMethod(),
+            'uri' => $this->hideMaskedUri($request->getRequestUri()),
+            'status' => $result['data']['status_code'] ?? null,
+            'ajax' => $request->ajax() ?: null,
+        ], fn($value): bool => $value !== null && $value !== '');
+
+        if (is_a($route, 'Illuminate\Routing\Route')) {
+            $action = $route->getAction();
+            $summary += array_filter([
+                'route' => $route->getName(),
+                'action' => is_string($action['controller'] ?? null) ? $action['controller'] : null,
+                'middleware' => $this->summarizeList($route->gatherMiddleware()),
+            ], fn($value): bool => $value !== null && $value !== '');
+        }
+
+        if ($request->hasSession()) {
+            $session = $this->summarizeList(array_keys($request->session()->all()));
+            if ($session !== null) {
+                $summary['session_keys'] = $session;
+            }
+        }
+
+        return $summary;
+    }
+
+    /**
+     * Joins a list of names, capped so a large one doesn't flood the summary.
+     *
+     * @param array<int, mixed> $values
+     */
+    protected function summarizeList(array $values, int $max = 10): ?string
+    {
+        $values = array_values(array_filter(array_map(
+            fn($value): string => is_scalar($value) ? (string) $value : '',
+            $values
+        )));
+
+        if (!$values) {
+            return null;
+        }
+
+        $extra = count($values) - $max;
+
+        return $extra > 0
+            ? implode(', ', array_slice($values, 0, $max)) . " (+{$extra} more)"
+            : implode(', ', $values);
     }
 
     protected function collectCli(): array
@@ -101,7 +169,14 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
             }
         }
 
-        return ['data' => $data];
+        return [
+            'data' => $data,
+            'summary' => array_filter([
+                'method' => 'CLI',
+                'command' => $command,
+                'command_class' => $commandClass,
+            ]),
+        ];
     }
 
     protected function collectJob(Job $job): array
@@ -137,7 +212,16 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
             }
         }
 
-        return ['data' => $data];
+        return [
+            'data' => $data,
+            'summary' => array_filter([
+                'method' => 'JOB',
+                'job' => $job->resolveName(),
+                'connection' => $job->getConnectionName(),
+                'queue' => $job->getQueue(),
+                'attempts' => $job->attempts(),
+            ]),
+        ];
     }
 
     protected function getRouteInformation(mixed $route): array

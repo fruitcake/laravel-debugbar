@@ -15,10 +15,12 @@ compatibility: Requires Laravel with fruitcake/laravel-debugbar installed, debug
    ```bash
    php artisan debugbar:find --issues --max=50
    ```
-2. Inspect the request summary to see which collectors have data:
+2. Read the request summary — one screen covering every collector that has something to say:
    ```bash
-   php artisan debugbar:get {id}
+   php artisan debugbar:get {id} --summary
    ```
+   Start here. It is usually enough to identify the problem, and it costs one command instead of three.
+   Use `php artisan debugbar:get {id}` without `--summary` for the collector-by-collector table.
 3. Drill into the relevant collector based on the issue type:
    ```bash
    php artisan debugbar:get {id} --collector=exceptions
@@ -63,13 +65,19 @@ php artisan debugbar:find --method=CLI      # artisan commands
 ## Inspecting a request
 
 ```bash
-# Summary of all collectors (available collectors depend on config)
-php artisan debugbar:get latest
+# The whole request as plain text: status, route, queries, N+1s, exceptions, cache, auth
+php artisan debugbar:get latest --summary
+
+# Which collectors have data, and a one line digest of each
 php artisan debugbar:get {id}
 
 # Full data for a specific collector
 php artisan debugbar:get {id} --collector=exceptions
 ```
+
+`--summary` is the fastest way to understand a request, and it is what to paste into a bug report.
+It deliberately leaves out the client IP, request body values and session values — only key *names*
+appear — so it is safe to share. Collectors that have nothing to report are omitted entirely.
 
 Pick the collector by issue type:
 - **Error/500** → `exceptions` · **Slow page** → `queries`, `time` · **Auth** → `auth`, `gate` · **Cache** → `cache`
@@ -97,7 +105,7 @@ The `Flags` column marks `SLOW` and `FAILED` statements; failed statements are l
 Two separate repetition reports follow the table, and they mean different things:
 
 - **Duplicate queries** — identical SQL *and* identical bindings. Usually a query that should have been cached or hoisted out of a loop.
-- **Repeated query shapes with varying bindings** — the same query with a different value each time. This is the classic N+1: an unloaded relation fetched per record. Fix it with eager loading (`with()`). Detection strips literals from the SQL, so `where user_id = 1` and `where user_id = 2` count as one shape.
+- **Repeated query shapes with varying bindings** — the same query with a different value each time. This is the classic N+1: an unloaded relation fetched per record. Fix it with eager loading (`with()`). Grouping uses the SQL as it was *before* bindings were rendered into it, so `where user_id = 1` and `where user_id = 2` are one shape.
 
 Use `--statement=N` on any index from those groups to get the backtrace and find the origin.
 
@@ -116,7 +124,7 @@ php artisan debugbar:get {id} --json          # raw collector data (`--raw` is t
 - Always start with `debugbar:find --issues` rather than `debugbar:find` — the issue flags surface the most actionable requests immediately.
 - The `{id}` is the request ID from the `debugbar:find` output, or use `latest` to inspect the most recent request.
 - Collector availability depends on the app's debugbar config — the summary from `debugbar:get` shows which collectors have data.
-- The `Dup` column only counts *exact* duplicates (same bindings). For N+1 read the "repeated query shapes" section instead — that is where a per-record lazy load shows up.
+- The `Dup` column only counts *exact* duplicates (same bindings). For N+1 read the "repeated query shapes" section instead — that is where a per-record lazy load shows up. `debugbar:get {id} --summary` reports both under `duplicates` and `n_plus_one`.
 - `--explain` and `--result` only work on SELECT queries, and require `--statement=N`. They re-execute against the current database, so results may differ from the original request.
 - Very large requests are truncated by the debugbar query limits (`debugbar.options.db.soft_limit` / `hard_limit`); an `info` statement in the output says so when it happens.
 - `debugbar:clear` removes all stored data — use it to reset between debugging sessions, not mid-investigation.
