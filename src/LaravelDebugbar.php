@@ -61,6 +61,7 @@ use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\VarDumper\Cloner\Stub;
+use Symfony\Component\VarDumper\VarDumper;
 use Throwable;
 
 /**
@@ -216,6 +217,8 @@ class LaravelDebugbar extends DebugBar
 
         $this->registerCollectors();
 
+        $this->registerVarDumperDdHook();
+
         $this->booted = true;
     }
 
@@ -344,6 +347,52 @@ class LaravelDebugbar extends DebugBar
         DataCollector::setDefaultDataFormatter($formatter);
     }
 
+    /**
+     * Hook into VarDumper so Debugbar can capture dd() output before the script terminates.
+     */
+    protected function registerVarDumperDdHook(): void
+    {
+        $flushed = false;
+        $originalHandler = VarDumper::setHandler(function ($var, $label = null) use (&$originalHandler, &$flushed): void {
+            try {
+                foreach (!$flushed ? debug_backtrace(0, 5) : [] as $trace) {
+                    if (($trace['function'] ?? null) !== 'dd') {
+                        continue;
+                    }
+
+                    foreach ($trace['args'] ?? [] as $k => $arg) {
+                        $this->messagesCollector->addMessage($arg, 'info', ['context' => $k]);
+                    }
+                    $this->exceptionsCollector->addWarning(E_USER_NOTICE, 'Execution terminated by dd().', $trace['file'] ?? '', $trace['line'] ?? 0);
+                    $this->sendDataInHeaders(true);
+                    $flushed = true;
+
+                    if (!in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) && !headers_sent()) {
+                        header("phpdebugbar-id: " . $this->getCurrentRequestId());
+                    }
+
+                    // Check if it's safe to inject the Debugbar
+                    $request = request();
+                    if (
+                        config()->get('debugbar.inject', true)
+                        && !$request->ajax()
+                        && !$this->isJsonRequest($request)
+                        && in_array($request->getRequestFormat(), [null, 'html'], true)
+                    ) {
+                        echo $this->getDebugbarWidget();
+                    }
+                    break;
+                }
+            } catch (\Throwable $e) {
+                //
+            }
+
+            if ($originalHandler) {
+                $originalHandler($var, $label);
+            }
+        });
+    }
+
     public function getJavascriptRenderer(?string $baseUrl = null, ?string $basePath = null): JavascriptRenderer
     {
         if ($this->jsRenderer !== null) {
@@ -387,18 +436,9 @@ class LaravelDebugbar extends DebugBar
      */
     public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): mixed
     {
-        if ($this->hasCollector('exceptions')) {
-            /** @var ExceptionsCollector $exceptionCollector */
-            $exceptionCollector = $this['exceptions'];
-            $exceptionCollector->addWarning($level, $message, $file, $line);
-        }
-
-        if ($this->hasCollector('messages')) {
-            /** @var MessagesCollector $messagesCollector */
-            $messagesCollector = $this['messages'];
-            $file = $file ? ' on ' . $messagesCollector->normalizeFilePath($file) . ":{$line}" : '';
-            $messagesCollector->addMessage($message . $file, 'deprecation');
-        }
+        $this->exceptionsCollector->addWarning($level, $message, $file, $line);
+        $file = $file ? ' on ' . $messagesCollector->normalizeFilePath($file) . ":{$line}" : '';
+        $this->messagesCollector->addMessage($message . $file, 'deprecation');
 
         if (! $this->prevErrorHandler) {
             return null;
@@ -763,6 +803,17 @@ class LaravelDebugbar extends DebugBar
         }
     }
 
+    protected function getDebugbarWidget(): string
+    {
+        $renderer = $this->getJavascriptRenderer();
+
+        if ($renderer->getCspNonce() === null) {
+            $renderer->setCspNonce($this->detectCspNonce());
+        }
+
+        return "<!-- Laravel Debugbar Widget -->\n" . $renderer->renderHead() . $renderer->render();
+    }
+
     /**
      * Injects the web debug toolbar into the given Response.
      *
@@ -772,13 +823,7 @@ class LaravelDebugbar extends DebugBar
     {
         $content = $response->getContent();
 
-        $renderer = $this->getJavascriptRenderer();
-
-        if ($renderer->getCspNonce() === null) {
-            $renderer->setCspNonce($this->detectCspNonce());
-        }
-
-        $widget = "<!-- Laravel Debugbar Widget -->\n" . $renderer->renderHead() . $renderer->render();
+        $widget = $this->getDebugbarWidget();
 
         // Try to put the widget at the end, directly before the </body>
         $pos = strripos($content, '</body>');

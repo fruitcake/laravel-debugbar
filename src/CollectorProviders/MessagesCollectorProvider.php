@@ -25,12 +25,12 @@ class MessagesCollectorProvider extends AbstractCollectorProvider
         }
 
         if ($options['capture_dumps'] ?? false) {
-            $originalHandler = \Symfony\Component\VarDumper\VarDumper::setHandler(function ($var) use (&$originalHandler, $messageCollector): void {
+            $originalHandler = \Symfony\Component\VarDumper\VarDumper::setHandler(function ($var, $label = null) use (&$originalHandler, $messageCollector): void {
                 if ($originalHandler) {
-                    $originalHandler($var);
+                    $originalHandler($var, $label);
                 }
 
-                $messageCollector->addMessage($var);
+                $messageCollector->addMessage($var, 'info', [(string)$label]);
             });
         }
     }
