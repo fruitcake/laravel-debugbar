@@ -20,14 +20,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.2, '8.3', '8.4', '8.5']
+        php: ['8.2', '8.3', '8.4', '8.5']
         livewire: [^3, ^4]
 
     name: Livewire${{ matrix.livewire }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -39,7 +39,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer remove --dev --no-update larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules
+          composer remove --dev --no-update larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules laravel/ai
           composer require "livewire/livewire:${{ matrix.livewire }}" --no-interaction --no-update
           composer update --prefer-stable --prefer-dist --no-progress
 
