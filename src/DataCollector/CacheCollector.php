@@ -112,8 +112,56 @@ class CacheCollector extends TimeDataCollector implements AssetProvider, Resetta
     {
         $data = parent::collect();
         $data['nb_measures'] = $data['count'] = count($data['measures']);
+        // Replaces the generic timeline summary from TimeDataCollector.
+        $data['summary'] = $this->summarizeCacheEvents($data['measures']);
 
         return $data;
+    }
+
+    /**
+     * Cache traffic by action, plus a hit ratio when there were reads.
+     *
+     * Measure labels are "{action}\t{key}", so the action is the part before the tab.
+     * Only key *names* are listed; values stay in the panel.
+     *
+     * @param array<int, array<string, mixed>> $measures
+     *
+     * @return array<string, mixed>
+     */
+    protected function summarizeCacheEvents(array $measures, int $maxKeys = 10): array
+    {
+        if (!$measures) {
+            return [];
+        }
+
+        $counts = [];
+        $missed = [];
+        foreach ($measures as $measure) {
+            [$action, $key] = array_pad(explode("\t", (string) ($measure['label'] ?? ''), 2), 2, '');
+            $counts[$action] = ($counts[$action] ?? 0) + 1;
+
+            if ($action === 'missed' && $key !== '') {
+                $missed[] = $key;
+            }
+        }
+
+        arsort($counts);
+        $summary = ['events' => count($measures), 'by_action' => $counts];
+
+        $reads = ($counts['hit'] ?? 0) + ($counts['missed'] ?? 0);
+        if ($reads > 0) {
+            $summary['hit_ratio'] = round(($counts['hit'] ?? 0) / $reads * 100) . '%';
+        }
+
+        if ($missed) {
+            $missed = array_values(array_unique($missed));
+            $extra = count($missed) - $maxKeys;
+            $summary['missed_keys'] = $extra > 0
+                ? array_merge(array_slice($missed, 0, $maxKeys), ["(+{$extra} more)"])
+                : $missed;
+        }
+
+        return $summary;
     }
 
     public function reset(): void
@@ -135,6 +183,9 @@ class CacheCollector extends TimeDataCollector implements AssetProvider, Resetta
                 'widget' => 'PhpDebugBar.Widgets.LaravelCacheWidget',
                 'map' => 'cache',
                 'default' => '{}',
+            ],
+            'cache:summary' => [
+                'map' => 'cache.summary',
             ],
             'cache:badge' => [
                 'map' => 'cache.nb_measures',
