@@ -44,7 +44,7 @@ class RouteCollector extends DataCollector implements Renderable
         $uses = $action['uses'] ?? null;
         $controller = is_string($action['controller'] ?? null) ? $action['controller'] : '';
 
-        if (request()->hasHeader('X-Livewire') && app()->bound('livewire.factory')) {
+        if (request()->hasHeader('X-Livewire') && (app()->bound('livewire.factory') || class_exists('Livewire\Mechanisms\ComponentRegistry'))) {
             try {
                 $componentData = request('components')[0] ?? null;
                 if (isset($componentData['snapshot'], $componentData['updates'])) {
@@ -56,7 +56,10 @@ class RouteCollector extends DataCollector implements Renderable
                     }
 
                     if (isset($snapshot['memo']['name'])) {
-                        $component = app('livewire.factory')->resolveComponentClass($snapshot['memo']['name']);
+                        // Livewire 4 uses the factory, Livewire 3 the component registry
+                        $component = app()->bound('livewire.factory')
+                            ? app('livewire.factory')->resolveComponentClass($snapshot['memo']['name'])
+                            : app('Livewire\Mechanisms\ComponentRegistry')->getClass($snapshot['memo']['name']);
                         $result['controller'] = $component;
                         $reflector = new \ReflectionClass($component);
                         $controller = $component . '@' . $method;
