@@ -156,7 +156,7 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
         $uses = $action['uses'] ?? null;
         $controller = is_string($action['controller'] ?? null) ? $action['controller'] : '';
 
-        if (request()->hasHeader('X-Livewire') && app()->bound('livewire.factory')) {
+        if (request()->hasHeader('X-Livewire') && (app()->bound('livewire.factory') || class_exists('Livewire\Mechanisms\ComponentRegistry'))) {
             try {
                 $componentData = $this->request->request->all()['components'][0] ?? null;
                 if (isset($componentData['snapshot'], $componentData['updates'])) {
@@ -168,7 +168,10 @@ class RequestCollector extends SymfonyRequestCollector implements DataCollectorI
                     }
 
                     if (isset($snapshot['memo']['name'])) {
-                        $component = app('livewire.factory')->resolveComponentClass($snapshot['memo']['name']);
+                        // Livewire 4 uses the factory, Livewire 3 the component registry
+                        $component = app()->bound('livewire.factory')
+                            ? app('livewire.factory')->resolveComponentClass($snapshot['memo']['name'])
+                            : app('Livewire\Mechanisms\ComponentRegistry')->getClass($snapshot['memo']['name']);
                         $result['controller'] = $component;
                         $reflector = new \ReflectionClass($component);
                         $controller = $component . '@' . $method;
