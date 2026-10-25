@@ -51,7 +51,7 @@ class GateCollectorTest extends TestCase
                 'result' => 'NULL',
                 'user' => '1',
                 'arguments' => 'array:1 [
-  0 => "Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)"
+  0 =&gt; &quot;Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)&quot;
 ]',
             ],
             $gateError['context']
@@ -71,7 +71,7 @@ class GateCollectorTest extends TestCase
                 'result' => 'true',
                 'user' => '1',
                 'arguments' => 'array:1 [
-  0 => "Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)"
+  0 =&gt; &quot;Fruitcake\LaravelDebugbar\Tests\Models\User(id=1)&quot;
 ]',
             ],
         );
@@ -112,8 +112,8 @@ class GateCollectorTest extends TestCase
                 'result' => 'NULL',
                 'user' => '1',
                 'arguments' => 'array:2 [
-  0 => "Fruitcake\LaravelDebugbar\Tests\Models\Person"
-  1 => "Fruitcake\LaravelDebugbar\Tests\Models\Person(id=2)"
+  0 =&gt; &quot;Fruitcake\LaravelDebugbar\Tests\Models\Person&quot;
+  1 =&gt; &quot;Fruitcake\LaravelDebugbar\Tests\Models\Person(id=2)&quot;
 ]',
             ],
             $gateError['context']
