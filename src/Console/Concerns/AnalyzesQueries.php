@@ -40,8 +40,7 @@ trait AnalyzesQueries
             if (($stmt['type'] ?? 'query') !== 'query') {
                 continue;
             }
-            $key = $this->normalizeSql($stmt['sql'] ?? '') . '@' . ($stmt['connection'] ?? '');
-            $groups[$key][] = $i;
+            $groups[$this->shapeKey($stmt)][] = $i;
         }
 
         return array_filter($groups, function (array $indices) use ($statements): bool {
@@ -70,6 +69,20 @@ trait AnalyzesQueries
             $statements,
             fn(array $stmt): bool => ($stmt['is_success'] ?? true) === false || isset($stmt['error_message'])
         );
+    }
+
+    /**
+     * The shape key for a statement. The collector stores a `shape` hash of the SQL as
+     * it was before bindings were rendered into it, which is exact. Datasets stored
+     * before that existed fall back to stripping literals from the rendered SQL.
+     */
+    protected function shapeKey(array $stmt): string
+    {
+        if (isset($stmt['shape']) && is_string($stmt['shape'])) {
+            return $stmt['shape'];
+        }
+
+        return $this->normalizeSql($stmt['sql'] ?? '') . '@' . ($stmt['connection'] ?? '');
     }
 
     /**

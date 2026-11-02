@@ -8,6 +8,7 @@ use DebugBar\DataCollector\Resettable;
 use Fruitcake\LaravelDebugbar\Support\Explain;
 use DebugBar\DataCollector\AssetProvider;
 use DebugBar\DataCollector\DataCollector;
+use DebugBar\DataCollector\SummarizesData;
 use DebugBar\DataCollector\HasTimeDataCollector;
 use DebugBar\DataCollector\Renderable;
 use DebugBar\DataFormatter\QueryFormatter;
@@ -22,6 +23,8 @@ use Illuminate\Support\Str;
  */
 class QueryCollector extends DataCollector implements Renderable, AssetProvider, Resettable
 {
+    use SummarizesData;
+
     use HasTimeDataCollector;
 
     protected array $queries = [];
@@ -473,6 +476,7 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
         $queries = $this->queries;
 
         $statements = [];
+        $shapeSql = [];
         $explain = (new Explain());
         foreach ($queries as $query) {
             if (!in_array($query['type'], ['transaction', 'query'], true)) {
@@ -509,8 +513,12 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
                 $explainModes[] = 'explain';
             }
 
+            $shape = $this->shapeHash($query['query'] ?? '', $connectionName);
+            $shapeSql[$shape] ??= (string) ($query['query'] ?? '');
+
             $statements[] = array_filter([
                 'sql' => $this->getQueryFormatter()->formatSql($this->getSqlQueryToDisplay($query)),
+                'shape' => $shape,
                 'type' => $query['type'],
                 'params' => $query['bindings'] ?? [],
                 'backtrace' => array_map(function ($trace): mixed {
@@ -596,20 +604,182 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
         }
 
         $visibleStatements = count($statements) - $this->infoStatements;
+        $groups = $this->groupByShape($statements);
 
         $data = [
             'count' => $visibleStatements,
             'nb_statements' => $this->queryCount,
             'nb_visible_statements' => $visibleStatements,
             'nb_excluded_statements' => $this->queryCount + $this->transactionEventsCount - $visibleStatements,
-            'nb_failed_statements' => 0,
+            'nb_failed_statements' => count($this->failedStatements($statements)),
+            'nb_duplicate_statements' => $this->countRepeats($statements, $groups, true),
+            'nb_n_plus_one_statements' => $this->countRepeats($statements, $groups, false),
             'accumulated_duration' => $totalTime,
             'accumulated_duration_str' => $this->getDataFormatter()->formatDuration($totalTime),
             'memory_usage' => $totalMemory,
             'memory_usage_str' => $totalMemory ? $this->getDataFormatter()->formatBytes($totalMemory) : null,
             'statements' => $statements,
         ];
+        $data['summary'] = $this->buildSummary($data, $groups, $shapeSql);
+
         return $data;
+    }
+
+    /**
+     * A stable key for the *shape* of a query: the SQL before bindings are rendered
+     * into it, scoped to its connection. Two runs of the same query with different
+     * values share a shape, which is what makes an N+1 visible.
+     */
+    protected function shapeHash(string $rawSql, ?string $connection): string
+    {
+        return substr(md5($rawSql . '@' . $connection), 0, 12);
+    }
+
+    /**
+     * Statement indexes grouped by shape, keeping only shapes that ran more than once.
+     *
+     * @param array<int, array<string, mixed>> $statements
+     *
+     * @return array<string, list<int>>
+     */
+    protected function groupByShape(array $statements): array
+    {
+        $groups = [];
+        foreach ($statements as $i => $statement) {
+            if (($statement['type'] ?? 'query') !== 'query' || !isset($statement['shape'])) {
+                continue;
+            }
+            $groups[$statement['shape']][] = $i;
+        }
+
+        return array_filter($groups, fn(array $indices): bool => count($indices) > 1);
+    }
+
+    /**
+     * Counts statements in repeated shapes, split by whether the values repeated too.
+     *
+     * Identical values mean a query that should have been cached or hoisted out of a
+     * loop; differing values mean an N+1.
+     *
+     * @param array<int, array<string, mixed>> $statements
+     * @param array<string, list<int>>         $groups
+     */
+    protected function countRepeats(array $statements, array $groups, bool $identicalBindings): int
+    {
+        $total = 0;
+        foreach ($groups as $indices) {
+            if ($this->hasIdenticalBindings($statements, $indices) === $identicalBindings) {
+                $total += count($indices);
+            }
+        }
+
+        return $total;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $statements
+     * @param list<int>                        $indices
+     */
+    protected function hasIdenticalBindings(array $statements, array $indices): bool
+    {
+        $seen = array_unique(array_map(
+            fn(int $i): string => json_encode($statements[$i]['params'] ?? null) ?: '',
+            $indices
+        ));
+
+        return count($seen) === 1;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $statements
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    protected function failedStatements(array $statements): array
+    {
+        return array_filter(
+            $statements,
+            fn(array $statement): bool => ($statement['is_success'] ?? true) === false
+        );
+    }
+
+    /**
+     * The query story in a handful of lines: how many, how long, what repeated,
+     * what was slow and what failed.
+     *
+     * @param array<string, mixed>     $data
+     * @param array<string, list<int>> $groups
+     * @param array<string, string>    $shapeSql Raw, pre-binding SQL per shape
+     *
+     * @return array<string, mixed>
+     */
+    protected function buildSummary(array $data, array $groups, array $shapeSql, int $slowest = 3, int $maxErrors = 5): array
+    {
+        if ($data['nb_statements'] === 0) {
+            return [];
+        }
+
+        $statements = $data['statements'];
+
+        $summary = [
+            'statements' => $data['nb_statements'],
+            'duration' => $data['accumulated_duration_str'],
+        ];
+
+        if ($data['nb_excluded_statements'] > 0) {
+            $summary['not_shown'] = $data['nb_excluded_statements'];
+        }
+        if ($data['nb_duplicate_statements'] > 0) {
+            $summary['duplicates'] = $data['nb_duplicate_statements'];
+        }
+        if ($data['nb_failed_statements'] > 0) {
+            $summary['failed'] = $data['nb_failed_statements'];
+        }
+
+        // Same query, different values each time: the classic N+1.
+        $nPlusOne = [];
+        foreach ($groups as $shape => $indices) {
+            if ($this->hasIdenticalBindings($statements, $indices)) {
+                continue;
+            }
+            // The pre-binding SQL, so it reads as one query shape rather than as the
+            // first of N rendered examples that each carry a different value.
+            $sql = $shapeSql[$shape] ?? ($statements[$indices[0]]['sql'] ?? '');
+            $nPlusOne[] = count($indices) . 'x ' . $this->summarizeText($sql, 120);
+        }
+        if ($nPlusOne) {
+            $summary['n_plus_one'] = $nPlusOne;
+        }
+
+        $sorted = $statements;
+        usort($sorted, fn(array $a, array $b) => ($b['duration'] ?? 0) <=> ($a['duration'] ?? 0));
+
+        $lines = [];
+        foreach (array_slice($sorted, 0, $slowest) as $statement) {
+            if (($statement['duration'] ?? 0) <= 0) {
+                continue;
+            }
+            $lines[] = $this->summarizeText($statement['sql'] ?? '', 120)
+                . ' = ' . ($statement['duration_str'] ?? '?')
+                . (($statement['filename'] ?? null) ? ' @ ' . $statement['filename'] : '');
+        }
+        if ($lines) {
+            $summary['slowest'] = $lines;
+        }
+
+        $errors = [];
+        foreach ($this->failedStatements($statements) as $statement) {
+            $errors[] = $this->summarizeText($statement['sql'] ?? '', 120)
+                . ' -> ' . ($statement['error_message'] ?? 'unknown error');
+        }
+        if ($errors) {
+            $extra = count($errors) - $maxErrors;
+            $summary['errors'] = $extra > 0
+                ? array_merge(array_slice($errors, 0, $maxErrors), ["(+{$extra} more)"])
+                : $errors;
+        }
+
+        return $summary;
     }
 
     /**
@@ -635,6 +805,9 @@ class QueryCollector extends DataCollector implements Renderable, AssetProvider,
             "queries:badge" => [
                 "map" => "queries.nb_statements",
                 "default" => 0,
+            ],
+            "queries:summary" => [
+                "map" => "queries.summary",
             ],
         ];
     }

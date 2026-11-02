@@ -61,8 +61,46 @@ class EventCollector extends TimeDataCollector
     {
         $data = parent::collect();
         $data['nb_measures'] = $data['count'] = count($data['measures']);
+        // Replaces the generic timeline summary from TimeDataCollector.
+        $data['summary'] = $this->summarizeEvents($data['measures']);
 
         return $data;
+    }
+
+    /**
+     * The events that fired most, which is what you want when something ran too often.
+     *
+     * @param array<int, array<string, mixed>> $measures
+     *
+     * @return array<string, mixed>
+     */
+    protected function summarizeEvents(array $measures, int $max = 10): array
+    {
+        if (!$measures) {
+            return [];
+        }
+
+        $counts = [];
+        foreach ($measures as $measure) {
+            $label = (string) ($measure['label'] ?? '');
+            $counts[$label] = ($counts[$label] ?? 0) + 1;
+        }
+
+        arsort($counts);
+        $summary = ['events' => count($measures), 'distinct' => count($counts)];
+
+        $top = [];
+        foreach (array_slice($counts, 0, $max, true) as $label => $count) {
+            $top[] = $count . 'x ' . $label;
+        }
+        $summary['top'] = $top;
+
+        $extra = count($counts) - $max;
+        if ($extra > 0) {
+            $summary['not_shown'] = $extra;
+        }
+
+        return $summary;
     }
 
     public function getName(): string
@@ -73,6 +111,9 @@ class EventCollector extends TimeDataCollector
     public function getWidgets(): array
     {
         return [
+            "events:summary" => [
+                "map" => "event.summary",
+            ],
             "events" => [
                 "icon" => "subtask",
                 "widget" => "PhpDebugBar.Widgets.TimelineWidget",

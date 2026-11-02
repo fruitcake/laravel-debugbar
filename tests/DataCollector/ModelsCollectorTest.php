@@ -28,7 +28,7 @@ class ModelsCollectorTest extends TestCase
 
         static::assertEquals(
             ['data' => $data, 'key_map' => [], 'count' => 0, 'is_counter' => true],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
 
         User::create([
@@ -52,7 +52,7 @@ class ModelsCollectorTest extends TestCase
                 'key_map' => [
                 ],
             ],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
 
         $user = User::first();
@@ -60,7 +60,7 @@ class ModelsCollectorTest extends TestCase
         $data[User::class]['retrieved'] = 1;
         static::assertEquals(
             ['data' => $data, 'key_map' => [], 'count' => 3, 'is_counter' => true],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
 
         $user->update(['name' => 'Jane Doe']);
@@ -73,7 +73,7 @@ class ModelsCollectorTest extends TestCase
                 'is_counter' => true,
                 'key_map' => [],
             ],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
 
         Person::all();
@@ -81,7 +81,7 @@ class ModelsCollectorTest extends TestCase
         $data[Person::class] = ['retrieved' => 2];
         static::assertEquals(
             ['data' => $data, 'key_map' => [], 'count' => 6, 'is_counter' => true],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
 
         $user->delete();
@@ -95,7 +95,42 @@ class ModelsCollectorTest extends TestCase
                 'key_map' => [
                 ],
             ],
-            $collector->collect(),
+            $this->countsOnly($collector),
         );
+    }
+
+    public function testItSummarizesTheHeaviestModelCounts(): void
+    {
+        $this->loadLaravelMigrations();
+        debugbar()->boot();
+
+        /** @var \DebugBar\DataCollector\ObjectCountCollector $collector */
+        $collector = debugbar()->getCollector('models');
+        $collector->setXdebugLinkTemplate('');
+
+        static::assertSame([], $collector->collect()['summary'], 'nothing retrieved, nothing to summarize');
+
+        User::create([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        $summary = $collector->collect()['summary'];
+
+        static::assertSame(1, $summary['count']);
+        static::assertContains(User::class . ' = 1', $summary['top']);
+    }
+
+    /**
+     * The collected data without its summary, which is asserted separately so these
+     * exact-shape comparisons stay about the counting behaviour.
+     */
+    private function countsOnly(\DebugBar\DataCollector\ObjectCountCollector $collector): array
+    {
+        $data = $collector->collect();
+        unset($data['summary']);
+
+        return $data;
     }
 }
