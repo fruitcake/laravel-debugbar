@@ -67,7 +67,7 @@ class CacheCollector extends TimeDataCollector implements AssetProvider, Resetta
         if (isset($params['value'])) {
             if (!($params['value'] instanceof \Closure || is_resource($params['value']))) {
                 try {
-                    $params['memoryUsage'] = strlen(serialize($params['value'])) * 8;
+                    $params['memoryUsage'] = strlen(serialize($params['value']));
                 } catch (Throwable) {
                 }
             }
