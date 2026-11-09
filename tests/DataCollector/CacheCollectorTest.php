@@ -237,16 +237,16 @@ class CacheCollectorTest extends TestCase
     public static function sizeDataProvider(): array
     {
         return [
-            'string value' => ['hello world', strlen(serialize('hello world')) * 8],
-            'integer value' => [42, strlen(serialize(42)) * 8],
-            'float value' => [3.14, strlen(serialize(3.14)) * 8],
-            'boolean value' => [true, strlen(serialize(true)) * 8],
+            'string value' => ['hello world', strlen(serialize('hello world'))],
+            'integer value' => [42, strlen(serialize(42))],
+            'float value' => [3.14, strlen(serialize(3.14))],
+            'boolean value' => [true, strlen(serialize(true))],
             'null value' => [null, 0], // null fails isset() check, so no memoryUsage is calculated
-            'array value' => [['a', 'b', 'c'], strlen(serialize(['a', 'b', 'c'])) * 8],
-            'nested array' => [['key' => ['nested' => 'value']], strlen(serialize(['key' => ['nested' => 'value']])) * 8],
-            'empty string' => ['', strlen(serialize('')) * 8],
-            'large string' => [str_repeat('x', 1000), strlen(serialize(str_repeat('x', 1000))) * 8],
-            'stdClass object' => [(object) ['foo' => 'bar'], strlen(serialize((object) ['foo' => 'bar'])) * 8],
+            'array value' => [['a', 'b', 'c'], strlen(serialize(['a', 'b', 'c']))],
+            'nested array' => [['key' => ['nested' => 'value']], strlen(serialize(['key' => ['nested' => 'value']]))],
+            'empty string' => ['', strlen(serialize(''))],
+            'large string' => [str_repeat('x', 1000), strlen(serialize(str_repeat('x', 1000)))],
+            'stdClass object' => [(object) ['foo' => 'bar'], strlen(serialize((object) ['foo' => 'bar']))],
         ];
     }
 
