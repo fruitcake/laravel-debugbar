@@ -6,7 +6,7 @@ on:
       - master
   pull_request:
     branches:
-      - "*"
+      - '*'
 
 jobs:
   php-laravel-integration-tests:
@@ -20,10 +20,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.5, 8.4, 8.3, 8.2]
-        laravel: ['11.*', '12.*', '13.*']
+        php: [8.6, 8.5, 8.4, 8.3, 8.2]
+        laravel: [^13, ^12, ^11]
         exclude:
-          - laravel: 13.*
+          - laravel: ^13
             php: 8.2
 
     name: P${{ matrix.php }} - Laravel${{ matrix.laravel }}
@@ -43,16 +43,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer create-project --prefer-dist laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample --no-blocking
+          composer create-project --prefer-dist --ignore-platform-req=php+ laravel/laravel:${{ matrix.laravel }} --stability=dev --no-progress sample --no-blocking
           cd sample
           composer config minimum-stability dev
-          composer update --prefer-stable --prefer-dist --no-progress --no-blocking
+          composer update --prefer-stable --prefer-dist --ignore-platform-req=php+ --no-progress --no-blocking
 
       - name: Add package from source
         run: |
           cd sample
           sed -e 's|"type": "project",|&\n"repositories": [ { "type": "path", "url": "../src" } ],|' -i composer.json
-          composer require --dev "fruitcake/laravel-debugbar:*"
+          composer require --dev --ignore-platform-req=php+ "fruitcake/laravel-debugbar:*"
 
       - name: Execute generate run
         run: |

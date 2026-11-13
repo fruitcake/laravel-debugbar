@@ -22,8 +22,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.5, 8.4, 8.3, 8.2]
-        laravel: [^11, ^12, ^13]
+        php: [8.6, 8.5, 8.4, 8.3, 8.2]
+        laravel: [^13, ^12, ^11]
         dependency-version: [prefer-stable]
         exclude:
           - laravel: ^13
@@ -52,12 +52,12 @@ jobs:
         if: matrix.php == '8.2' || matrix.laravel == '^11'
         run: |
             composer remove --dev --no-update laravel/ai
-            
+
       - name: Install dependencies
         run: |
-          composer remove --dev --no-update larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
+          composer remove --dev --no-update --ignore-platform-req=php+ larastan/larastan phpstan/phpstan-phpunit laravel/pint phpstan/phpstan-strict-rules shipmonk/phpstan-rules
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update --ignore-platform-req=php+
+          composer update --${{ matrix.dependency-version }} --prefer-dist --ignore-platform-req=php+ --no-progress
 
       - name: Update Dusk Chromedriver
         run: vendor/bin/dusk-updater detect --auto-update
