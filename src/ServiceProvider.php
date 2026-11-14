@@ -22,6 +22,7 @@ use Illuminate\Foundation\Events\Terminating;
 use Illuminate\Foundation\Http\Events\RequestHandled;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Events\Looping;
 use Illuminate\Support\Collection;
 use Illuminate\View\Factory as ViewFactory;
 use Laravel\Octane\Events\RequestReceived;
@@ -149,6 +150,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             });
 
             $events->listen(JobProcessed::class, function (JobProcessed $event) use ($debugbar): void {
+                if ($debugbar->getProcessingJob()) {
+                    $debugbar->collect();
+                    $debugbar->setProcessingJob(null);
+                    $debugbar->reset();
+                }
+            });
+
+            // A failed job never fires JobProcessed, so collect it before the worker picks up the next one
+            $events->listen(Looping::class, function (Looping $event) use ($debugbar): void {
                 if ($debugbar->getProcessingJob()) {
                     $debugbar->collect();
                     $debugbar->setProcessingJob(null);
