@@ -10,6 +10,70 @@
      */
     class LaravelQueriesWidget extends PhpDebugBar.Widgets.SQLQueriesWidget {
 
+        render() {
+            super.render();
+
+            // Add table sort button in status bar
+            let tableSortState = 'none'; // 'none', 'asc', 'desc'
+            let originalTableData = null;
+
+            this.bindAttr('data', (data) => {
+                if (!data || data.length <= 0 || !data.statements) {
+                    return;
+                }
+
+                // Count unique tables from statements
+                const tables = new Set();
+                for (const stmt of data.statements) {
+                    if (stmt.table) {
+                        tables.add(stmt.table);
+                    }
+                }
+
+                if (tables.size > 0) {
+                    const tableSpan = document.createElement('span');
+                    tableSpan.setAttribute('title', 'Tables');
+                    tableSpan.classList.add(csscls('database'));
+                    tableSpan.textContent = `${tables.size} tables`;
+
+                    const sortIcon = document.createElement('span');
+                    sortIcon.classList.add(csscls('sort-icon'));
+                    sortIcon.style.cursor = 'pointer';
+                    sortIcon.style.marginLeft = '5px';
+                    sortIcon.textContent = 'Sort \u21C5';
+                    sortIcon.setAttribute('title', 'Sort by table');
+
+                    sortIcon.addEventListener('click', () => {
+                        if (tableSortState === 'none') {
+                            tableSortState = 'asc';
+                            sortIcon.textContent = '\u2191';
+                            originalTableData = [...data.statements];
+                            data.statements.sort((a, b) => (a.table || '').localeCompare(b.table || ''));
+                        } else if (tableSortState === 'asc') {
+                            tableSortState = 'desc';
+                            sortIcon.textContent = '\u2193';
+                            data.statements.sort((a, b) => (b.table || '').localeCompare(a.table || ''));
+                        } else {
+                            tableSortState = 'none';
+                            sortIcon.textContent = 'Sort \u21C5';
+                            if (originalTableData) {
+                                data.statements = originalTableData;
+                                originalTableData = null;
+                            }
+                        }
+                        this.list.set('data', data.statements);
+                    });
+
+                    tableSpan.append(sortIcon);
+                    this.status.append(tableSpan);
+                }
+
+                // Reset sort state for new data
+                tableSortState = 'none';
+                originalTableData = null;
+            });
+        }
+
         buildTable(rows, opts = {}) {
             const headings = [];
             for (const key in rows[0]) {
